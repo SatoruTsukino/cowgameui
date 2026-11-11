@@ -1,0 +1,12 @@
+{
+    "html.format.preserveNewLines": false,
+    "html.autoCreateQuotes": false,
+    "html.autoClosingTags": false,
+    "html.format.enable": false,
+    "html.hover.documentation": false,
+    "html.hover.references": false,
+    "html.suggest.html5": false,
+    "html.validate.scripts": false,
+    "html.validate.styles": false,
+    "emmet.showExpandedAbbreviation": "never"
+}
