@@ -61,7 +61,7 @@ Positioned at `absolute top-8 left-8 right-8 flex justify-between items-start z-
 | [`L136-L143`](file:///Users/jsph/cowgameui/index.html#L136-L143) | Calories Pill & Tab | `h-14 px-5` rounded pill (`Calories: 1,500`) with docked `#upgradesPill` underneath. |
 | [`L140-L142`](file:///Users/jsph/cowgameui/index.html#L140-L142) | `#upgradesPill` | `h-8 px-4 -mt-2 rounded-b-xl` Upgrades button tab. Hidden when Compact Mode = ON. |
 | [`L145-L150`](file:///Users/jsph/cowgameui/index.html#L145-L150) | `#topRightStandard` | Standard container for Settings (`w-14 h-14` `.shape-cowbell`). Hidden in Compact Mode. |
-| [`L151-L154`](file:///Users/jsph/cowgameui/index.html#L151-L154) | `#topRightCompact` | `w-14 h-14` overflow menu button (`•••`). Shown only when Compact Mode = ON. |
+| [`L158-L161`](file:///Users/jsph/cowgameui/index.html#L158-L161) | `#topRightCompact` | `w-14 h-14` overflow menu button (`•••`). Unified action hub for Settings + Herd + Trade when Compact Mode = ON. |
 
 ---
 
@@ -88,12 +88,11 @@ Positioned at `absolute left-8 top-48 flex flex-col gap-4 pointer-events-auto z-
 | [`L209-L217`](file:///Users/jsph/cowgameui/index.html#L209-L217) | `#leftSidebarStandard` | Standard 2-button stack: Inventory (`w-16 h-[4.5rem]` with backpack flap) + Closet (`w-16 h-16` squircle). Hidden in Compact Mode. |
 | [`L218-L222`](file:///Users/jsph/cowgameui/index.html#L218-L222) | `#leftSidebarCompact` | Single unified `BAG` button (`w-16 h-[4.5rem]`). Displayed when Compact Mode = ON. |
 
-### B. Right Sidebar: Social & Trade ([L225-L243](file:///Users/jsph/cowgameui/index.html#L225-L243))
+### B. Right Sidebar: Social & Trade ([L225-L242](file:///Users/jsph/cowgameui/index.html#L225-L242))
 Positioned at `absolute right-8 top-48 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring`.
 | Line Range | Element ID / Selector | Description & Reactive States |
 | :--- | :--- | :--- |
-| [`L226-L238`](file:///Users/jsph/cowgameui/index.html#L226-L238) | `#rightSidebarStandard` | Standard 2-button stack: Herd (`w-16 h-16` overlapping dual boxes) + Trade (`w-16 h-16` squircle). Hidden in Compact Mode. |
-| [`L240-L242`](file:///Users/jsph/cowgameui/index.html#L240-L242) | `#rightSidebarCompact` | Single unified `•••` Menu button (`w-16 h-16 rounded-2xl`). Displayed when Compact Mode = ON. |
+| [`L225-L242`](file:///Users/jsph/cowgameui/index.html#L225-L242) | `#rightSidebar` | 2-button stack: Herd (`w-16 h-16` overlapping dual boxes) + Trade (`w-16 h-16` squircle). Entire container hidden in Compact Mode (actions absorb into Top-Right `#topRightCompact`). |
 
 ---
 
