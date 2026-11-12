@@ -94,8 +94,73 @@ function Util.list(parent: Instance, direction: Enum.FillDirection, gap: number?
 	)
 end
 
+--[[
+	Legibility floor (DESIGN D2): every label renders at ≥ 12pt (base ≥ 12) or ≥ 11pt (captions, base < 12),
+	whatever the HUD scale. Labels are authored at their wireframe size (`base`, virtual px); on small scales
+	(phones) the TextSize grows to meet the floor. Auto-sized labels grow their containers; fixed-size labels grow
+	only as far as their box allows (measured), never below `base`. Util.fitWidth boxes re-measure at the new size.
+]]
+local textScale = 1
+local labels: { [TextLabel]: number } = {} -- label -> base size
+local fits: { [GuiObject]: { any } } = {} -- target -> fitWidth args
+
+local function measure(text: string, size: number): number?
+	local params = Instance.new("GetTextBoundsParams")
+	params.Text = text
+	params.Font = Theme.Font
+	params.Size = size
+	params.Width = math.huge
+	local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
+	return if ok then bounds.X else nil
+end
+
+function Util.textSize(base: number): number
+	local floor = if base >= 12 then 12 else 11
+	return math.max(base, math.ceil(floor / textScale))
+end
+
+local sizeTokens = setmetatable({}, { __mode = "k" })
+local function applyLabel(label: TextLabel, base: number)
+	local target = Util.textSize(base)
+	if target == base or label.AutomaticSize ~= Enum.AutomaticSize.None then
+		label.TextSize = target
+		return
+	end
+	if label.TextWrapped then
+		label.TextSize = math.min(target, math.floor(base * 1.25)) -- wrapping absorbs width; keep height sane
+		return
+	end
+	-- Fixed box: grow towards the floor only while the text still fits the box width.
+	local token = (sizeTokens[label] or 0) + 1
+	sizeTokens[label] = token
+	task.spawn(function()
+		if label.AbsoluteSize.X <= 0 then -- not laid out yet (HUD still being mounted)
+			label:GetPropertyChangedSignal("AbsoluteSize"):Wait()
+		end
+		local width = measure(label.Text, target)
+		if sizeTokens[label] ~= token then
+			return
+		end
+		local room = label.AbsoluteSize.X / math.max(textScale, 0.01) * 0.94
+		if width and width > room and room > 0 then
+			label.TextSize = math.max(base, math.floor(target * room / width))
+		else
+			label.TextSize = target
+		end
+	end)
+end
+
+local function track<T>(registry: { [Instance]: T }, instance: Instance, value: T)
+	if registry[instance] == nil then
+		instance.Destroying:Connect(function()
+			registry[instance] = nil
+		end)
+	end
+	registry[instance] = value
+end
+
 function Util.label(props: { [string]: any }): TextLabel
-	return Util.gui(
+	local label = Util.gui(
 		"TextLabel",
 		merge({
 			FontFace = Theme.Font,
@@ -105,6 +170,41 @@ function Util.label(props: { [string]: any }): TextLabel
 			AutomaticSize = if props.Size then Enum.AutomaticSize.None else Enum.AutomaticSize.XY,
 		}, props)
 	)
+	local base = label.TextSize
+	track(labels, label, base)
+	if label.AutomaticSize == Enum.AutomaticSize.None then
+		label:GetPropertyChangedSignal("Text"):Connect(function()
+			applyLabel(label, labels[label] or base)
+		end)
+	end
+	applyLabel(label, base)
+	return label
+end
+
+local function runFit(target: GuiObject, args: { any })
+	local text, base, inset, minWidth = args[1], args[2], args[3], args[4]
+	args.token = (args.token or 0) + 1
+	local token = args.token
+	task.spawn(function()
+		local width = measure(text, Util.textSize(base))
+		if width and fits[target] == args and args.token == token then
+			target.Size = UDim2.new(0, math.max(minWidth or 0, math.ceil(width) + inset), target.Size.Y.Scale, target.Size.Y.Offset)
+		end
+	end)
+end
+
+-- Called by CowHUD whenever the HUD scale changes: re-applies the legibility floor everywhere.
+function Util.setTextScale(scale: number)
+	if scale == textScale then
+		return
+	end
+	textScale = scale
+	for label, base in labels do
+		applyLabel(label, base)
+	end
+	for target, args in fits do
+		runFit(target, args)
+	end
 end
 
 --[[
@@ -189,6 +289,7 @@ function Util.shape(props: { [string]: any }): Frame
 			AnchorPoint = anchor,
 			Position = UDim2.fromScale(anchor.X, anchor.Y),
 			BackgroundColor3 = props.Color,
+			BackgroundTransparency = 0, -- callers may paint the colour later (Theme.paint); never start invisible
 			Parent = container,
 		})
 		if radius > 0 then
@@ -331,26 +432,15 @@ function Util.sunIcon(parent: Instance, size: number, color: Theme.Token): Frame
 end
 
 --[[
-	Sizes `target` to fit `text` at `textSize` (Theme.Font) plus `inset` px, keeping its height.
-	For spring buttons (Util.button): AutomaticSize can't be used there because the scale-sized visual inside
-	the slot feeds back into it and grows unbounded. Measuring yields, so this runs async; the latest call wins.
+	Sizes `target` to fit `text` at `textSize` (wireframe px, raised by the legibility floor) plus `inset` px,
+	keeping its height. For spring buttons (Util.button): AutomaticSize can't be used there because the
+	scale-sized visual inside the slot feeds back into it and grows unbounded. Measuring yields, so this runs
+	async; the latest call wins, and it re-runs when the HUD scale changes.
 ]]
-local fitTokens = setmetatable({}, { __mode = "k" })
 function Util.fitWidth(target: GuiObject, text: string, textSize: number, inset: number, minWidth: number?)
-	local token = (fitTokens[target] or 0) + 1
-	fitTokens[target] = token
-	task.spawn(function()
-		local params = Instance.new("GetTextBoundsParams")
-		params.Text = text
-		params.Font = Theme.Font
-		params.Size = textSize
-		params.Width = math.huge
-		local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
-		if ok and fitTokens[target] == token then
-			local width = math.max(minWidth or 0, math.ceil(bounds.X) + inset)
-			target.Size = UDim2.new(0, width, target.Size.Y.Scale, target.Size.Y.Offset)
-		end
-	end)
+	local args = { text, textSize, inset, minWidth }
+	track(fits, target, args)
+	runFit(target, args)
 end
 
 -- 1500 -> "1,500"

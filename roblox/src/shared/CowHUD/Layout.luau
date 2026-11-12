@@ -6,8 +6,9 @@
 	- Top-right cluster + bulletin share the topbar row; top-right stops short of any right-side core buttons.
 	- Top-left drops below the topbar when left core buttons occupy its corner (sidebars follow it).
 	- Right sidebar (Herd, Trade) hangs 112px below the top row (HTML: top-32 vs the top-right's top-4).
-	- The bulletin never collapses on its own (compact is only ever the player's choice). When the full card
-	  doesn't fit between the clusters in the top row, it moves down below them at full size instead.
+	- The bulletin never collapses on its own (compact is only ever the player's choice). It stays in the top row,
+	  centred when it can be, slid sideways to clear the core buttons and the top-right cluster otherwise; when it
+	  would sit over the vitals, the vitals (and left sidebar) move down below it instead.
 ]]
 
 local GuiService = game:GetService("GuiService")
@@ -20,7 +21,7 @@ local Layout = {}
 export type Refs = {
 	topLeft: GuiObject,
 	topRight: GuiObject,
-	bulletin: { full: GuiObject, scale: UIScale, setTop: (number) -> () },
+	bulletin: { wrapper: GuiObject, scale: UIScale, edgeRoom: number, setPosition: (number, number) -> () },
 	leftSidebar: GuiObject,
 	rightSidebar: GuiObject,
 	-- Build mode top bar + tools reuse the same row and top-bar clearance as the pasture HUD.
@@ -33,7 +34,6 @@ local RIGHT_SIDEBAR_DROP = 112 -- HTML: #rightSidebar top-32 minus #topRightHud 
 local ACTION_ARC_RESERVE = Theme.Margin + 256 + 16 -- touch: build tools stay above the mobile action arc
 
 function Layout.attach(root: GuiObject, scaler, refs: Refs)
-	local fullWidth, fullHeight = 0, 64 -- last measured full-card size (virtual px), kept while the card is hidden
 	local pending = false
 
 	local function apply()
@@ -57,13 +57,29 @@ function Layout.attach(root: GuiObject, scaler, refs: Refs)
 		local topRightX = math.min(virtualWidth - Theme.Margin, rightCoreEdge - Theme.ClusterGap)
 		refs.topRight.Position = UDim2.fromOffset(topRightX, rowY)
 
+		-- Bulletin: top row, centred if possible, otherwise slid to fit between the core buttons and the top-right.
+		local bulletin = refs.bulletin
+		local wrapper = bulletin.wrapper
+		local animScale = math.max(bulletin.scale.Scale, 0.01)
+		local bulletinSize = wrapper.AbsoluteSize / (scale * animScale) - Vector2.one * 2 * bulletin.edgeRoom
+		local leftBound = math.max(Theme.Margin, leftCoreEdge + Theme.ClusterGap)
+		local rightBound = topRightX - refs.topRight.AbsoluteSize.X / scale - Theme.ClusterGap
+		local half = bulletinSize.X / 2
+		local bulletinX = math.clamp(virtualWidth / 2, leftBound + half, math.max(leftBound + half, rightBound - half))
+		bulletin.setPosition(bulletinX, rowY)
+
+		-- Top-left: below the core buttons when they occupy its corner, and below the bulletin when it sits above.
 		local leftBlocked = leftCoreEdge > Theme.Margin
 		local topLeftY = if leftBlocked then math.max(Theme.Margin, barBottom + Theme.ClusterGap) else rowY
+		local topLeftRight = Theme.Margin + refs.topLeft.AbsoluteSize.X / scale
+		if wrapper.Visible and bulletinX - half < topLeftRight then
+			topLeftY = math.max(topLeftY, rowY + bulletinSize.Y + Theme.ClusterGap)
+		end
 		refs.topLeft.Position = UDim2.fromOffset(Theme.Margin, topLeftY)
 
 		local barY = rowY + (Theme.TopRowHeight - BUILD_BAR_HEIGHT) / 2
 		local building = refs.building
-		building.left.Position = UDim2.fromOffset(Theme.Margin, if leftBlocked then topLeftY else barY)
+		building.left.Position = UDim2.fromOffset(Theme.Margin, if leftBlocked then math.max(Theme.Margin, barBottom + Theme.ClusterGap) else barY)
 		building.centre.Position = UDim2.fromOffset(virtualWidth / 2, barY)
 		building.right.Position = UDim2.fromOffset(topRightX, barY)
 		local toolsY = barY + BUILD_BAR_HEIGHT + BUILD_TOOLS_GAP_TOP
@@ -73,26 +89,6 @@ function Layout.attach(root: GuiObject, scaler, refs: Refs)
 
 		refs.leftSidebar.Position = UDim2.fromOffset(Theme.Margin, topLeftY + Theme.SidebarOffset)
 		refs.rightSidebar.Position = UDim2.new(1, -Theme.Margin, 0, rowY + RIGHT_SIDEBAR_DROP)
-
-		-- Bulletin: top row when the full card fits between its neighbours, otherwise below both clusters.
-		local full = refs.bulletin.full
-		if full.Visible and full.AbsoluteSize.X > 0 then
-			fullWidth = full.AbsoluteSize.X / (scale * refs.bulletin.scale.Scale)
-			fullHeight = full.AbsoluteSize.Y / (scale * refs.bulletin.scale.Scale)
-		end
-		local topLeftSize = refs.topLeft.AbsoluteSize / scale
-		local topLeftInRow = topLeftY < rowY + fullHeight
-		local leftLimit = math.max(if topLeftInRow then Theme.Margin + topLeftSize.X else Theme.Margin, leftCoreEdge)
-			+ Theme.ClusterGap
-		local rightLimit = topRightX - refs.topRight.AbsoluteSize.X / scale - Theme.ClusterGap
-		local centre, half = virtualWidth / 2, fullWidth / 2
-		if centre - half >= leftLimit and centre + half <= rightLimit then
-			refs.bulletin.setTop(rowY)
-		else
-			local topRightBottom = rowY + refs.topRight.AbsoluteSize.Y / scale
-			local topLeftBottom = topLeftY + topLeftSize.Y
-			refs.bulletin.setTop(math.max(topRightBottom, if topLeftInRow then topLeftBottom else 0) + Theme.ClusterGap)
-		end
 	end
 
 	local function schedule()
@@ -106,7 +102,8 @@ function Layout.attach(root: GuiObject, scaler, refs: Refs)
 		GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(schedule),
 		refs.topLeft:GetPropertyChangedSignal("AbsoluteSize"):Connect(schedule),
 		refs.topRight:GetPropertyChangedSignal("AbsoluteSize"):Connect(schedule),
-		refs.bulletin.full:GetPropertyChangedSignal("AbsoluteSize"):Connect(schedule),
+		refs.bulletin.wrapper:GetPropertyChangedSignal("AbsoluteSize"):Connect(schedule),
+		refs.bulletin.wrapper:GetPropertyChangedSignal("Visible"):Connect(schedule),
 	}
 
 	return {

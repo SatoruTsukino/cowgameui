@@ -168,6 +168,16 @@ Script: `/private/tmp/claude-501/-Users-jsph-cowgameui/c1988756-da6d-412a-b925-2
 - **Quick emotes** reuse the Moo, Sprint and Kick arc slots while open.
 - **Building GUI** is rebuilt. Button widths are measured from text (`AutomaticSize` inside spring buttons grew without limit), tabs share the tray width with two-line labels, and the 6-slot fences catalog matches the HTML.
 
+## Studio review round 2 (2026-11-11)
+- **Bulletin** is a single 56px row (no CYCLE / WORLD EVENT captions, same 12/10 text). It stays in the top row, slides sideways to clear the core buttons and the top-right cluster, and pushes the vitals down when it overlaps them. It never moves into the middle of the screen.
+- **Upgrades tab:** 20px shows below the pill (it was 24).
+- **Build tabs** were invisible because `Util.shape` pieces started transparent when no `Color` was passed and were painted later. Shape pieces are now always opaque.
+- **Glyphs:** Nunito lacks ✕ ↻ ↶ ↷ ⬟ ⊞ ≋ ✦ ✿, so they are replaced with emoji or ASCII.
+- **Action arc** is hidden in build mode, in Roblox and in the HTML.
+- **T2 done for Roblox:** `Util.label` applies a legibility floor (12pt for labels, 11pt for captions) that re-applies when the scale changes, and `Util.fitWidth` re-measures at the new text size.
+- **Cowbell:** SET and the compact MENU share the wireframe cowbell (24px domed top, 9px flare, loop). Compact MENU was a squircle "•••".
+- **HTML:** the quick emotes now use the Roblox design (they swap into the Moo / Sprint / Kick slots, and Emote reads BACK).
+
 ## Original open questions (answered in D1–D6)
 1. **Phone compact default:** should compact mode be forced on phones (merged BAG / `•••`), or only defaulted so players can turn it off?
 2. **Minimum text size:** is an 11pt floor OK? Going to 12pt is more comfortable but costs more layout room.

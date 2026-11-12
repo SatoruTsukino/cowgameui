@@ -12,6 +12,7 @@
 
 	Spring buttons get explicit widths from measured text (Util.fitWidth), never AutomaticSize.
 	The wireframe's placement boundary and cursor are world-space and belong to the game's placement system.
+	Icons are emoji or ASCII: Nunito has no arrows/symbols (✕ ↻ ⬟ … render as empty boxes in Roblox).
 
 	Fires: GridSnap (payload = label), BuildCategory (id), BuildItem (name), Rotate, Paint, Undo, Redo, Trash.
 	Exit Build sets state.mode = "normal" (init fires ExitBuild).
@@ -39,7 +40,7 @@ local TOOL_GAP = 10 -- gap-2.5
 local DOCK_BOTTOM = 24 -- bottom-6
 local DOCK_MAX_WIDTH = 680
 local DOCK_PADDING = 8 -- px-2
-local DOCK_TOUCH_CLEARANCE = Theme.Margin + 256 + 16 -- keep clear of the native thumbstick / action arc on touch
+local DOCK_TOUCH_CLEARANCE = 200 -- touch: keep clear of Roblox's native thumbstick and Jump (the arc is hidden here)
 local TAB_GAP = 6 -- gap-1.5
 local TAB_PAD_X = 8 -- px-3.5 minus the border, so two-line labels fit when five tabs share 680px
 local TAB_TEXT = 10
@@ -52,11 +53,11 @@ local SLOT = Vector2.new(96, 112) -- w-24 h-28
 local SLOT_GAP = 12 -- gap-3
 
 local TOOLS = {
-	{ action = "Rotate", glyph = "↻", text = "ROT [R]", key = Enum.KeyCode.R },
-	{ action = "Paint", glyph = "◐", text = "PAINT" },
-	{ action = "Undo", glyph = "↶", text = "UNDO [Z]", key = Enum.KeyCode.Z },
-	{ action = "Redo", glyph = "↷", text = "REDO [Y]", key = Enum.KeyCode.Y },
-	{ action = "Trash", glyph = "✕", text = "TRASH [X]", key = Enum.KeyCode.X, danger = true },
+	{ action = "Rotate", glyph = "🔄", text = "ROT [R]", key = Enum.KeyCode.R },
+	{ action = "Paint", glyph = "🎨", text = "PAINT" },
+	{ action = "Undo", glyph = "↩️", text = "UNDO [Z]", key = Enum.KeyCode.Z },
+	{ action = "Redo", glyph = "↪️", text = "REDO [Y]", key = Enum.KeyCode.Y },
+	{ action = "Trash", glyph = "🗑️", text = "TRASH [X]", key = Enum.KeyCode.X, danger = true },
 }
 
 export type CatalogItem = { name: string, cost: string, glyph: string }
@@ -69,11 +70,11 @@ local DEFAULT_CATALOG: { Category } = {
 		label = "Fences & Gates",
 		items = {
 			{ name = "Rustic Fence", cost = "20 Wood", glyph = "#" },
-			{ name = "Picket Gate", cost = "35 Wood", glyph = "⊞" },
-			{ name = "Hay Bale", cost = "15 Wood", glyph = "≋" },
+			{ name = "Picket Gate", cost = "35 Wood", glyph = "🚪" },
+			{ name = "Hay Bale", cost = "15 Wood", glyph = "🌾" },
 			{ name = "Stone Wall", cost = "40 Stone", glyph = "▦" },
-			{ name = "Cozy Lantern", cost = "25 Stone", glyph = "✦" },
-			{ name = "Clover Bed", cost = "10 Stone", glyph = "✿" },
+			{ name = "Cozy Lantern", cost = "25 Stone", glyph = "🏮" },
+			{ name = "Clover Bed", cost = "10 Stone", glyph = "🍀" },
 		},
 	},
 	{ id = "barns", label = "Barns & Sheds", items = {} },
@@ -133,7 +134,7 @@ local function topBar(layer: Instance, ctx)
 		state:set("mode", "normal")
 	end)
 	row(exitFace, 8)
-	text(exitFace, "✕", 14, 1)
+	text(exitFace, "X", 14, 1)
 	text(exitFace, "EXIT BUILD", 12, 2)
 	Util.fitWidth(exit, "EXIT BUILD", 12, 2 * (20 + BAR_BORDER) + ICON + 8)
 
@@ -172,9 +173,9 @@ local function topBar(layer: Instance, ctx)
 		text(group, glyph, 14, 1)
 		return text(group, "", 11, 2)
 	end
-	local woodLabel = counter(1, "≡")
+	local woodLabel = counter(1, "🌲")
 	Util.frame({ Name = "Divider", Size = UDim2.fromOffset(2, 20), BackgroundColor3 = C.Subtle, LayoutOrder = 2, Parent = resourceFace })
-	local stoneLabel = counter(3, "⬟")
+	local stoneLabel = counter(3, "🧱")
 	state:observe("wood", function(value)
 		woodLabel.Text = Util.formatNumber(value or 0)
 	end)
@@ -314,15 +315,19 @@ end
 local function catalogDock(layer: Instance, ctx, catalog: { Category })
 	local state = ctx.state
 	local trayHeight = SLOT.Y + 2 * TRAY_PAD.Y + 2 * TRAY_BORDER
-	local sideClearance = if UserInputService.TouchEnabled then DOCK_TOUCH_CLEARANCE else Theme.Margin
-
 	local dock = Util.frame({
 		Name = "CatalogDock",
 		AnchorPoint = Vector2.new(0.5, 1),
 		Position = UDim2.new(0.5, 0, 1, -DOCK_BOTTOM),
-		Size = UDim2.new(1, -2 * sideClearance, 0, trayHeight + TAB_ACTIVE_HEIGHT - TRAY_BORDER),
 		Parent = layer,
 	})
+	-- TouchEnabled can settle after mount (Studio emulator), so the clearance follows the input type.
+	local function updateWidth()
+		local sideClearance = if UserInputService.TouchEnabled then DOCK_TOUCH_CLEARANCE else Theme.Margin
+		dock.Size = UDim2.new(1, -2 * sideClearance, 0, trayHeight + TAB_ACTIVE_HEIGHT - TRAY_BORDER)
+	end
+	UserInputService.LastInputTypeChanged:Connect(updateWidth)
+	updateWidth()
 	Util.new("UISizeConstraint", { MaxSize = Vector2.new(DOCK_MAX_WIDTH, math.huge), Parent = dock })
 	Util.paddingEach(dock, DOCK_PADDING, 0, DOCK_PADDING, 0)
 

@@ -9,7 +9,7 @@
 	hit areas keep ≥ 8px apart (verified for 360–1440px tall screens). If the arc would still cross a screen edge
 	(large scales), the whole arc shifts inward so its spacing is kept.
 
-	Shown on touch devices only. Tapping Emote swaps Moo/Sprint/Kick for three quick emotes in the same slots.
+	Shown on touch devices only, and hidden in build mode. Tapping Emote swaps Moo/Sprint/Kick for three quick emotes in the same slots.
 	Fires: Emote (toggles the quick emotes), Moo, Sprint, Kick, EmoteHeart, EmoteCheer, EmoteSnooze.
 ]]
 
@@ -184,12 +184,15 @@ return function(parent: Instance, ctx)
 	arc:GetPropertyChangedSignal("AbsoluteSize"):Connect(place)
 	bindJump()
 
-	-- Touch only: on desktop and console these actions live on keys/buttons, not on screen.
+	-- Touch only (desktop/console use keys and buttons), and never in build mode.
 	local function updateVisible()
-		arc.Visible = UserInputService.TouchEnabled
+		arc.Visible = UserInputService.TouchEnabled and state:get("mode") ~= "build"
+		if not arc.Visible then
+			state:set("emoteFlyout", false)
+		end
 	end
 	UserInputService.LastInputTypeChanged:Connect(updateVisible)
-	updateVisible()
+	state:observe("mode", updateVisible)
 
 	state:observe("emoteFlyout", function(open)
 		open = open == true

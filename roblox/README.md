@@ -45,7 +45,8 @@ StarterPlayer/StarterPlayerScripts
 - `Scaler` sets `scale = clamp(screenHeight / 720, minScale, 4)` on a `UIScale` and sizes the root to `screen / scale`. `minScale` is 0.75 on touch devices and 0.6 elsewhere. Height maps to about 720 virtual px (480–520 on phones, so controls render big enough to tap), and width follows the aspect ratio (16:9 → 1280, 21:9 → 1680, 4:3 → 960).
 - Elements are anchored to the edges and centre, so ultrawide screens get more space in the middle instead of stretched UI.
 - `ScreenInsets = DeviceSafeInsets` keeps the HUD clear of device notches. The HUD shares the top bar row with Roblox's own buttons: `Layout.luau` reads `GuiService.TopbarInset` so the top-right cluster and bulletin sit in that row next to the core buttons, and the top-left cluster (with the sidebars) moves down below the left core buttons.
-- **Bulletin placement:** the bulletin never switches to compact on its own, because Compact Mode is only ever the player's choice. If the full card doesn't fit between the corner clusters in the top row (for example on 4:3), it moves below them at full size.
+- **Bulletin:** a single 56px row (☀ cycle · event bar · countdown) with the same text sizes as the wireframe. It never switches to compact on its own, because Compact Mode is only ever the player's choice. It always stays in the top row: centred when possible, otherwise slid sideways to clear the core buttons and the top-right cluster. If it ends up above the vitals, the vitals and the left sidebar move down below it.
+- **Legibility floor:** labels render at no less than 12pt (11pt for captions under 12px) at any scale. On phones, text grows past its wireframe size: auto-sized boxes grow with it, and fixed boxes grow only as far as the text still fits.
 - Change `Theme.Scale.TouchMinScale` (touch) or `MinScale` (desktop) if text feels too small or too large.
 
 ## Using it from game code
@@ -69,7 +70,7 @@ hud.State:set("compact", true)
 - The wireframe's thumbstick and Jump are placeholders for Roblox's own touch controls, so the HUD never draws a Jump. `ActionCluster.luau` finds `PlayerGui.TouchGui.TouchControlFrame.JumpButton` and places Emote, Moo, Sprint and Kick on an arc around it, evenly spaced from 60° to 200°. The radius is half the jump size + 24 + 28.
 - Each satellite's hit area grows to 44pt while the visible button stays 56px.
 - **Quick emotes:** tapping Emote swaps Moo, Sprint and Kick for the three quick emotes (`EmoteHeart`, `EmoteCheer`, `EmoteSnooze`) in the same arc slots, one thumb-step from Emote, and Emote's label changes to BACK. Tapping an emote or BACK restores the arc.
-- The arc shows on touch devices only. The wireframe's safe-zone outlines are not drawn in Roblox.
+- The arc shows on touch devices only and is hidden in build mode. The wireframe's safe-zone outlines are not drawn in Roblox.
 
 ## Settings
 The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
@@ -79,5 +80,6 @@ The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 ## Known differences from the HTML
 - Dashed borders (area actions) are solid strokes, because Roblox has no dashed `UIStroke`.
 - Mobile safe zones are not drawn. They only preview Roblox's native thumbstick and Jump.
+- Icons are emoji or ASCII, because Nunito has no arrow or symbol glyphs.
 - No drop shadows.
 - The font is Nunito Heavy (`Theme.Font`). Roblox has no letter-spacing, so `tracking-widest` is dropped.

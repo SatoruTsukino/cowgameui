@@ -29,60 +29,57 @@ return function(parent: Instance, ctx)
 	local full = Util.frame({ Name = "Full", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 1, Parent = wrapper })
 	Util.list(full, Enum.FillDirection.Vertical, -6, { HorizontalAlignment = Enum.HorizontalAlignment.Center })
 
+	-- One row, the same 56px height as the top-row controls: ☀ DAY • 02:45 | [event bar] 5m 1s.
+	-- Same text sizes as the wireframe's two-row card (12 / 10) without the CYCLE / WORLD EVENT captions,
+	-- so the box takes far less room while the information reads the same.
 	local _, card = Util.box({
 		Name = "Card",
-		AutomaticSize = Enum.AutomaticSize.XY,
-		Radius = 32,
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.fromOffset(0, Theme.TopRowHeight),
+		Radius = 28,
 		Border = 6,
-		Padding = { 16, 10 },
 		LayoutOrder = 1,
 		ZIndex = 1,
 		Parent = full,
 	})
-	Util.list(card, Enum.FillDirection.Horizontal, 12, { VerticalAlignment = Enum.VerticalAlignment.Center })
+	card.Size = UDim2.new(0, 0, 1, 0)
+	Util.paddingEach(card, 8, 0, 14, 0)
+	Util.list(card, Enum.FillDirection.Horizontal, 8, { VerticalAlignment = Enum.VerticalAlignment.Center })
 
 	-- Cycle
-	local cycle = Util.frame({ Name = "Cycle", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 1, Parent = card })
-	Util.list(cycle, Enum.FillDirection.Horizontal, 8, { VerticalAlignment = Enum.VerticalAlignment.Center })
-	local _, iconFace = Util.box({ Size = UDim2.fromOffset(32, 32), Radius = "full", Border = 4, Fill = C.Screen, LayoutOrder = 1, Parent = cycle })
+	local _, iconFace = Util.box({ Size = UDim2.fromOffset(32, 32), Radius = "full", Border = 4, Fill = C.Screen, LayoutOrder = 1, Parent = card })
 	Util.sunIcon(iconFace, 16, C.Accent)
-	local cycleText = Util.frame({ AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 2, Parent = cycle })
-	Util.list(cycleText, Enum.FillDirection.Vertical, 2)
-	Util.label({ Text = "CYCLE", TextSize = 9, TextColor3 = C.Accent, LayoutOrder = 1, Parent = cycleText })
 	local cycleLabel = Util.label({
-		Size = UDim2.fromOffset(90, 16), -- fixed so the card doesn't jitter as digits change
+		Size = UDim2.fromOffset(84, 20),
 		TextSize = 12,
 		TextColor3 = C.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		LayoutOrder = 2,
-		Parent = cycleText,
+		Parent = card,
 	})
+	-- Fixed to the widest value so the card doesn't jitter as digits change.
+	Util.fitWidth(cycleLabel, "NIGHT • 00:00", 12, 2)
 
 	-- Divider (border-r-4 gray-200)
-	local divider = Util.frame({ Name = "Divider", Size = UDim2.fromOffset(4, 36), BackgroundColor3 = C.Subtle, LayoutOrder = 2, Parent = card })
+	local divider = Util.frame({ Name = "Divider", Size = UDim2.fromOffset(4, 28), BackgroundColor3 = C.Subtle, LayoutOrder = 3, Parent = card })
 	Util.corner(divider, 2)
 
-	-- World event
-	local event = Util.frame({ Name = "Event", Size = UDim2.fromOffset(155, 0), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 3, Parent = card })
-	Util.list(event, Enum.FillDirection.Vertical, 4)
-	local header = Util.frame({ Size = UDim2.new(1, 0, 0, 14), LayoutOrder = 1, Parent = event })
-	Util.paddingEach(header, 4, 0, 4, 0)
-	Util.label({ Text = "WORLD EVENT", TextSize = 9, TextColor3 = C.Accent, Size = UDim2.fromScale(1, 1), TextXAlignment = Enum.TextXAlignment.Left, Parent = header })
-	local eventTimer = Util.label({ TextSize = 10, Size = UDim2.fromScale(1, 1), TextXAlignment = Enum.TextXAlignment.Right, Parent = header })
-
+	-- World event: name inside the progress bar, countdown beside it
 	local _, eventTrack = Util.box({
-		Size = UDim2.new(1, 0, 0, 24),
+		Size = UDim2.fromOffset(150, 28),
 		Radius = "full",
 		Border = 4,
 		BorderColor = C.Fill,
 		Fill = C.Screen,
 		Padding = { 2, 2 },
-		LayoutOrder = 2,
-		Parent = event,
+		LayoutOrder = 4,
+		Parent = card,
 	})
 	local eventFill = Util.frame({ Size = UDim2.fromScale(0, 1), BackgroundColor3 = C.Fill, Parent = eventTrack })
 	Util.corner(eventFill, "full")
 	local eventName = Util.label({ TextSize = 10, TextColor3 = C.Text, Size = UDim2.fromScale(1, 1), ZIndex = 2, Parent = eventTrack })
+	local eventTimer = Util.label({ TextSize = 10, Size = UDim2.fromOffset(44, 20), TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = 5, Parent = card })
+	Util.fitWidth(eventTimer, "00m 00s", 10, 0)
 
 	-- Boost chip (-mt-1.5, border-4 gray-500)
 	local boost, boostFace = Util.box({
@@ -195,9 +192,10 @@ return function(parent: Instance, ctx)
 		wrapper = wrapper,
 		scale = wrapperScale,
 		full = full,
-		-- Places the visible card's top edge at `y` (virtual px), compensating for the clip padding.
-		setTop = function(y: number)
-			wrapper.Position = UDim2.new(0.5, 0, 0, y - EDGE_ROOM)
+		edgeRoom = EDGE_ROOM,
+		-- Centres the visible card on `x` with its top edge at `y` (virtual px), compensating for the clip padding.
+		setPosition = function(x: number, y: number)
+			wrapper.Position = UDim2.fromOffset(x, y - EDGE_ROOM)
 		end,
 	}
 end

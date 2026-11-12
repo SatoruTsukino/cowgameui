@@ -672,28 +672,26 @@
                         <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">EMOTE</span>
-                    </div>
-
-                    <!-- Flyout Mini-Arc (3 Quick Emotes) -->
-                    <div id="mobileEmoteFlyout" class="hidden absolute -top-14 -left-16 flex items-center gap-2 pointer-events-auto z-30 hud-spring">
-                        <button class="w-10 h-10 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
-                            <svg class="w-5 h-5 fill-red-400 stroke-red-500 stroke-1" viewBox="0 0 24 24">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                            </svg>
-                        </button>
-                        <button class="w-10 h-10 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
-                            <svg class="w-5 h-5 fill-amber-400 stroke-amber-500 stroke-1" viewBox="0 0 24 24">
-                                <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/>
-                            </svg>
-                        </button>
-                        <button class="w-10 h-10 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
-                            <svg class="w-5 h-5 stroke-blue-500 stroke-2 fill-none" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                            </svg>
-                        </button>
+                        <span id="labelMobileEmote" class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">EMOTE</span>
                     </div>
                 </div>
+
+                <!-- Quick emotes (Roblox parity): Emote swaps Moo / Sprint / Kick for these in the same arc slots -->
+                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[39px] top-[39px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
+                    <svg class="w-5 h-5 fill-red-400 stroke-red-500 stroke-1" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                </button>
+                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[14px] top-[120px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
+                    <svg class="w-5 h-5 fill-amber-400 stroke-amber-500 stroke-1" viewBox="0 0 24 24">
+                                <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/>
+                            </svg>
+                </button>
+                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[51px] bottom-[29px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
+                    <svg class="w-5 h-5 stroke-blue-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                            </svg>
+                </button>
 
                 <!-- 4. Kick (Down-Left / Bot-Left, θ ≈ 235°) -->
                 <div id="btnMobileKick" class="absolute left-[47px] bottom-[25px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Kick">
@@ -718,6 +716,7 @@
 
         function switchPage(pageId) {
             activePage = pageId;
+            setActionArcVisible(pageId !== 'building');
             const pagePasture = document.getElementById('pagePasture');
             const pageBuilding = document.getElementById('pageBuilding');
             const tabPasture = document.getElementById('tabBtnPasture');
@@ -738,12 +737,27 @@
             }
         }
 
+        // Quick emotes take over the Moo / Sprint / Kick slots (one thumb-step from Emote); Emote reads BACK.
+        const ARC_SATELLITES = ['btnMobileMoo', 'btnMobileSprint', 'btnMobileKick'];
+
+        function setEmoteRadial(open) {
+            isEmoteRadialOpen = open;
+            ARC_SATELLITES.forEach(id => document.getElementById(id).classList.toggle('hidden', open));
+            document.querySelectorAll('.mobile-quick-emote').forEach(btn => btn.classList.toggle('hidden', !open));
+            document.getElementById('labelMobileEmote').textContent = open ? 'BACK' : 'EMOTE';
+        }
+
         function toggleEmoteRadial() {
-            isEmoteRadialOpen = !isEmoteRadialOpen;
-            const flyout = document.getElementById('mobileEmoteFlyout');
-            if (flyout) {
-                flyout.classList.toggle('hidden', !isEmoteRadialOpen);
-            }
+            setEmoteRadial(!isEmoteRadialOpen);
+        }
+
+        // The action arc is hidden in build mode (Roblox parity); Jump + thumbstick placeholders stay.
+        function setActionArcVisible(visible) {
+            if (!visible) setEmoteRadial(false);
+            [...ARC_SATELLITES, 'btnMobileEmote'].forEach(id => {
+                const el = id === 'btnMobileEmote' ? document.getElementById(id).parentElement : document.getElementById(id);
+                el.classList.toggle('invisible', !visible);
+            });
         }
 
         const GRID_SNAPS = ['2 Studs', '4 Studs', '1 Stud', 'Free / Off'];

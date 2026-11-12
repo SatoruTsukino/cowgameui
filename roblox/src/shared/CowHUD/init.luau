@@ -149,7 +149,8 @@ function CowHUD.mount(player: Player, options: Options?)
 	end)
 
 	local layout
-	scaler = Scaler.attach(screenGui, root, Theme.Scale, function()
+	scaler = Scaler.attach(screenGui, root, Theme.Scale, function(current)
+		Util.setTextScale(current.scale)
 		state:set("menu", nil) -- menu positions are computed once; drop them on resize
 		if layout then
 			layout.schedule()

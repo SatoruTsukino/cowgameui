@@ -7,8 +7,47 @@ local C = Theme.Color
 
 local CALORIES_INSET = 52 -- (px-5 + border-6) * 2
 local CALORIES_MIN_WIDTH = 120
-local UPGRADES_TOP = 56 - 8 -- h-14 pill, -mt-2 tab
+-- Upgrades tab hugs the pill: only 20px of it shows below the calories border (HTML -mt-2 h-8, tightened).
+local UPGRADES_HEIGHT = 30
+local UPGRADES_TOP = 56 - 10
 local UPGRADES_INSET = 40 -- (px-4 + border-4) * 2
+
+--[[
+	Cowbell button (.shape-cowbell: border-radius 35% 35% 15% 15% / 50% 50% 20% 20%, border-6, w-14 h-14) with the
+	loop on top (-top-2 w-4 h-3 border-4 rounded-t-full). UICorner has no elliptical radii, so the domed top uses
+	24px corners (between the CSS 19.6px × 28px ellipse axes) and the flared bottom 9px.
+	Wrapped in pt-1 like the wireframe so the loop clears the top row.
+]]
+local function cowbell(parent: Instance, name: string, caption: string, order: number, onActivated: (GuiObject) -> ()): GuiObject
+	local wrapper = Util.frame({ Name = name, Size = UDim2.fromOffset(56, 60), LayoutOrder = order, Parent = parent })
+	Util.paddingEach(wrapper, 0, 4, 0, 0)
+	local _, bell = Util.button({ Name = "Bell", Size = UDim2.fromOffset(56, 56), Parent = wrapper }, {
+		OnActivated = onActivated,
+	})
+	local loop = Util.frame({
+		Name = "Loop",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.new(0.5, 0, 0, -4),
+		Size = UDim2.fromOffset(8, 12),
+		ZIndex = 1,
+		Parent = bell,
+	})
+	Util.corner(loop, 4)
+	Util.new("UIStroke", { Color = C.Border, Thickness = 4, Parent = loop })
+	Util.shape({ Name = "Border", Color = C.Border, Radius = 24, Corners = { BL = 9, BR = 9 }, ZIndex = 2, Parent = bell })
+	Util.shape({
+		Name = "Fill",
+		Position = UDim2.fromOffset(6, 6),
+		Size = UDim2.new(1, -12, 1, -12),
+		Color = C.Card,
+		Radius = 18,
+		Corners = { BL = 3, BR = 3 },
+		ZIndex = 3,
+		Parent = bell,
+	})
+	Util.label({ Text = caption, TextSize = 9, Position = UDim2.fromOffset(0, 4), Size = UDim2.fromScale(1, 1), ZIndex = 4, Parent = bell })
+	return wrapper
+end
 
 return function(parent: Instance, ctx)
 	local state = ctx.state
@@ -25,7 +64,7 @@ return function(parent: Instance, ctx)
 
 	-- Economy column (flex-col items-center): pill with the upgrades tab tucked 8px underneath (-mt-2).
 	-- Positioned explicitly instead of with a negative list gap so the tab always docks flush to the pill.
-	local economy = Util.frame({ Name = "Economy", Size = UDim2.fromOffset(CALORIES_MIN_WIDTH, UPGRADES_TOP + 32), LayoutOrder = 1, Parent = cluster })
+	local economy = Util.frame({ Name = "Economy", Size = UDim2.fromOffset(CALORIES_MIN_WIDTH, UPGRADES_TOP + UPGRADES_HEIGHT), LayoutOrder = 1, Parent = cluster })
 
 	-- Calories pill (h-14, px-5, rounded-[1.5rem], border-6). Width is set explicitly from measured text bounds:
 	-- AutomaticSize can't be used here because the scale-sized visual inside the slot feeds back into it and grows unbounded.
@@ -50,7 +89,7 @@ return function(parent: Instance, ctx)
 		Name = "Upgrades",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, UPGRADES_TOP),
-		Size = UDim2.fromOffset(112, 32),
+		Size = UDim2.fromOffset(112, UPGRADES_HEIGHT),
 		ZIndex = 1,
 		Parent = economy,
 	}, {
@@ -78,63 +117,25 @@ return function(parent: Instance, ctx)
 		ZIndex = 3,
 		Parent = upgradesVisual,
 	})
-	Util.paddingEach(upgradesLabel, 0, 0, 0, 8)
+	Util.paddingEach(upgradesLabel, 0, 0, 0, 6)
 
-	-- Settings: downward-flared cowbell with a loop on top (pt-1 wrapper).
-	local standard = Util.frame({ Name = "Standard", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 2, Parent = cluster })
-	Util.paddingEach(standard, 0, 4, 0, 0)
-	local _, bell = Util.button({ Name = "Settings", Size = UDim2.fromOffset(56, 56), Parent = standard }, {
-		OnActivated = function()
-			ctx.trigger("Settings")
-		end,
-	})
-	local loop = Util.frame({
-		Name = "Loop",
-		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, -4),
-		Size = UDim2.fromOffset(8, 10),
-		ZIndex = 1,
-		Parent = bell,
-	})
-	Util.corner(loop, 4)
-	Util.new("UIStroke", { Color = C.Border, Thickness = 4, Parent = loop })
-	Util.shape({ Name = "Border", Color = C.Border, Radius = 22, Corners = { BL = 9, BR = 9 }, ZIndex = 2, Parent = bell })
-	Util.shape({
-		Name = "Fill",
-		Position = UDim2.fromOffset(6, 6),
-		Size = UDim2.new(1, -12, 1, -12),
-		Color = C.Card,
-		Radius = 16,
-		Corners = { BL = 3, BR = 3 },
-		ZIndex = 3,
-		Parent = bell,
-	})
-	Util.label({ Text = "SET", TextSize = 9, Position = UDim2.fromOffset(0, 4), Size = UDim2.fromScale(1, 1), ZIndex = 4, Parent = bell })
-
-	-- Compact: unified menu (Settings + Herd + Trade)
-	local more = Util.iconButton({
-		Name = "More",
-		Size = UDim2.fromOffset(56, 56),
-		Radius = 16,
-		Text = "•••",
-		TextSize = 14,
-		TextColor3 = C.Text,
-		LayoutOrder = 3,
-		Parent = cluster,
-		OnActivated = function(slot)
-			ctx.toggleMenu(slot, "below", { "Settings", "Herd", "Trade" })
-		end,
-	})
+	-- Settings (standard) and the unified MENU (compact) share the cowbell from the wireframe.
+	local standard = cowbell(cluster, "Settings", "SET", 2, function()
+		ctx.trigger("Settings")
+	end)
+	local more = cowbell(cluster, "More", "MENU", 3, function(slot)
+		ctx.toggleMenu(slot, "below", { "Settings", "Herd", "Trade" })
+	end)
 
 	state:observe("compact", function(compact)
 		upgrades.Visible = not compact
-		economy.Size = UDim2.fromOffset(economy.Size.X.Offset, if compact then 56 else UPGRADES_TOP + 32)
+		economy.Size = UDim2.fromOffset(economy.Size.X.Offset, if compact then 56 else UPGRADES_TOP + UPGRADES_HEIGHT)
 		standard.Visible = not compact
 		more.Visible = compact
 	end)
 	Util.fitWidth(upgrades, "UPGRADES ⬆", 9, UPGRADES_INSET)
 	local function sizeEconomy()
-		local height = if state:get("compact") then 56 else UPGRADES_TOP + 32
+		local height = if state:get("compact") then 56 else UPGRADES_TOP + UPGRADES_HEIGHT
 		economy.Size = UDim2.fromOffset(math.max(calories.Size.X.Offset, upgrades.Size.X.Offset), height)
 	end
 	calories:GetPropertyChangedSignal("Size"):Connect(sizeEconomy)
