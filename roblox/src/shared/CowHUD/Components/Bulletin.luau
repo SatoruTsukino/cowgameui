@@ -81,19 +81,30 @@ return function(parent: Instance, ctx)
 	local eventTimer = Util.label({ TextSize = 10, Size = UDim2.fromOffset(44, 20), TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = 5, Parent = card })
 	Util.fitWidth(eventTimer, "00m 00s", 10, 0)
 
-	-- Boost chip (-mt-1.5, border-4 gray-500)
-	local boost, boostFace = Util.box({
-		Name = "Boost",
-		AutomaticSize = Enum.AutomaticSize.XY,
-		Radius = 12,
-		Border = 4,
-		BorderColor = C.Accent,
-		Fill = C.Screen,
-		Padding = { 16, 4 },
-		LayoutOrder = 2,
-		ZIndex = 2,
-		Parent = full,
+	-- Boost tab (-mt-1.5 px-4 py-1 rounded-t-lg rounded-b-2xl border-4 gray-500 bg-gray-100): hangs from the card,
+	-- drawn over its bottom border. Content auto-sizes (timer, legibility floor); the tab shape behind it is sized
+	-- from the content, since shapes need explicit sizes and scale-sized children can't shrink an auto parent.
+	local BOOST_BORDER = 4
+	local boost = Util.frame({ Name = "Boost", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 2, ZIndex = 2, Parent = full })
+	local tab = Util.frame({ Name = "Tab", Parent = boost })
+	Util.shape({ Name = "Border", Color = C.Accent, Radius = 16, Corners = { TL = 8, TR = 8 }, Parent = tab })
+	Util.shape({
+		Name = "Fill",
+		Position = UDim2.fromOffset(BOOST_BORDER, BOOST_BORDER),
+		Size = UDim2.new(1, -2 * BOOST_BORDER, 1, -2 * BOOST_BORDER),
+		Color = C.Screen,
+		Radius = 16 - BOOST_BORDER,
+		Corners = { TL = 8 - BOOST_BORDER, TR = 8 - BOOST_BORDER },
+		Parent = tab,
 	})
+	local boostFace = Util.frame({ Name = "Content", AutomaticSize = Enum.AutomaticSize.XY, ZIndex = 2, Parent = boost })
+	Util.padding(boostFace, 16 + BOOST_BORDER, 4 + BOOST_BORDER)
+	local function sizeTab()
+		local s = ctx.getScale() * math.max(wrapperScale.Scale, 0.01)
+		local size = boostFace.AbsoluteSize / s
+		tab.Size = UDim2.fromOffset(math.round(size.X), math.round(size.Y))
+	end
+	boostFace:GetPropertyChangedSignal("AbsoluteSize"):Connect(sizeTab)
 	Util.list(boostFace, Enum.FillDirection.Horizontal, 8, { VerticalAlignment = Enum.VerticalAlignment.Center })
 	local dot = Util.frame({ Size = UDim2.fromOffset(8, 8), BackgroundColor3 = C.Accent, LayoutOrder = 1, Parent = boostFace })
 	Util.corner(dot, "full")

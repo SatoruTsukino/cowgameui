@@ -2,6 +2,7 @@
 -- Replace with real game systems; the HUD only reads the attributes documented in CowHUD/Bindings.
 
 local Players = game:GetService("Players")
+local TextChatService = game:GetService("TextChatService")
 local Workspace = game:GetService("Workspace")
 
 local CYCLE_PHASE_SECONDS = 165 -- "DAY • 02:45"
@@ -60,6 +61,22 @@ local function onPlayerAdded(player: Player)
 	player:SetAttribute("BuildParts", 34)
 	player:SetAttribute("BuildPartsMax", 50)
 end
+
+-- Test command: "/boost" starts a fresh 90s boost; "/boost 30" sets the length in seconds.
+-- Created on the server so the attributes replicate and the doubled calories apply.
+local boostCommand = Instance.new("TextChatCommand")
+boostCommand.Name = "CowHUDDemoBoost"
+boostCommand.PrimaryAlias = "/boost"
+boostCommand.Triggered:Connect(function(source: TextSource, text: string)
+	local player = Players:GetPlayerByUserId(source.UserId)
+	if not player then
+		return
+	end
+	local seconds = math.clamp(tonumber(text:match("^%S+%s+(%d+)")) or BOOST_SECONDS, 1, 3600)
+	player:SetAttribute("BoostLabel", "2x Calories")
+	player:SetAttribute("BoostEndsAt", now() + seconds)
+end)
+boostCommand.Parent = TextChatService
 
 Players.PlayerAdded:Connect(onPlayerAdded)
 for _, player in Players:GetPlayers() do

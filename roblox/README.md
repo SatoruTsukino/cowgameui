@@ -65,6 +65,9 @@ hud.State:set("compact", true)
 - **From code:** `hud.State:set("mode", "build")` or `hud.State:set("mode", "normal")`. Every mode change fires `ActionTriggered("EnterBuild")` or `ActionTriggered("ExitBuild")`.
 - **Building GUI:** a top bar (Exit Build, a parts-limit pill, grid snap, wood and stone counters), a tool stack (ROT [R], PAINT, UNDO [Z], REDO [Y], TRASH [X]; the keys are bound only while building), and a catalog dock. The catalog dock has category tabs and a tray of slots that scrolls. Its tool actions fire through `ActionTriggered(action, payload)`. Replace the demo catalog with `CowHUD.mount(player, { catalog = { { id, label, items = { { name, cost, glyph } } } } })`.
 - **Data:** the `Wood`, `Stone`, `BuildParts` and `BuildPartsMax` player attributes.
+
+## Demo commands
+- `/boost` starts a fresh 90-second "2x Calories" boost, and `/boost 30` sets the length in seconds. It's created by the demo server script, so it goes away when you replace the demo with real game systems.
 - The wireframe's placement boundary and cursor are not drawn. They are world-space and belong to the game's placement system.
 
 ## Mobile action arc
