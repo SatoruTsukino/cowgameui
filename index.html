@@ -364,7 +364,7 @@
                         </div>
 
                         <div class="flex flex-col gap-1 min-w-[155px]">
-                            <div class="flex items-center justify-between px-1">
+                            <div class="flex items-center justify-between gap-2 px-1">
                                 <span class="text-[9px] font-black text-gray-400 tracking-widest uppercase">World Event</span>
                                 <span class="text-[10px] font-black text-gray-500 tracking-wider">4m 12s</span>
                             </div>
@@ -734,6 +734,7 @@
 
         function switchPage(pageId) {
             activePage = pageId;
+            requestAnimationFrame(fitText);
             setActionArcVisible(pageId !== 'building');
             const pagePasture = document.getElementById('pagePasture');
             const pageBuilding = document.getElementById('pageBuilding');
@@ -971,6 +972,47 @@
             }, 20);
         }
 
+        // Roblox HUD scale of the device each preset simulates: 1080p desktop, 1440p ultrawide, iPad (820pt tall),
+        // iPhone 14 landscape (390pt tall → touch scale floor 0.75).
+        const DEVICE_HUD_SCALE = { 'aspect-video': 1.5, 'aspect-21-9': 2, 'aspect-4-3': 1.14, 'aspect-19-5-9': 0.75 };
+        // Virtual canvas height per preset = device height ÷ HUD scale (phones: 390 / 0.75 = 520, like Roblox).
+        const DEVICE_VIRTUAL_HEIGHT = { 'aspect-19-5-9': 520 };
+
+        /* Legibility floor (Roblox Util.label parity, phase 5 T2): on the simulated device, text renders at ≥ 11pt
+           (captions, base < 12px) or ≥ 12pt (labels). Same rules as Roblox:
+           - single-line text grows to the floor, then shrinks back (never below its wireframe size) if it overflows
+             a fixed-size box;
+           - text that already wraps at its wireframe size grows at most 1.25×. */
+        let hudScale = 1.5;
+        function fitText() {
+            const captionFloor = 11 / hudScale, labelFloor = 12 / hudScale;
+            document.querySelectorAll('.game-screen [class*="text-["], .game-screen .text-xs, .game-screen .text-sm').forEach(el => {
+                el.style.removeProperty('font-size');
+                el.style.removeProperty('white-space');
+                const parent = el.parentElement;
+                if (!parent || el.offsetParent === null) return; // hidden page / element
+                const match = el.className.match(/text-\[(\d+)px\]/);
+                const base = match ? Number(match[1]) : el.classList.contains('text-sm') ? 14 : 12;
+                const target = Math.max(base, base >= 12 ? labelFloor : captionFloor);
+                if (target <= base) return;
+                const line = parseFloat(getComputedStyle(el).lineHeight) || base * 1.5;
+                const wraps = el.getClientRects().length > 1 || el.offsetHeight > line * 1.5;
+                if (wraps) {
+                    el.style.setProperty('font-size', `${Math.min(target, base * 1.25)}px`);
+                    return;
+                }
+                el.style.setProperty('white-space', 'nowrap');
+                const style = getComputedStyle(parent);
+                const room = parent.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+                let size = target;
+                el.style.setProperty('font-size', `${size}px`);
+                while (size > base && el.offsetWidth > room + 0.5) {
+                    size = Math.max(base, size - 0.5);
+                    el.style.setProperty('font-size', `${size}px`);
+                }
+            });
+        }
+
         function resizeUI() {
             const screen = document.querySelector('.game-screen');
             const ui = document.getElementById('ui-container');
@@ -980,7 +1022,9 @@
             const clientH = screen.clientHeight;
             if (clientW === 0 || clientH === 0) return;
 
-            const virtualHeight = 720;
+            const preset = Object.keys(DEVICE_HUD_SCALE).find(cls => screen.classList.contains(cls)) ?? 'aspect-video';
+            hudScale = DEVICE_HUD_SCALE[preset];
+            const virtualHeight = DEVICE_VIRTUAL_HEIGHT[preset] ?? 720;
             const currentAspectRatio = clientW / clientH;
             const virtualWidth = virtualHeight * currentAspectRatio;
             
@@ -991,11 +1035,13 @@
             ui.style.transform = `scale(${scale})`;
 
             // Vital bars (Roblox Layout parity): 208px on 16:9+ down to 160px on narrow (4:3 = 960 wide) or phone-height
-            // canvases. The preview is always 720 tall, so the Mobile preset stands in for a phone's ~520px canvas.
-            const isPhonePreview = screen.classList.contains('aspect-19-5-9');
+            // canvases, whichever is tighter.
             const byWidth = Math.min(1, Math.max(0, (virtualWidth - 960) / (1280 - 960)));
-            const vitalsT = isPhonePreview ? 0 : byWidth;
+            const byHeight = Math.min(1, Math.max(0, (virtualHeight - 520) / (720 - 520)));
+            const vitalsT = Math.min(byWidth, byHeight);
             document.getElementById('vitalsColumn').style.width = `${Math.round(160 + 48 * vitalsT)}px`;
+
+            fitText();
             ui.style.left = `0px`;
             ui.style.top = `0px`;
         }
@@ -1013,6 +1059,11 @@
             if (params.get('coregui') === '1') toggleCoreGui();
             if (params.get('compact') === '1') toggleCompactMode();
             if (params.get('flyout') === '1') toggleEmoteRadial();
+            if (params.get('aspect')) {
+                const select = document.getElementById('aspectRatioSelect');
+                select.value = params.get('aspect');
+                changeAspectRatio(select);
+            }
             if (params.get('theme')) {
                 toggleThemeDrawer();
                 applyThemePreset(params.get('theme'));
