@@ -114,10 +114,7 @@ local SIZES = {
 	HerdSquare = { 48, 54 }, -- the two stacked herd squares (w-12)
 	Satellite = { 56, 68 }, -- action arc buttons (w-14)
 	Tool = { 56, 64 }, -- build tool buttons (w-14)
-	SlotWidth = { 96, 120 }, -- catalog slot (w-24); the tray scrolls on phones
-	SlotHeight = { 112, 128 }, -- catalog slot (h-28)
-	SlotName = { 22, 36 }, -- catalog slot name block (two lines on phones)
-	TabLines = { 26, 36 }, -- catalog tab label block (two lines)
+	-- The catalog deck sizes itself from its text and the canvas height: see CatalogMetrics.
 	SidebarOffset = { 136, 112 }, -- left sidebar below the top-left cluster; tighter on phones to clear the thumbstick
 	SidebarGap = { 16, 8 }, -- gap-4 between sidebar buttons
 }

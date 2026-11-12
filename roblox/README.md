@@ -88,6 +88,7 @@ The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 
 ## Verifying
 - **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.
+- **Catalog deck sizes:** `luau tools/test-catalog-metrics.luau` checks the Full/Compact choice and label boxes across nine devices (`CatalogMetrics.luau`).
 - **Roblox:** Studio device emulator at 1920×1080, iPhone 14 landscape and iPad, in normal mode and after `/build`. Use `/boost` to show the boost tab.
 
 ## Known differences from the HTML

@@ -102,8 +102,7 @@ All dimensions are in virtual 720p coordinate units ($1\text{px} \to 1$ Roblox o
 | Left sidebar | $136\text{px}$ below the vitals, $16\text{px}$ gaps | $112\text{px}$, $8\text{px}$ gaps (clears the thumbstick) |
 | Action arc satellites | $56\text{px}$ | $68\text{px}$ |
 | Build tool buttons | $56\text{px}$ | $64\text{px}$ (keyboard hints hidden on touch) |
-| Catalog slots | $96 \times 112\text{px}$ | $120 \times 128\text{px}$ (tray scrolls) |
-| Catalog tab / slot name blocks | $26$ / $22\text{px}$ | $36\text{px}$ (two lines) |
+| Catalog deck (T11) | Full: slots $96 \times 112\text{px}$, two-line tabs ($47\text{px}$), `bottom-6`; $\approx 30\%$ of the height | Compact when Full would exceed $35\%$ of the canvas height: one-line tabs that scroll ($35\text{px}$), landscape slots ($\ge 112 \times 100\text{px}$, one-line name, icon box $40 \times 32$), tray `py-2`, `bottom-3`; $\approx 32\%$ |
 | Vital bars | $208\text{px}$ | $160\text{px}$ |
 | Town Bulletin (Full card) | $344\text{px} \times 58\text{px}$ ($430\text{px}$ spec) | $\ge 216\text{px} \times 52\text{px}$ (Daytime cycle collapsed, boost card centered) |
 

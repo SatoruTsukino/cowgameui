@@ -26,7 +26,7 @@ export type Refs = {
 	leftSidebar: GuiObject,
 	rightSidebar: GuiObject,
 	-- Build mode top bar + tools reuse the same row and top-bar clearance as the pasture HUD.
-	building: { left: GuiObject, centre: GuiObject, right: GuiObject, tools: GuiObject },
+	building: { left: GuiObject, centre: GuiObject, right: GuiObject, tools: GuiObject, setDeck: (number) -> () },
 }
 
 local BUILD_BAR_HEIGHT = 48 -- h-12
@@ -97,6 +97,7 @@ function Layout.attach(root: GuiObject, scaler, refs: Refs)
 		local toolsReserve = if UserInputService.TouchEnabled then ACTION_ARC_RESERVE else Theme.Margin
 		building.tools.Position = UDim2.fromOffset(topRightX, toolsY)
 		building.tools.Size = UDim2.fromOffset(0, math.max(56, scaler.virtualSize.Y - toolsY - toolsReserve))
+		building.setDeck(scaler.virtualSize.Y) -- Full or Compact catalog deck for this canvas (CatalogMetrics)
 
 		refs.leftSidebar.Position = UDim2.fromOffset(Theme.Margin, topLeftY + Theme.size("SidebarOffset"))
 		refs.rightSidebar.Position = UDim2.new(1, -Theme.Margin, 0, rowY + RIGHT_SIDEBAR_DROP)

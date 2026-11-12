@@ -8,7 +8,9 @@
 	  right   Grid snap button (px-4) · Wood | Stone counter (px-4, gap-3), gap-3
 	Tools (right-8 top-20, gap-2.5): w-14 h-14 rounded-2xl border-[5px]; ROT [R] · PAINT · UNDO [Z] · REDO [Y] · TRASH [X]
 	Catalog (bottom-6, max-w-[680px]): tabs joined to the tray (-mb-[5px]); tray px-5 py-3.5 border-[5px]
-	  rounded-t-xl rounded-b-[2rem]; slots w-24 h-28 rounded-2xl border-4
+	  rounded-t-xl rounded-b-[2rem]; slots w-24 h-28 rounded-2xl border-4. When that deck would take more than
+	  CatalogMetrics.Budget of the screen height (phones), it is rebuilt Compact: one-line tabs that scroll and
+	  landscape slots (index.html .deck-compact). Layout calls `setDeck` on every resize.
 
 	Spring buttons get explicit widths from measured text (Util.fitWidth), never AutomaticSize.
 	The wireframe's placement boundary and cursor are world-space and belong to the game's placement system.
@@ -21,12 +23,14 @@
 ]]
 
 local ContextActionService = game:GetService("ContextActionService")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 local CowHUD = script.Parent.Parent
 local Theme = require(CowHUD.Theme)
 local Util = require(CowHUD.Util)
 local Icons = require(CowHUD.Icons)
+local CatalogMetrics = require(CowHUD.CatalogMetrics)
 local C = Theme.Color
 
 local GRID_SNAPS = { "2 Studs", "4 Studs", "1 Stud", "Free / Off" }
@@ -39,27 +43,21 @@ local ICON = 16 -- w-4 h-4
 local TOOL_SIZE = 56 -- w-14; Theme.size("Tool") when built (64 on phones)
 local TOOL_GAP = 10 -- gap-2.5
 
-local DOCK_BOTTOM = 24 -- bottom-6
+-- Catalog deck. Heights and slot sizes come from CatalogMetrics (Full or Compact, per the height budget).
 local DOCK_MAX_WIDTH = 680
 local DOCK_PADDING = 8 -- px-2
 local DOCK_TOUCH_CLEARANCE = 256 -- touch: keep clear of Roblox's native thumbstick and Jump (the arc is hidden here)
 local TAB_GAP = 6 -- gap-1.5
 local TAB_PAD_X = 8 -- px-3.5 minus the border, so two-line labels fit when five tabs share 680px
+local TAB_COMPACT_INSET = 2 * (14 + 5) -- compact tabs fit their one-line label: px-3.5 + border-[5px]
 local TAB_TEXT = 10
--- Tab label block: two lines like the wireframe ("FENCES & / GATES"); Theme.size("TabLines") when built.
-local TAB_LINES = 26
-local TAB_ACTIVE_HEIGHT, TAB_INACTIVE_HEIGHT
-local function setTabLines(lines: number)
-	TAB_LINES = lines
-	TAB_ACTIVE_HEIGHT = 5 + 8 + lines + 8 -- border-t-5 + py-2 + lines + py-2
-	TAB_INACTIVE_HEIGHT = 4 + 6 + lines + 6 -- border-t-4 + py-1.5 + lines + py-1.5
-end
-setTabLines(TAB_LINES)
-local TRAY_BORDER = 5
-local TRAY_PAD = Vector2.new(20, 14) -- px-5 py-3.5
-local SLOT = Vector2.new(96, 112) -- w-24 h-28; Theme.size("SlotWidth"/"SlotHeight") when built
-local SLOT_NAME = 22
+local TAB_PEEK = 5 -- .catalog-tab translateY(5px)
+local TAB_LIFT = 2 -- .catalog-tab:hover translateY(-2px)
+local TAB_CLIP_HEADROOM = 8
+local TRAY_BORDER = CatalogMetrics.TrayBorder
+local TRAY_PAD_X = 20 -- px-5
 local SLOT_GAP = 12 -- gap-3
+local SLOT_TEXT = 9
 
 local TOOLS = {
 	{ action = "Rotate", icon = "rotate", text = "ROT [R]", key = Enum.KeyCode.R },
@@ -235,18 +233,34 @@ local function toolStack(layer: Instance, ctx)
 end
 
 -- Category tab: rounded-t-xl, square bottom, border on three sides (border-b-0).
-local function tab(parent: Instance, ctx, category: Category, order: number)
+-- Peek-and-pop (index.html `.catalog-tab`): inactive tabs sit TAB_PEEK px lower, tucked behind the tray, and the
+-- active tab sits on top of it. With a mouse, hovering lifts a tab TAB_LIFT px above its resting line (Full motion only).
+-- Returns the disconnect for its state observer.
+local function tab(parent: Instance, ctx, category: Category, order: number, m: CatalogMetrics.Metrics): () -> ()
 	local state = ctx.state
 	local label = string.upper(category.label)
 
-	-- Tabs share the tray width (Flex Fill on the row), so the holder's width comes from the list layout.
-	local holder = Util.frame({ Name = category.id, Size = UDim2.fromOffset(0, TAB_ACTIVE_HEIGHT), LayoutOrder = order, Parent = parent })
+	-- Full: tabs share the tray width (Flex Fill on the row), so the holder's width comes from the list layout.
+	-- Compact: each tab fits its one-line label. The holder's bottom sits TRAY_BORDER px inside the tray (-mb-[5px]).
+	local holder = Util.frame({ Name = category.id, Size = UDim2.fromOffset(0, m.tabActive), LayoutOrder = order, Parent = parent })
+	if m.compact then
+		Util.fitWidth(holder, label, TAB_TEXT, TAB_COMPACT_INSET)
+	end
+	-- Sibling ZIndex can't draw one tab under the tray and another over it, so inactive tabs are clipped at the
+	-- tray's top edge instead: it looks the same as tucking them behind. The headroom leaves space for the
+	-- hover lift and the grown touch hit area.
+	local clip = Util.frame({
+		Name = "Clip",
+		Position = UDim2.fromOffset(0, -TAB_CLIP_HEADROOM),
+		Size = UDim2.new(1, 0, 1, TAB_CLIP_HEADROOM - TRAY_BORDER),
+		Parent = holder,
+	})
 	local slot, visual = Util.button({
 		Name = "Tab",
 		AnchorPoint = Vector2.new(0, 1),
-		Position = UDim2.fromScale(0, 1),
-		Size = UDim2.new(1, 0, 0, TAB_ACTIVE_HEIGHT),
-		Parent = holder,
+		Position = UDim2.new(0, 0, 1, TRAY_BORDER),
+		Size = UDim2.new(1, 0, 0, m.tabActive),
+		Parent = clip,
 	}, {
 		HoverScale = 1,
 		OnActivated = function()
@@ -275,44 +289,82 @@ local function tab(parent: Instance, ctx, category: Category, order: number)
 		end
 	end
 
-	state:observe("buildCategory", function(active)
-		local on = active == category.id
+	local on, hovered = false, false
+	local function lift()
+		local up = 0
+		if hovered and Theme.hoverAllowed() and not UserInputService.TouchEnabled then
+			up = if on then TAB_LIFT else TAB_PEEK + TAB_LIFT
+		end
+		TweenService:Create(visual, Theme.Tween.Spring, { Position = UDim2.new(0.5, 0, 0.5, -up) }):Play()
+	end
+	local hit = slot:FindFirstChild("Hit") :: GuiButton
+	hit.MouseEnter:Connect(function()
+		hovered = true
+		lift()
+	end)
+	hit.MouseLeave:Connect(function()
+		hovered = false
+		lift()
+	end)
+
+	return state:observe("buildCategory", function(active)
+		on = active == category.id
 		local b = if on then TRAY_BORDER else 4
-		-- Active tab reaches TRAY_BORDER px into the tray (-mb-[5px]) and its fill covers the tray's top border,
-		-- so tab and tray read as one shape; inactive tabs stop at the tray's top edge.
-		slot.Size = UDim2.new(1, 0, 0, if on then TAB_ACTIVE_HEIGHT else TAB_INACTIVE_HEIGHT)
-		slot.Position = UDim2.new(0, 0, 1, if on then 0 else -TRAY_BORDER)
+		local height = if on then m.tabActive else m.tabInactive
+		-- Active: bottom TRAY_BORDER px inside the tray, drawn over it; its fill covers the tray's top border, so
+		-- tab and tray read as one shape. Inactive: TAB_PEEK px further down, so only `height - TRAY_BORDER -
+		-- TAB_PEEK` shows above the tray.
+		local hidden = if on then 0 else TRAY_BORDER + TAB_PEEK
+		clip.ClipsDescendants = not on
+		slot.Size = UDim2.new(1, 0, 0, height)
+		slot.Position = UDim2.new(0, 0, 1, if on then TRAY_BORDER else TRAY_BORDER + TAB_PEEK)
 		fill.Position = UDim2.fromOffset(b, b)
 		fill.Size = UDim2.new(1, -2 * b, 1, -b)
-		caption.Position = UDim2.new(0.5, 0, 0, math.floor(b / 2))
+		-- The label is centred in the visible part, so the peek never clips it (index.html: pt 1 / pb 11).
+		caption.Position = UDim2.new(0.5, 0, 0, b)
+		caption.Size = UDim2.new(1, -2 * TAB_PAD_X, 0, height - hidden - b)
+		lift()
 		paint(border, if on then C.Border else C.Fill)
 		paint(fill, if on then C.Card else C.Subtle)
 		Theme.paint(caption, "TextColor3", if on then C.Text else C.Accent)
 	end)
 end
 
-local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: number): () -> ()
+-- Slot: name, icon box, cost chip (rounded-2xl border-4). Full: portrait w-24 h-28, name on two lines.
+-- Compact: landscape, name on one line, as wide as the name needs.
+local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: number, m: CatalogMetrics.Metrics): () -> ()
 	local state = ctx.state
-	local _, visual = Util.button({ Name = item.name, Size = UDim2.fromOffset(SLOT.X, SLOT.Y), LayoutOrder = order, Parent = parent }, {
+	local itemName = string.upper(item.name)
+	local button, visual = Util.button({ Name = item.name, Size = UDim2.fromOffset(m.slotWidth, m.slotHeight), LayoutOrder = order, Parent = parent }, {
 		HoverScale = 1.05,
 		OnActivated = function()
 			state:set("buildItem", item.name)
 			ctx.fire("BuildItem", item.name)
 		end,
 	})
+	if m.compact then
+		Util.fitWidth(button, itemName, SLOT_TEXT, 2 * (4 + m.slotPad.x), m.slotWidth)
+	end
 	local outer, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 16, Border = 4, Parent = visual })
-	Util.padding(face, 6, 6) -- p-2 inside border-4
-	Util.list(face, Enum.FillDirection.Vertical, 6, {
+	Util.padding(face, m.slotPad.x, m.slotPad.y) -- p-2 inside border-4 (compact: 6px 10px)
+	Util.list(face, Enum.FillDirection.Vertical, m.slotGap, {
 		HorizontalAlignment = Enum.HorizontalAlignment.Center,
 		VerticalAlignment = Enum.VerticalAlignment.Center,
 	})
-	local name = Util.label({ Text = string.upper(item.name), TextSize = 9, TextWrapped = true, Size = UDim2.new(1, 0, 0, SLOT_NAME), LayoutOrder = 1, Parent = face })
-	local iconBorder, icon = Util.box({ Size = UDim2.fromOffset(48, 40), Radius = 8, Border = 2, LayoutOrder = 2, Parent = face })
-	local glyph = Icons.draw(item.icon, icon, 24, C.Accent)
-	local chip = Util.frame({ Name = "Cost", Size = UDim2.fromOffset(SLOT.X - 20, 18), LayoutOrder = 3, Parent = face })
+	local name = Util.label({
+		Text = itemName,
+		TextSize = SLOT_TEXT,
+		TextWrapped = not m.compact,
+		Size = UDim2.new(1, 0, 0, m.slotName),
+		LayoutOrder = 1,
+		Parent = face,
+	})
+	local iconBorder, icon = Util.box({ Size = UDim2.fromOffset(m.icon.w, m.icon.h), Radius = 8, Border = 2, LayoutOrder = 2, Parent = face })
+	local glyph = Icons.draw(item.icon, icon, m.icon.glyph, C.Accent)
+	local chip = Util.frame({ Name = "Cost", Size = UDim2.fromOffset(m.slotWidth - 20, m.chip), LayoutOrder = 3, Parent = face })
 	Util.corner(chip, 6)
-	local cost = Util.label({ Text = string.upper(item.cost), TextSize = 9, Size = UDim2.fromScale(1, 1), Parent = chip })
-	Util.fitWidth(chip, cost.Text, 9, 16) -- px-2
+	local cost = Util.label({ Text = string.upper(item.cost), TextSize = SLOT_TEXT, Size = UDim2.fromScale(1, 1), Parent = chip })
+	Util.fitWidth(chip, cost.Text, SLOT_TEXT, 16) -- px-2
 
 	return state:observe("buildItem", function(selected)
 		local on = selected == item.name
@@ -328,27 +380,31 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 	end)
 end
 
-local function catalogDock(layer: Instance, ctx, catalog: { Category })
+-- Builds the deck for metrics `m`. Returns a destroy function (the deck is rebuilt when its density changes).
+local function catalogDock(layer: Instance, ctx, catalog: { Category }, m: CatalogMetrics.Metrics): () -> ()
 	local state = ctx.state
-	local trayHeight = SLOT.Y + 2 * TRAY_PAD.Y + 2 * TRAY_BORDER
+	local cleanup: { () -> () } = {}
 	local dock = Util.frame({
 		Name = "CatalogDock",
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, -DOCK_BOTTOM),
+		Position = UDim2.new(0.5, 0, 1, -m.bottom),
 		Parent = layer,
 	})
 	-- TouchEnabled can settle after mount (Studio emulator), so the clearance follows the input type.
 	local function updateWidth()
 		local sideClearance = if UserInputService.TouchEnabled then DOCK_TOUCH_CLEARANCE else Theme.Margin
-		dock.Size = UDim2.new(1, -2 * sideClearance, 0, trayHeight + TAB_ACTIVE_HEIGHT - TRAY_BORDER)
+		dock.Size = UDim2.new(1, -2 * sideClearance, 0, m.height)
 	end
-	UserInputService.LastInputTypeChanged:Connect(updateWidth)
+	local inputChanged = UserInputService.LastInputTypeChanged:Connect(updateWidth)
+	table.insert(cleanup, function()
+		inputChanged:Disconnect()
+	end)
 	updateWidth()
 	Util.new("UISizeConstraint", { MaxSize = Vector2.new(DOCK_MAX_WIDTH, math.huge), Parent = dock })
 	Util.paddingEach(dock, DOCK_PADDING, 0, DOCK_PADDING, 0)
 
 	-- Tray: rounded-t-xl (12) rounded-b-[2rem] (32), as a border shape with an inset fill shape.
-	local tray = Util.frame({ Name = "Tray", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, trayHeight), Parent = dock })
+	local tray = Util.frame({ Name = "Tray", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, m.trayHeight), Parent = dock })
 	Util.shape({ Name = "Border", Color = C.Border, Radius = 12, Corners = { BL = 32, BR = 32 }, Parent = tray })
 	local trayFill = Util.shape({
 		Name = "Fill",
@@ -362,8 +418,8 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category })
 
 	local slots = Util.gui("ScrollingFrame", {
 		Name = "Slots",
-		Position = UDim2.fromOffset(TRAY_PAD.X, 0),
-		Size = UDim2.new(1, -2 * TRAY_PAD.X, 1, 0),
+		Position = UDim2.fromOffset(TRAY_PAD_X, 0),
+		Size = UDim2.new(1, -2 * TRAY_PAD_X, 1, 0),
 		CanvasSize = UDim2.new(),
 		AutomaticCanvasSize = Enum.AutomaticSize.X,
 		ScrollingDirection = Enum.ScrollingDirection.X,
@@ -382,27 +438,47 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category })
 		Parent = trayFill,
 	})
 
-	-- Tabs row (items-end) spanning the tray, above it; the active tab overlaps the tray's top border.
-	local tabs = Util.frame({
-		Name = "Tabs",
-		Size = UDim2.new(1, 0, 0, TAB_ACTIVE_HEIGHT),
-		ZIndex = 3,
-		Parent = dock,
-	})
-	Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
-		HorizontalFlex = Enum.UIFlexAlignment.Fill,
-		VerticalAlignment = Enum.VerticalAlignment.Bottom,
-	})
+	-- Tabs row (items-end) above the tray; the active tab overlaps the tray's top border.
+	-- Full: the tabs share the tray width. Compact: one-line tabs, centred, scrolling sideways when they don't fit;
+	-- the strip reaches TAB_CLIP_HEADROOM above the tabs so its clipping leaves room for the hover lift.
+	local tabs
+	if m.compact then
+		tabs = Util.gui("ScrollingFrame", {
+			Name = "Tabs",
+			Position = UDim2.fromOffset(0, -TAB_CLIP_HEADROOM),
+			Size = UDim2.new(1, 0, 0, m.tabActive + TAB_CLIP_HEADROOM),
+			CanvasSize = UDim2.new(),
+			AutomaticCanvasSize = Enum.AutomaticSize.X,
+			ScrollingDirection = Enum.ScrollingDirection.X,
+			ScrollBarThickness = 0,
+			ZIndex = 3,
+			Parent = dock,
+		})
+		Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			VerticalAlignment = Enum.VerticalAlignment.Bottom,
+		})
+	else
+		tabs = Util.frame({ Name = "Tabs", Size = UDim2.new(1, 0, 0, m.tabActive), ZIndex = 3, Parent = dock })
+		Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
+			HorizontalFlex = Enum.UIFlexAlignment.Fill,
+			VerticalAlignment = Enum.VerticalAlignment.Bottom,
+		})
+	end
 	for index, category in catalog do
-		tab(tabs, ctx, category, index)
+		table.insert(cleanup, tab(tabs, ctx, category, index, m))
 	end
 
 	local slotCleanup: { () -> () } = {}
-	state:observe("buildCategory", function(id)
+	local function clearSlots()
 		for _, disconnect in slotCleanup do
 			disconnect()
 		end
 		table.clear(slotCleanup)
+	end
+	table.insert(cleanup, clearSlots)
+	table.insert(cleanup, state:observe("buildCategory", function(id)
+		clearSlots()
 		for _, child in slots:GetChildren() do
 			if child:IsA("GuiObject") then
 				child:Destroy()
@@ -412,22 +488,25 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category })
 		for _, category in catalog do
 			if category.id == id then
 				for index, item in category.items do
-					table.insert(slotCleanup, catalogSlot(slots, ctx, item, index))
+					table.insert(slotCleanup, catalogSlot(slots, ctx, item, index, m))
 					count += 1
 				end
 			end
 		end
 		empty.Visible = count == 0
 		slots.CanvasPosition = Vector2.zero
-	end)
-	return dock
+	end))
+
+	return function()
+		for _, fn in cleanup do
+			fn()
+		end
+		dock:Destroy()
+	end
 end
 
 return function(parent: Instance, ctx, catalog: { Category }?)
 	TOOL_SIZE = Theme.size("Tool")
-	SLOT = Vector2.new(Theme.size("SlotWidth"), Theme.size("SlotHeight"))
-	SLOT_NAME = Theme.size("SlotName")
-	setTabLines(Theme.size("TabLines"))
 	local state = ctx.state
 	local categories = catalog or DEFAULT_CATALOG
 	if state:get("buildCategory") == nil and categories[1] then
@@ -440,7 +519,21 @@ return function(parent: Instance, ctx, catalog: { Category }?)
 	local layer = Util.frame({ Name = "Building", Size = UDim2.fromScale(1, 1), ZIndex = 1, Visible = false, Parent = parent })
 	local left, centre, right = topBar(layer, ctx)
 	local tools = toolStack(layer, ctx)
-	catalogDock(layer, ctx, categories)
+	-- Deck density follows the canvas (Layout calls setDeck on every resize); rebuilt only when its sizes change.
+	local deckKey, destroyDeck
+	local function setDeck(virtualHeight: number)
+		local m = CatalogMetrics.choose(virtualHeight, Util.textSize(TAB_TEXT), Util.textSize(SLOT_TEXT))
+		local key = string.format("%s/%d/%d/%d", tostring(m.compact), m.tabActive, m.slotWidth, m.slotHeight)
+		if key == deckKey then
+			return
+		end
+		deckKey = key
+		if destroyDeck then
+			destroyDeck()
+		end
+		destroyDeck = catalogDock(layer, ctx, categories, m)
+	end
+	setDeck(Theme.Scale.ReferenceHeight)
 
 	-- Keyboard shortcuts shown on the tool captions, bound only while building.
 	local BIND_NAME = "CowHUDBuildTools"
@@ -474,8 +567,10 @@ return function(parent: Instance, ctx, catalog: { Category }?)
 		centre = centre,
 		right = right,
 		tools = tools,
+		setDeck = setDeck,
 		destroy = function()
 			ContextActionService:UnbindAction(BIND_NAME)
+			destroyDeck()
 		end,
 	}
 end

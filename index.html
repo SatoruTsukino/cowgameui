@@ -145,6 +145,26 @@
             transform: translateY(-2px);
         }
 
+        /* T11b: an inactive tab's bottom 10px sits behind the tray (-mb-[5px] + the 5px peek), so its label is
+           centred in the visible part (pt 1 / pb 11 instead of py-1.5) and the second line is never cut off. */
+        .catalog-tab:not(.active) {
+            padding-top: 1px;
+            padding-bottom: 11px;
+        }
+
+        /* T11 preview: compact catalog deck. resizeUI applies .deck-compact when the full deck plus its bottom
+           margin would take more than 35% of the canvas height (phones). Tabs go to one line and scroll; slots
+           become landscape with the name on one line. ?deck=full or ?deck=compact forces a density. */
+        .game-screen.deck-compact #catalogDock { bottom: 12px; }
+        .game-screen.deck-compact #catalogTabsHeader { max-width: 100%; overflow-x: auto; scrollbar-width: none; padding-top: 2px; }
+        .game-screen.deck-compact .catalog-tab { white-space: nowrap; flex-shrink: 0; line-height: 1.2; }
+        .game-screen.deck-compact .catalog-tab.active { padding-top: 6px; padding-bottom: 6px; }
+        .game-screen.deck-compact #catalogTray { padding-top: 8px; padding-bottom: 8px; justify-content: flex-start; scrollbar-width: none; }
+        .game-screen.deck-compact .ps-slot { width: auto !important; min-width: 112px; height: auto !important; padding: 6px 10px; gap: 4px; }
+        .game-screen.deck-compact .ps-slot > span { white-space: nowrap; line-height: 1.2; }
+        .game-screen.deck-compact .ps-slot > div { width: 40px; height: 32px; }
+        .game-screen.deck-compact .ps-slot svg { width: 20px; height: 20px; }
+
         .game-screen.aspect-19-5-9 #catalogDock { max-width: calc(100% - 2 * 256px); }
         .game-screen.aspect-19-5-9 #buildTools { flex-wrap: wrap-reverse; max-height: 220px; column-gap: 10px; }
 
@@ -680,7 +700,7 @@
                     </div>
 
                     <!-- Horizontal Item Slot Tray (Flat Top Under Tabs) -->
-                    <div class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl flex items-center justify-between gap-3 overflow-x-auto relative z-10">
+                    <div id="catalogTray" class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl flex items-center justify-between gap-3 overflow-x-auto relative z-10">
                         <!-- Slot 1 -->
                         <div class="ps-slot w-24 h-28 rounded-2xl border-[4px] border-gray-500 bg-gray-100/60 flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-transform">
                             <span class="text-[9px] font-black text-gray-600 uppercase text-center leading-tight">Rustic Fence</span>
@@ -841,7 +861,7 @@
 
         function switchPage(pageId) {
             activePage = pageId;
-            requestAnimationFrame(fitText);
+            requestAnimationFrame(resizeUI); // fits text and picks the catalog deck density for the new page
             setActionArcVisible(pageId !== 'building');
             const pagePasture = document.getElementById('pagePasture');
             const pageBuilding = document.getElementById('pageBuilding');
@@ -1125,6 +1145,26 @@
             });
         }
 
+        /* T11 preview: catalog deck height budget. The deck plus its bottom margin may use at most 35% of the canvas
+           height; when the full deck would take more, it switches to the compact density (.deck-compact). */
+        const DECK_BUDGET = 0.35; // full deck today: ~30% (Roblox) / ~33% (HTML) on desktop and iPad, 47–51% on phones
+        const forcedDeck = new URLSearchParams(window.location.search).get('deck'); // 'full' | 'compact' | null (auto)
+        function fitCatalogDeck(virtualHeight) {
+            const screen = document.querySelector('.game-screen');
+            const dock = document.getElementById('catalogDock');
+            if (!dock || dock.offsetParent === null) return; // pasture page: decided when the building page opens
+            screen.classList.remove('deck-compact');
+            fitText();
+            const fullHeight = dock.offsetHeight + parseFloat(getComputedStyle(dock).bottom);
+            const compact = forcedDeck ? forcedDeck === 'compact' : fullHeight > DECK_BUDGET * virtualHeight;
+            if (compact) {
+                screen.classList.add('deck-compact');
+                fitText();
+            }
+            const used = dock.offsetHeight + parseFloat(getComputedStyle(dock).bottom);
+            dock.dataset.deck = `${compact ? 'compact' : 'full'} ${Math.round(used)}/${virtualHeight} (${Math.round(100 * used / virtualHeight)}%; full ${Math.round(100 * fullHeight / virtualHeight)}%)`;
+        }
+
         function resizeUI() {
             const screen = document.querySelector('.game-screen');
             const ui = document.getElementById('ui-container');
@@ -1159,6 +1199,7 @@
             document.getElementById('vitalsColumn').style.width = `${Math.round(160 + 48 * vitalsT)}px`;
 
             fitText();
+            fitCatalogDeck(virtualHeight);
             ui.style.left = `0px`;
             ui.style.top = `0px`;
         }
