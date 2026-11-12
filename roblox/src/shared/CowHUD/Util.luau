@@ -2,6 +2,7 @@
 
 local TextService = game:GetService("TextService")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Theme = require(script.Parent.Theme)
 local C = Theme.Color
@@ -101,8 +102,10 @@ end
 	only as far as their box allows (measured), never below `base`. Util.fitWidth boxes re-measure at the new size.
 ]]
 local textScale = 1
+local sizeHit: (GuiObject, GuiObject) -> ()
 local labels: { [TextLabel]: number } = {} -- label -> base size
 local fits: { [GuiObject]: { any } } = {} -- target -> fitWidth args
+local hits: { [GuiObject]: GuiObject } = {} -- Util.button hit area -> its slot
 
 local function measure(text: string, size: number): number?
 	local params = Instance.new("GetTextBoundsParams")
@@ -193,6 +196,23 @@ local function runFit(target: GuiObject, args: { any })
 	end)
 end
 
+--[[
+	Touch hit areas (DESIGN D3): on touch screens every Util.button's input area grows to at least
+	Theme.MinTouchTarget rendered px, while the visual keeps its wireframe size. The hit area is a transparent
+	child drawn under the visual, so buttons nested inside a button's visual (e.g. the profile's +HERD badge)
+	still win their own taps.
+]]
+sizeHit = function(hit, slot)
+	if not UserInputService.TouchEnabled then
+		hit.Size = UDim2.fromScale(1, 1)
+		return
+	end
+	local scale = math.max(textScale, 0.01)
+	local need = Theme.MinTouchTarget / scale
+	local size = slot.AbsoluteSize / scale
+	hit.Size = UDim2.new(1, math.max(0, need - size.X), 1, math.max(0, need - size.Y))
+end
+
 -- Called by CowHUD whenever the HUD scale changes: re-applies the legibility floor everywhere.
 function Util.setTextScale(scale: number)
 	if scale == textScale then
@@ -204,6 +224,9 @@ function Util.setTextScale(scale: number)
 	end
 	for target, args in fits do
 		runFit(target, args)
+	end
+	for hit, slot in hits do
+		sizeHit(hit, slot)
 	end
 end
 
@@ -308,7 +331,9 @@ end
 	Interactive slot: a fixed-size hitbox (`slot`) that holds a centred `visual`, which springs on hover and press.
 	Keeping the scale on `visual` leaves layouts untouched (Tailwind `hover:scale-*`).
 
-	opts: HoverScale (default 1.1), OnActivated(slot)
+	opts: HoverScale (default 1.1), OnActivated(slot),
+	      HitAlign (Vector2, default centre): which point of the slot the grown touch hit area stays anchored to,
+	      e.g. Vector2.new(0.5, 0) grows it downward only (the Upgrades tab under the Calories pill)
 ]]
 function Util.button(props: { [string]: any }, opts: { [string]: any }?): (ImageButton, Frame)
 	opts = opts or {}
@@ -324,28 +349,43 @@ function Util.button(props: { [string]: any }, opts: { [string]: any }?): (Image
 	})
 	local scale = Util.new("UIScale", { Parent = visual })
 
+	local align = opts.HitAlign or Vector2.new(0.5, 0.5)
+	local hit = Util.gui("ImageButton", {
+		Name = "Hit",
+		AnchorPoint = align,
+		Position = UDim2.fromScale(align.X, align.Y),
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 0,
+		Parent = slot,
+	})
+	track(hits, hit, slot)
+	slot:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+		sizeHit(hit, slot)
+	end)
+	sizeHit(hit, slot)
+
 	local hovered = false
 	local function springTo(target: number)
 		TweenService:Create(scale, Theme.Tween.Spring, { Scale = target }):Play()
 	end
 
-	slot.MouseEnter:Connect(function()
+	hit.MouseEnter:Connect(function()
 		hovered = true
 		if Theme.hoverAllowed() then
 			springTo(hoverScale)
 		end
 	end)
-	slot.MouseLeave:Connect(function()
+	hit.MouseLeave:Connect(function()
 		hovered = false
 		springTo(1)
 	end)
-	slot.MouseButton1Down:Connect(function()
+	hit.MouseButton1Down:Connect(function()
 		springTo(0.95)
 	end)
-	slot.MouseButton1Up:Connect(function()
+	hit.MouseButton1Up:Connect(function()
 		springTo(if hovered and Theme.hoverAllowed() then hoverScale else 1)
 	end)
-	slot.Activated:Connect(function(input: InputObject)
+	hit.Activated:Connect(function(input: InputObject)
 		-- Touch never fires MouseLeave reliably; reset so the button doesn't stay enlarged.
 		if input.UserInputType == Enum.UserInputType.Touch then
 			hovered = false

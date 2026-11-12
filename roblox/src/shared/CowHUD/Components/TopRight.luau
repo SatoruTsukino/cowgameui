@@ -94,6 +94,7 @@ return function(parent: Instance, ctx)
 		Parent = economy,
 	}, {
 		HoverScale = 1,
+		HitAlign = Vector2.new(0.5, 0), -- grow the touch area downward, away from the Calories pill
 		OnActivated = function()
 			ctx.trigger("Upgrades")
 		end,
