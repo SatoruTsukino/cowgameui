@@ -153,3 +153,4 @@ end
 Since Roblox `UICorner` applies uniform radius to all four corners, the `.shape-leaf` should be constructed via:
 1. **Option A (Recommended)**: 9-slice `ImageLabel` asset export from the vector prototype.
 2. **Option B (Native CanvasGroup Composition)**: 2 overlapping frames with corner radii clipped inside a `CanvasGroup`.
+
