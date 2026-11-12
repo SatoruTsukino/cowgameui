@@ -1,7 +1,8 @@
 --[[
 	Feeds live game data into HUD state. The server writes attributes; the HUD only reads them.
 
-	Player attributes:     Calories, Rebirth, GrazingArea, GrazingProgress (0-1), BoostLabel, BoostEndsAt
+	Player attributes:     Calories, Rebirth, GrazingArea, GrazingProgress (0-1), BoostLabel, BoostEndsAt,
+	                       Wood, Stone, BuildParts, BuildPartsMax (build mode)
 	Workspace attributes:  CyclePhase ("DAY"/"NIGHT"), CycleEndsAt, EventName, EventEndsAt, EventDuration
 	*EndsAt values are Workspace:GetServerTimeNow() timestamps, so countdowns stay in sync across clients.
 	HP comes straight from the character's Humanoid.
@@ -19,6 +20,10 @@ local PLAYER_ATTRIBUTES = {
 	GrazingArea = { "grazingArea", false },
 	GrazingProgress = { "grazingProgress", false },
 	BoostLabel = { "boostLabel", true },
+	Wood = { "wood", false },
+	Stone = { "stone", false },
+	BuildParts = { "buildParts", false },
+	BuildPartsMax = { "buildPartsMax", false },
 }
 local WORLD_ATTRIBUTES = {
 	CyclePhase = { "cyclePhase", false },

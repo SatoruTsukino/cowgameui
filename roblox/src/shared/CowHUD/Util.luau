@@ -25,6 +25,8 @@ function Util.new(className: string, props: { [string]: any }?): any
 		for key, value in props do
 			if key == "Parent" then
 				parent = value
+			elseif Theme.isToken(value) then
+				Theme.paint(instance, key, value)
 			else
 				(instance :: any)[key] = value
 			end
@@ -96,7 +98,7 @@ function Util.label(props: { [string]: any }): TextLabel
 		"TextLabel",
 		merge({
 			FontFace = Theme.Font,
-			TextColor3 = C.Gray500,
+			TextColor3 = C.Text,
 			TextSize = 12,
 			Text = "",
 			AutomaticSize = if props.Size then Enum.AutomaticSize.None else Enum.AutomaticSize.XY,
@@ -127,7 +129,7 @@ function Util.box(props: { [string]: any }): (GuiObject, Frame)
 		LayoutOrder = props.LayoutOrder,
 		Visible = props.Visible,
 		AutomaticSize = auto,
-		BackgroundColor3 = props.BorderColor or C.Gray400,
+		BackgroundColor3 = props.BorderColor or C.Border,
 		Parent = props.Parent,
 	})
 	if props.Radius then
@@ -141,7 +143,7 @@ function Util.box(props: { [string]: any }): (GuiObject, Frame)
 		Name = "Inner",
 		Size = UDim2.new(if autoX then 0 else 1, 0, if autoY then 0 else 1, 0),
 		AutomaticSize = auto,
-		BackgroundColor3 = props.Fill or C.White,
+		BackgroundColor3 = props.Fill or C.Card,
 		BackgroundTransparency = props.FillTransparency or 0,
 		Parent = outer,
 	})
@@ -227,7 +229,9 @@ function Util.button(props: { [string]: any }, opts: { [string]: any }?): (Image
 
 	slot.MouseEnter:Connect(function()
 		hovered = true
-		springTo(hoverScale)
+		if Theme.hoverAllowed() then
+			springTo(hoverScale)
+		end
 	end)
 	slot.MouseLeave:Connect(function()
 		hovered = false
@@ -237,7 +241,7 @@ function Util.button(props: { [string]: any }, opts: { [string]: any }?): (Image
 		springTo(0.95)
 	end)
 	slot.MouseButton1Up:Connect(function()
-		springTo(if hovered then hoverScale else 1)
+		springTo(if hovered and Theme.hoverAllowed() then hoverScale else 1)
 	end)
 	slot.Activated:Connect(function(input: InputObject)
 		-- Touch never fires MouseLeave reliably; reset so the button doesn't stay enlarged.
@@ -273,13 +277,13 @@ function Util.iconButton(props: { [string]: any }): (ImageButton, Frame, Frame, 
 		Size = UDim2.fromScale(1, 1),
 		Radius = props.Radius,
 		Border = props.Border or 6,
-		Fill = C.White,
+		Fill = C.Card,
 		Parent = visual,
 	})
 	local label = Util.label({
 		Text = props.Text or "",
 		TextSize = props.TextSize or 9,
-		TextColor3 = props.TextColor3 or C.Gray500,
+		TextColor3 = props.TextColor3 or C.Text,
 		Size = UDim2.fromScale(1, 1),
 		ZIndex = 3,
 		Parent = face,
@@ -288,7 +292,7 @@ function Util.iconButton(props: { [string]: any }): (ImageButton, Frame, Frame, 
 end
 
 -- Sun glyph from the HTML's 24-unit SVG (ring r=4 + 8 rays), built from frames.
-function Util.sunIcon(parent: Instance, size: number, color: Color3): Frame
+function Util.sunIcon(parent: Instance, size: number, color: Theme.Token): Frame
 	local unit = size / 24
 	local icon = Util.frame({
 		Name = "Sun",

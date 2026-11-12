@@ -20,7 +20,13 @@ export type Refs = {
 	bulletin: { full: GuiObject, scale: UIScale, setTop: (number) -> () },
 	leftSidebar: GuiObject,
 	rightSidebar: GuiObject,
+	-- Build mode top bar + tools reuse the same row and top-bar clearance as the pasture HUD.
+	building: { left: GuiObject, centre: GuiObject, right: GuiObject, tools: GuiObject },
 }
+
+local BUILD_BAR_HEIGHT = 48 -- h-12
+local BUILD_TOOLS_GAP = 24
+local RIGHT_SAFE_ZONE = Theme.Margin + 256 + 16 -- build tools stay strictly above the right safe zone (C5)
 
 function Layout.attach(root: GuiObject, scaler, state, refs: Refs)
 	local fullWidth = 0 -- last measured full-card width (virtual px), kept while the card is hidden
@@ -51,6 +57,15 @@ function Layout.attach(root: GuiObject, scaler, state, refs: Refs)
 		local leftBlocked = leftCoreEdge > Theme.Margin
 		local topLeftY = if leftBlocked then math.max(Theme.Margin, barBottom + Theme.ClusterGap) else rowY
 		refs.topLeft.Position = UDim2.fromOffset(Theme.Margin, topLeftY)
+
+		local barY = rowY + (Theme.TopRowHeight - BUILD_BAR_HEIGHT) / 2
+		local building = refs.building
+		building.left.Position = UDim2.fromOffset(Theme.Margin, if leftBlocked then topLeftY else barY)
+		building.centre.Position = UDim2.fromOffset(virtualWidth / 2, barY)
+		building.right.Position = UDim2.fromOffset(topRightX, barY)
+		local toolsY = barY + BUILD_BAR_HEIGHT + BUILD_TOOLS_GAP
+		building.tools.Position = UDim2.fromOffset(topRightX, toolsY)
+		building.tools.Size = UDim2.fromOffset(0, math.max(56, scaler.virtualSize.Y - toolsY - RIGHT_SAFE_ZONE))
 
 		local sidebarY = topLeftY + Theme.SidebarOffset
 		refs.leftSidebar.Position = UDim2.fromOffset(Theme.Margin, sidebarY)

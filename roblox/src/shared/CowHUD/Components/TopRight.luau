@@ -57,12 +57,12 @@ return function(parent: Instance, ctx)
 			ctx.trigger("Upgrades")
 		end,
 	})
-	Util.shape({ Name = "Border", Color = C.Gray400, Radius = 12, Corners = { TL = 0, TR = 0 }, Parent = upgradesVisual })
+	Util.shape({ Name = "Border", Color = C.Border, Radius = 12, Corners = { TL = 0, TR = 0 }, Parent = upgradesVisual })
 	Util.shape({
 		Name = "Fill",
 		Position = UDim2.fromOffset(4, 0),
 		Size = UDim2.new(1, -8, 1, -4),
-		Color = C.Gray200,
+		Color = C.Subtle,
 		Radius = 8,
 		Corners = { TL = 0, TR = 0 },
 		ZIndex = 2,
@@ -95,13 +95,13 @@ return function(parent: Instance, ctx)
 		Parent = bell,
 	})
 	Util.corner(loop, 4)
-	Util.new("UIStroke", { Color = C.Gray400, Thickness = 4, Parent = loop })
-	Util.shape({ Name = "Border", Color = C.Gray400, Radius = 22, Corners = { BL = 9, BR = 9 }, ZIndex = 2, Parent = bell })
+	Util.new("UIStroke", { Color = C.Border, Thickness = 4, Parent = loop })
+	Util.shape({ Name = "Border", Color = C.Border, Radius = 22, Corners = { BL = 9, BR = 9 }, ZIndex = 2, Parent = bell })
 	Util.shape({
 		Name = "Fill",
 		Position = UDim2.fromOffset(6, 6),
 		Size = UDim2.new(1, -12, 1, -12),
-		Color = C.White,
+		Color = C.Card,
 		Radius = 16,
 		Corners = { BL = 3, BR = 3 },
 		ZIndex = 3,
@@ -116,7 +116,7 @@ return function(parent: Instance, ctx)
 		Radius = 16,
 		Text = "•••",
 		TextSize = 14,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		LayoutOrder = 3,
 		Parent = cluster,
 		OnActivated = function(slot)

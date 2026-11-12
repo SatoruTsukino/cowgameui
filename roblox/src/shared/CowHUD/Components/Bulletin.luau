@@ -44,22 +44,22 @@ return function(parent: Instance, ctx)
 	-- Cycle
 	local cycle = Util.frame({ Name = "Cycle", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 1, Parent = card })
 	Util.list(cycle, Enum.FillDirection.Horizontal, 8, { VerticalAlignment = Enum.VerticalAlignment.Center })
-	local _, iconFace = Util.box({ Size = UDim2.fromOffset(32, 32), Radius = "full", Border = 4, Fill = C.Gray100, LayoutOrder = 1, Parent = cycle })
-	Util.sunIcon(iconFace, 16, C.Gray500)
+	local _, iconFace = Util.box({ Size = UDim2.fromOffset(32, 32), Radius = "full", Border = 4, Fill = C.Screen, LayoutOrder = 1, Parent = cycle })
+	Util.sunIcon(iconFace, 16, C.Accent)
 	local cycleText = Util.frame({ AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 2, Parent = cycle })
 	Util.list(cycleText, Enum.FillDirection.Vertical, 2)
-	Util.label({ Text = "CYCLE", TextSize = 9, TextColor3 = C.Gray400, LayoutOrder = 1, Parent = cycleText })
+	Util.label({ Text = "CYCLE", TextSize = 9, TextColor3 = C.Accent, LayoutOrder = 1, Parent = cycleText })
 	local cycleLabel = Util.label({
 		Size = UDim2.fromOffset(90, 16), -- fixed so the card doesn't jitter as digits change
 		TextSize = 12,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		LayoutOrder = 2,
 		Parent = cycleText,
 	})
 
 	-- Divider (border-r-4 gray-200)
-	local divider = Util.frame({ Name = "Divider", Size = UDim2.fromOffset(4, 36), BackgroundColor3 = C.Gray200, LayoutOrder = 2, Parent = card })
+	local divider = Util.frame({ Name = "Divider", Size = UDim2.fromOffset(4, 36), BackgroundColor3 = C.Subtle, LayoutOrder = 2, Parent = card })
 	Util.corner(divider, 2)
 
 	-- World event
@@ -67,22 +67,22 @@ return function(parent: Instance, ctx)
 	Util.list(event, Enum.FillDirection.Vertical, 4)
 	local header = Util.frame({ Size = UDim2.new(1, 0, 0, 14), LayoutOrder = 1, Parent = event })
 	Util.paddingEach(header, 4, 0, 4, 0)
-	Util.label({ Text = "WORLD EVENT", TextSize = 9, TextColor3 = C.Gray400, Size = UDim2.fromScale(1, 1), TextXAlignment = Enum.TextXAlignment.Left, Parent = header })
+	Util.label({ Text = "WORLD EVENT", TextSize = 9, TextColor3 = C.Accent, Size = UDim2.fromScale(1, 1), TextXAlignment = Enum.TextXAlignment.Left, Parent = header })
 	local eventTimer = Util.label({ TextSize = 10, Size = UDim2.fromScale(1, 1), TextXAlignment = Enum.TextXAlignment.Right, Parent = header })
 
 	local _, eventTrack = Util.box({
 		Size = UDim2.new(1, 0, 0, 24),
 		Radius = "full",
 		Border = 4,
-		BorderColor = C.Gray300,
-		Fill = C.Gray100,
+		BorderColor = C.Fill,
+		Fill = C.Screen,
 		Padding = { 2, 2 },
 		LayoutOrder = 2,
 		Parent = event,
 	})
-	local eventFill = Util.frame({ Size = UDim2.fromScale(0, 1), BackgroundColor3 = C.Gray300, Parent = eventTrack })
+	local eventFill = Util.frame({ Size = UDim2.fromScale(0, 1), BackgroundColor3 = C.Fill, Parent = eventTrack })
 	Util.corner(eventFill, "full")
-	local eventName = Util.label({ TextSize = 10, TextColor3 = C.Gray600, Size = UDim2.fromScale(1, 1), ZIndex = 2, Parent = eventTrack })
+	local eventName = Util.label({ TextSize = 10, TextColor3 = C.Text, Size = UDim2.fromScale(1, 1), ZIndex = 2, Parent = eventTrack })
 
 	-- Boost chip (-mt-1.5, border-4 gray-500)
 	local boost, boostFace = Util.box({
@@ -90,17 +90,17 @@ return function(parent: Instance, ctx)
 		AutomaticSize = Enum.AutomaticSize.XY,
 		Radius = 12,
 		Border = 4,
-		BorderColor = C.Gray500,
-		Fill = C.Gray100,
+		BorderColor = C.Accent,
+		Fill = C.Screen,
 		Padding = { 16, 4 },
 		LayoutOrder = 2,
 		ZIndex = 2,
 		Parent = full,
 	})
 	Util.list(boostFace, Enum.FillDirection.Horizontal, 8, { VerticalAlignment = Enum.VerticalAlignment.Center })
-	local dot = Util.frame({ Size = UDim2.fromOffset(8, 8), BackgroundColor3 = C.Gray500, LayoutOrder = 1, Parent = boostFace })
+	local dot = Util.frame({ Size = UDim2.fromOffset(8, 8), BackgroundColor3 = C.Accent, LayoutOrder = 1, Parent = boostFace })
 	Util.corner(dot, "full")
-	local boostLabel = Util.label({ TextSize = 10, TextColor3 = C.Gray600, LayoutOrder = 2, Parent = boostFace })
+	local boostLabel = Util.label({ TextSize = 10, TextColor3 = C.Text, LayoutOrder = 2, Parent = boostFace })
 
 	---------------------------------------------------------------- compact pill
 	local compact, compactVisual = Util.button({ Name = "Compact", Size = UDim2.fromOffset(124, 60), LayoutOrder = 2, Parent = wrapper }, {
@@ -114,9 +114,9 @@ return function(parent: Instance, ctx)
 		HorizontalAlignment = Enum.HorizontalAlignment.Center,
 		VerticalAlignment = Enum.VerticalAlignment.Center,
 	})
-	local _, miniIcon = Util.box({ Size = UDim2.fromOffset(28, 28), Radius = "full", Border = 4, Fill = C.Gray100, LayoutOrder = 1, Parent = pill })
-	Util.sunIcon(miniIcon, 14, C.Gray500)
-	local compactTime = Util.label({ TextSize = 12, TextColor3 = C.Gray600, LayoutOrder = 2, Parent = pill })
+	local _, miniIcon = Util.box({ Size = UDim2.fromOffset(28, 28), Radius = "full", Border = 4, Fill = C.Screen, LayoutOrder = 1, Parent = pill })
+	Util.sunIcon(miniIcon, 14, C.Accent)
+	local compactTime = Util.label({ TextSize = 12, TextColor3 = C.Text, LayoutOrder = 2, Parent = pill })
 	Util.box({
 		Name = "Dot",
 		AnchorPoint = Vector2.new(1, 0),
@@ -124,8 +124,8 @@ return function(parent: Instance, ctx)
 		Size = UDim2.fromOffset(20, 20),
 		Radius = "full",
 		Border = 4,
-		BorderColor = C.White,
-		Fill = C.Gray500,
+		BorderColor = C.Card,
+		Fill = C.Accent,
 		ZIndex = 3,
 		Parent = compactVisual,
 	})

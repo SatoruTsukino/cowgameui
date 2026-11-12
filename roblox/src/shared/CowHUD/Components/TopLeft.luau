@@ -46,11 +46,11 @@ return function(parent: Instance, ctx)
 		Size = UDim2.fromScale(1, 1),
 		Radius = "full",
 		Border = 4,
-		BorderColor = C.White,
-		Fill = C.Gray600,
+		BorderColor = C.Card,
+		Fill = C.Text,
 		Parent = badgeVisual,
 	})
-	Util.label({ Text = "+ HERD", TextSize = 10, TextColor3 = C.White, Size = UDim2.fromScale(1, 1), Parent = badgeFace })
+	Util.label({ Text = "+ HERD", TextSize = 10, TextColor3 = C.Card, Size = UDim2.fromScale(1, 1), Parent = badgeFace })
 
 	-- Rebirth chip (-bottom-3.5, centred)
 	local _, chipFace = Util.box({
@@ -60,13 +60,13 @@ return function(parent: Instance, ctx)
 		AutomaticSize = Enum.AutomaticSize.XY,
 		Radius = 12,
 		Border = 4,
-		BorderColor = C.White,
-		Fill = C.Gray400,
+		BorderColor = C.Card,
+		Fill = C.Border,
 		Padding = { 12, 4 },
 		ZIndex = 3,
 		Parent = profile,
 	})
-	local rebirthLabel = Util.label({ TextSize = 10, TextColor3 = C.White, Parent = chipFace })
+	local rebirthLabel = Util.label({ TextSize = 10, TextColor3 = C.Card, Parent = chipFace })
 
 	-- Vitals column (w-64, gap-3, pt-1)
 	local vitals = Util.frame({
@@ -100,12 +100,12 @@ return function(parent: Instance, ctx)
 
 	-- Leaf bar: border-6 gray-400, TL/BR 40 (clamped), TR/BL 8; 4px gap; fill keeps TL/BR round, TR/BL sharp.
 	local leaf = Util.frame({ Name = "GrazingBar", Size = UDim2.fromOffset(256, 40), LayoutOrder = 2, Parent = grazing })
-	Util.shape({ Name = "Border", Color = C.Gray400, Radius = 40, Corners = { TR = 8, BL = 8 }, Parent = leaf })
+	Util.shape({ Name = "Border", Color = C.Border, Radius = 40, Corners = { TR = 8, BL = 8 }, Parent = leaf })
 	local track = Util.shape({
 		Name = "Track",
 		Size = UDim2.new(1, -12, 1, -12),
 		Position = UDim2.fromOffset(6, 6),
-		Color = C.White,
+		Color = C.Card,
 		Radius = 34,
 		Corners = { TR = 2, BL = 2 },
 		Parent = leaf,
@@ -120,7 +120,7 @@ return function(parent: Instance, ctx)
 	local leafFill = Util.shape({
 		Name = "Fill",
 		Size = UDim2.fromScale(0, 1),
-		Color = C.Gray300,
+		Color = C.Fill,
 		Radius = 30,
 		Corners = { TR = 0, BL = 0 },
 		Parent = fillArea,
@@ -129,7 +129,7 @@ return function(parent: Instance, ctx)
 		Position = UDim2.fromOffset(12, 0),
 		Size = UDim2.new(1, -12, 1, 0),
 		TextSize = 12,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 3,
 		Parent = track,
@@ -141,18 +141,18 @@ return function(parent: Instance, ctx)
 		Size = UDim2.new(1, 0, 0, 40),
 		Radius = "full",
 		Border = 6,
-		BorderColor = C.Gray500,
+		BorderColor = C.Accent,
 		Padding = { 4, 4 },
 		LayoutOrder = 2,
 		Parent = vitals,
 	})
-	local hpFill = Util.frame({ Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.Gray300, Parent = hpTrack })
+	local hpFill = Util.frame({ Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.Fill, Parent = hpTrack })
 	Util.corner(hpFill, "full")
 	local hpLabel = Util.label({
 		Position = UDim2.fromOffset(8, 0),
 		Size = UDim2.new(1, -8, 1, 0),
 		TextSize = 10,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ZIndex = 2,
 		Parent = hpTrack,

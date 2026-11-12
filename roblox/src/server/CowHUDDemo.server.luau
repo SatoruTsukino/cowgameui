@@ -55,6 +55,10 @@ local function onPlayerAdded(player: Player)
 	player:SetAttribute("GrazingProgress", 0.68)
 	player:SetAttribute("BoostLabel", "2x Calories")
 	player:SetAttribute("BoostEndsAt", now() + BOOST_SECONDS)
+	player:SetAttribute("Wood", 450)
+	player:SetAttribute("Stone", 320)
+	player:SetAttribute("BuildParts", 34)
+	player:SetAttribute("BuildPartsMax", 50)
 end
 
 Players.PlayerAdded:Connect(onPlayerAdded)

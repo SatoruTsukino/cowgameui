@@ -150,6 +150,14 @@ Script: `/private/tmp/claude-501/-Users-jsph-cowgameui/c1988756-da6d-412a-b925-2
 
 **Look-and-feel cost:** borders get noticeably darker, especially Mono (from light grey to mid grey). The wireframe reads more "inked", but the chunky 4–6px strokes are kept. Dashed safe-zone outlines are decorative and stay as they are (they are exempt from 1.4.11).
 
+## Parity review (2026-11-11), applied to T0
+- **Jump and thumbstick** in the HTML are placeholders for Roblox's native touch controls. Roblox only adds the action arc (Emote, Moo, Sprint, Kick, plus the flyout) around the native JumpButton. The arc angles are spread evenly from 60° to 200°. That keeps 44pt hit areas ≥ 8.4px apart on 360–390px-tall phones, and the arc on screen from 360px to 1440px tall (scratch test `run.luau`).
+- **Unibar clearance** needs no new work; the Building top bar reuses `Layout`.
+- Added Roblox chat commands `/build` and `/normal`.
+- Added reduced-motion options: Full, Reduced and Off, defaulting from `GuiService.ReducedMotionEnabled`.
+- **Colour presets** live in Settings and use the T1 palette. That means T8 is done for Roblox; the HTML still needs it.
+- **T5b (partly done):** the Building tools wrap into columns above the right safe zone, and the catalog dock is `min(680, width − 2·304)` with a tray that scrolls.
+
 ## Original open questions (answered in D1–D6)
 1. **Phone compact default:** should compact mode be forced on phones (merged BAG / `•••`), or only defaulted so players can turn it off?
 2. **Minimum text size:** is an 11pt floor OK? Going to 12pt is more comfortable but costs more layout room.

@@ -32,7 +32,7 @@ local function toggleRow(parent: Instance, state, spec, order: number): () -> ()
 	Util.label({
 		Text = string.upper(spec.label),
 		TextSize = 14,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		Size = UDim2.fromScale(1, 1),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = row,
@@ -54,10 +54,98 @@ local function toggleRow(parent: Instance, state, spec, order: number): () -> ()
 	local text = Util.label({ TextSize = 12, Size = UDim2.fromScale(1, 1), Parent = inner })
 
 	return state:observe(spec.key, function(on)
-		outer.BackgroundColor3 = if on then C.Gray600 else C.Gray400
-		inner.BackgroundColor3 = if on then C.Gray600 else C.Gray100
-		text.TextColor3 = if on then C.White else C.Gray600
+		Theme.paint(outer, "BackgroundColor3", if on then C.Text else C.Border)
+		Theme.paint(inner, "BackgroundColor3", if on then C.Text else C.Screen)
+		Theme.paint(text, "TextColor3", if on then C.Card else C.Text)
 		text.Text = if on then "ON" else "OFF"
+	end)
+end
+
+local function rowLabel(row: Instance, text: string)
+	Util.label({
+		Text = text,
+		TextSize = 14,
+		TextColor3 = C.Text,
+		Size = UDim2.fromScale(1, 1),
+		TextXAlignment = Enum.TextXAlignment.Left,
+		Parent = row,
+	})
+end
+
+-- Five colour swatches (preset Card fill, Border ring); the active preset gets a Text-coloured outer ring.
+local function themeRow(parent: Instance, state, order: number): () -> ()
+	local row = Util.frame({ Name = "Theme", Size = UDim2.new(1, 0, 0, 56), LayoutOrder = order, Parent = parent })
+	rowLabel(row, "COLOR THEME")
+	local swatches = Util.frame({
+		Name = "Swatches",
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.fromScale(1, 0.5),
+		AutomaticSize = Enum.AutomaticSize.X,
+		Size = UDim2.fromOffset(0, 48),
+		Parent = row,
+	})
+	Util.list(swatches, Enum.FillDirection.Horizontal, 4, { VerticalAlignment = Enum.VerticalAlignment.Center })
+
+	local rings = {}
+	for index, name in Theme.PresetOrder do
+		local palette = Theme.Presets[name]
+		local _, visual = Util.button({ Name = name, Size = UDim2.fromOffset(48, 48), LayoutOrder = index, Parent = swatches }, {
+			HoverScale = 1.08,
+			OnActivated = function()
+				state:set("theme", name)
+			end,
+		})
+		-- Swatches show their own preset, so they take fixed Color3s (untracked) instead of live tokens.
+		local ring, face = Util.box({
+			Size = UDim2.fromScale(1, 1),
+			Radius = "full",
+			Border = 4,
+			BorderColor = C.Text,
+			Fill = palette.Card,
+			Parent = visual,
+		})
+		Util.box({
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromOffset(28, 28),
+			Radius = "full",
+			Border = 5,
+			BorderColor = palette.Border,
+			Fill = palette.Fill,
+			Parent = face,
+		})
+		rings[name] = ring
+	end
+
+	return state:observe("theme", function(active)
+		for name, ring in rings do
+			ring.BackgroundTransparency = if name == active then 0 else 1
+		end
+	end)
+end
+
+-- Cycles Full → Reduced → Off.
+local function motionRow(parent: Instance, state, order: number): () -> ()
+	local row = Util.frame({ Name = "Motion", Size = UDim2.new(1, 0, 0, 48), LayoutOrder = order, Parent = parent })
+	rowLabel(row, "MOTION")
+	local _, visual = Util.button({
+		Name = "Cycle",
+		AnchorPoint = Vector2.new(1, 0.5),
+		Position = UDim2.fromScale(1, 0.5),
+		Size = UDim2.fromOffset(128, 40),
+		Parent = row,
+	}, {
+		HoverScale = 1.05,
+		OnActivated = function()
+			local order = Theme.MotionOrder
+			local index = table.find(order, state:get("motion")) or 1
+			state:set("motion", order[index % #order + 1])
+		end,
+	})
+	local _, inner = Util.box({ Size = UDim2.fromScale(1, 1), Radius = "full", Border = 4, Fill = C.Screen, Parent = visual })
+	local text = Util.label({ TextSize = 12, Size = UDim2.fromScale(1, 1), Parent = inner })
+	return state:observe("motion", function(mode)
+		text.Text = string.upper(mode)
 	end)
 end
 
@@ -105,9 +193,9 @@ return function(root: GuiObject, ctx)
 					ctx.trigger(action)
 				end,
 			})
-			local item = Util.frame({ Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.Gray100, Parent = visual })
+			local item = Util.frame({ Size = UDim2.fromScale(1, 1), BackgroundColor3 = C.Screen, Parent = visual })
 			Util.corner(item, 12)
-			Util.label({ Text = string.upper(action), TextSize = 12, TextColor3 = C.Gray600, Size = UDim2.fromScale(1, 1), Parent = item })
+			Util.label({ Text = string.upper(action), TextSize = 12, TextColor3 = C.Text, Size = UDim2.fromScale(1, 1), Parent = item })
 		end
 
 		local position, size = virtualRect(root, spec.anchor, ctx.getScale())
@@ -125,7 +213,7 @@ return function(root: GuiObject, ctx)
 	local panelBackdrop = Util.gui("ImageButton", {
 		Name = "PanelBackdrop",
 		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = C.Gray600,
+		BackgroundColor3 = C.Text,
 		BackgroundTransparency = 0.6,
 		Visible = false,
 		ZIndex = 3,
@@ -140,10 +228,10 @@ return function(root: GuiObject, ctx)
 		ClassName = "ImageButton",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(480, 340),
+		Size = UDim2.fromOffset(480, 440),
 		Radius = 32,
 		Border = 8,
-		BorderColor = C.Gray500,
+		BorderColor = C.Accent,
 		Padding = { 24, 20 },
 		Visible = false,
 		ZIndex = 4,
@@ -153,7 +241,7 @@ return function(root: GuiObject, ctx)
 
 	local title = Util.label({
 		TextSize = 20,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		Size = UDim2.new(1, -48, 0, 40),
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Parent = panelFace,
@@ -167,7 +255,7 @@ return function(root: GuiObject, ctx)
 		Border = 4,
 		Text = "X",
 		TextSize = 14,
-		TextColor3 = C.Gray600,
+		TextColor3 = C.Text,
 		Parent = panelFace,
 		OnActivated = function()
 			state:set("panel", nil)
@@ -195,6 +283,8 @@ return function(root: GuiObject, ctx)
 			for index, spec in SETTINGS_TOGGLES do
 				table.insert(bodyCleanup, toggleRow(body, state, spec, index))
 			end
+			table.insert(bodyCleanup, themeRow(body, state, #SETTINGS_TOGGLES + 1))
+			table.insert(bodyCleanup, motionRow(body, state, #SETTINGS_TOGGLES + 2))
 		else
 			Util.label({ Text = "COMING SOON", TextSize = 14, Size = UDim2.fromScale(1, 1), Parent = body })
 		end

@@ -16,12 +16,12 @@ local function safeZone(parent: Instance, name: string, anchorX: number, size: V
 		AnchorPoint = Vector2.new(anchorX, 1),
 		Position = UDim2.new(anchorX, offsetX, 1, -(Theme.Margin + ZONE_BORDER)),
 		Size = UDim2.fromOffset(size.X - ZONE_BORDER * 2, size.Y - ZONE_BORDER * 2),
-		BackgroundColor3 = C.Gray300,
+		BackgroundColor3 = C.Fill,
 		BackgroundTransparency = 0.7,
 		Parent = parent,
 	})
 	Util.corner(zone, radius)
-	Util.new("UIStroke", { Color = C.Gray400, Thickness = ZONE_BORDER, Parent = zone })
+	Util.new("UIStroke", { Color = C.Border, Thickness = ZONE_BORDER, Parent = zone })
 	Util.label({ Text = text, TextSize = 10, Size = UDim2.fromScale(1, 1), Parent = zone })
 	return zone
 end
@@ -51,13 +51,17 @@ return function(parent: Instance, ctx)
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.new(1, -12, 1, -12),
-		BackgroundColor3 = C.White,
+		BackgroundColor3 = C.Card,
 		BackgroundTransparency = 0.2,
 		Parent = areaVisual,
 	})
 	Util.corner(face, 18)
-	Util.new("UIStroke", { Color = C.Gray400, Thickness = 6, Parent = face })
+	Util.new("UIStroke", { Color = C.Border, Thickness = 6, Parent = face })
 	Util.label({ Text = "AREA ACTIONS (WIP)", TextSize = 14, Size = UDim2.fromScale(1, 1), Parent = face })
+
+	state:observe("mode", function(mode)
+		area.Visible = mode ~= "build"
+	end)
 
 	state:observe("safeZones", function(visible)
 		leftZone.Visible = visible
