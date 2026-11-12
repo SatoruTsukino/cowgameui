@@ -91,6 +91,9 @@
             <button id="btnSafeZones" onclick="toggleSafeZones()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
                 Mobile Safe Zones: OFF
             </button>
+            <button id="btnCoreGui" onclick="toggleCoreGui()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
+                Roblox CoreGui: OFF
+            </button>
         </div>
     </div>
 
@@ -100,70 +103,94 @@
         <!-- GAME UI SCALER WRAPPER -->
         <div id="ui-container" class="absolute pointer-events-none origin-top-left">
             
-            <!-- TOP HUD ROW -->
-            <div class="absolute top-8 left-8 right-8 flex justify-between items-start z-20 pointer-events-none">
-                
-                <!-- 1. TOP-LEFT: Vitals & Quests -->
-                <div class="flex items-start gap-4 pointer-events-auto shrink-0">
-                    <!-- Cow Profile -->
-                    <div class="relative w-28 h-28 rounded-[2rem] border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 transition-transform cursor-pointer shrink-0">
-                        <span class="text-gray-500 font-black text-lg tracking-widest">COW</span>
-                        
-                        <div id="profileHerdBadge" class="hidden absolute -top-3 -right-3 px-3 py-1 bg-gray-600 text-white rounded-full border-[4px] border-white shadow-sm">
-                            <span class="font-black text-[10px] tracking-widest uppercase">+ HERD</span>
-                        </div>
-
-                        <div class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-400 rounded-xl border-[4px] border-white flex items-center shadow-sm whitespace-nowrap">
-                            <span class="text-white font-black text-[10px] tracking-wider uppercase">Rebirth 2</span>
-                        </div>
+            <!-- ROBLOX COREGUI OVERLAY (TOP BAR MOCKUP - LEFT UNIBAR ONLY) -->
+            <div id="robloxCoreGui" class="hidden absolute top-4 left-6 pointer-events-none z-30 opacity-90 transition-opacity">
+                <!-- Top-Left Unibar: Roblox Icon + Hamburger + Chat -->
+                <div class="flex items-center gap-1.5 bg-black/75 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-lg text-white pointer-events-auto">
+                    <!-- Roblox Hexagon -->
+                    <div class="w-6 h-6 flex items-center justify-center font-black text-xs">
+                        <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                            <path d="M5.2 2L2 18.8 18.8 22l3.2-16.8L5.2 2zm10.1 11.5l-4.5 1-1-4.5 4.5-1 1 4.5z"/>
+                        </svg>
                     </div>
-
-                    <!-- Inline Vitals -->
-                    <div class="flex flex-col gap-3 w-64 pt-1 ui-element">
-                        <div class="flex flex-col gap-1">
-                            <span class="px-1 text-gray-500 font-black text-[10px] tracking-widest uppercase truncate">Grazing: Clover Meadow</span>
-                            <div class="w-full h-10 shape-leaf border-[6px] border-gray-400 bg-white p-1 flex items-center shadow-sm relative overflow-hidden">
-                                <div class="h-full w-[68%] bg-gray-300 shape-leaf-inner rounded-r-sm"></div>
-                                <div class="absolute inset-0 flex items-center px-3 pointer-events-none">
-                                    <span class="text-gray-600 font-black text-xs tracking-wider">68%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="w-full rounded-full border-[6px] border-gray-500 bg-white p-1 shadow-sm relative h-10" title="Outer Border = Stamina">
-                            <div class="h-full w-[85%] bg-gray-300 rounded-full flex items-center px-2">
-                                <span class="text-gray-600 font-black text-[10px] tracking-wider uppercase">HP 100</span>
-                            </div>
-                        </div>
+                    <div class="w-px h-3.5 bg-white/20"></div>
+                    <!-- Menu / 3 lines -->
+                    <div class="w-6 h-6 flex items-center justify-center cursor-pointer hover:opacity-80">
+                        <svg class="w-3.5 h-3.5 stroke-white stroke-2" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
                     </div>
-                </div>
-
-                <!-- 3. TOP-RIGHT: Economy & Menus -->
-                <div class="flex items-start gap-4 pointer-events-auto shrink-0">
-                    <div class="flex flex-col items-center">
-                        <div class="h-14 px-5 rounded-[1.5rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm relative z-10 ui-element hover:scale-105 transition-transform cursor-pointer">
-                            <span class="text-gray-500 font-black tracking-widest text-xs uppercase">Calories: 1,500</span>
-                        </div>
-                        <div id="upgradesPill" class="h-8 px-4 -mt-2 rounded-b-xl border-[4px] border-gray-400 border-t-0 bg-gray-200 flex items-end pb-1 shadow-sm hover:bg-gray-300 cursor-pointer transition-colors">
-                            <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase">Upgrades ⬆</span>
-                        </div>
-                    </div>
-
-                    <div id="topRightStandard" class="flex items-start gap-3 pt-1">
-                        <div class="w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer relative" title="Settings">
-                            <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">SET</span>
-                            <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
-                        </div>
-                    </div>
-
-                    <div id="topRightCompact" class="hidden w-14 h-14 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1" title="Menu (Settings, Herd, Trade)">
-                        <span class="text-gray-600 font-black text-sm tracking-widest leading-none">•••</span>
+                    <div class="w-px h-3.5 bg-white/20"></div>
+                    <!-- Chat with badge -->
+                    <div class="relative w-6 h-6 flex items-center justify-center cursor-pointer hover:opacity-80">
+                        <svg class="w-3.5 h-3.5 stroke-white stroke-2" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-black rounded-full px-1">3</span>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. TOP-CENTER: Town Bulletin -->
-            <div id="townBulletinWrapper" class="absolute top-8 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto ui-element hud-spring z-20">
+            <!-- 1. TOP-LEFT: Vitals & Quests (Safe below Unibar) -->
+            <div id="topLeftVitals" class="absolute top-8 left-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring">
+                <!-- Cow Profile -->
+                <div class="relative w-28 h-28 rounded-[2rem] border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 transition-transform cursor-pointer shrink-0">
+                    <span class="text-gray-500 font-black text-lg tracking-widest">COW</span>
+                    
+                    <div id="profileHerdBadge" class="hidden absolute -top-3 -right-3 px-3 py-1 bg-gray-600 text-white rounded-full border-[4px] border-white shadow-sm">
+                        <span class="font-black text-[10px] tracking-widest uppercase">+ HERD</span>
+                    </div>
+
+                    <div class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-400 rounded-xl border-[4px] border-white flex items-center shadow-sm whitespace-nowrap">
+                        <span class="text-white font-black text-[10px] tracking-wider uppercase">Rebirth 2</span>
+                    </div>
+                </div>
+
+                <!-- Inline Vitals -->
+                <div class="flex flex-col gap-3 w-64 pt-1 ui-element">
+                    <div class="flex flex-col gap-1">
+                        <span class="px-1 text-gray-500 font-black text-[10px] tracking-widest uppercase truncate">Grazing: Clover Meadow</span>
+                        <div class="w-full h-10 shape-leaf border-[6px] border-gray-400 bg-white p-1 flex items-center shadow-sm relative overflow-hidden">
+                            <div class="h-full w-[68%] bg-gray-300 shape-leaf-inner rounded-r-sm"></div>
+                            <div class="absolute inset-0 flex items-center px-3 pointer-events-none">
+                                <span class="text-gray-600 font-black text-xs tracking-wider">68%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full rounded-full border-[6px] border-gray-500 bg-white p-1 shadow-sm relative h-10" title="Outer Border = Stamina">
+                        <div class="h-full w-[85%] bg-gray-300 rounded-full flex items-center px-2">
+                            <span class="text-gray-600 font-black text-[10px] tracking-wider uppercase">HP 100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. TOP-RIGHT: Economy & Menus (Elevated to top-4) -->
+            <div id="topRightHud" class="absolute top-4 right-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring">
+                <div class="flex flex-col items-center">
+                    <div class="h-14 px-5 rounded-[1.5rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm relative z-10 ui-element hover:scale-105 transition-transform cursor-pointer">
+                        <span class="text-gray-500 font-black tracking-widest text-xs uppercase">Calories: 1,500</span>
+                    </div>
+                    <div id="upgradesPill" class="h-8 px-4 -mt-2 rounded-b-xl border-[4px] border-gray-400 border-t-0 bg-gray-200 flex items-end pb-1 shadow-sm hover:bg-gray-300 cursor-pointer transition-colors">
+                        <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase">Upgrades ⬆</span>
+                    </div>
+                </div>
+
+                <div id="topRightStandard" class="flex items-start gap-3 pt-1">
+                    <div class="w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer relative" title="Settings">
+                        <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">SET</span>
+                        <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
+                    </div>
+                </div>
+
+                <div id="topRightCompact" class="hidden w-14 h-14 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1" title="Menu (Settings, Herd, Trade)">
+                    <span class="text-gray-600 font-black text-sm tracking-widest leading-none">•••</span>
+                </div>
+            </div>
+
+            <!-- 2. TOP-CENTER: Town Bulletin (Elevated to top-4) -->
+            <div id="townBulletinWrapper" class="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto ui-element hud-spring z-20">
                 <div id="bulletinFull" class="flex flex-col items-center">
                     <div class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
                         <div class="flex items-center gap-2 pr-3 border-r-4 border-gray-200">
@@ -229,7 +256,7 @@
                 </div>
             </div>
 
-            <div id="rightSidebar" class="absolute right-8 top-48 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring">
+            <div id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring">
                 <!-- Herd Button -->
                 <div class="relative w-16 h-16 ui-element hover:scale-110 cursor-pointer" title="Herd">
                     <div class="absolute top-0 right-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-gray-200"></div>
@@ -265,6 +292,7 @@
         let isCompact = false;
         let isBulletinVisible = true;
         let areSafeZonesVisible = false;
+        let isCoreGuiVisible = false;
 
         function setButtonState(btn, label, active) {
             btn.textContent = `${label}: ${active ? 'ON' : 'OFF'}`;
@@ -318,6 +346,22 @@
             setButtonState(document.getElementById('btnSafeZones'), 'Mobile Safe Zones', areSafeZonesVisible);
             document.getElementById('safeZoneLeft').classList.toggle('hidden', !areSafeZonesVisible);
             document.getElementById('safeZoneRight').classList.toggle('hidden', !areSafeZonesVisible);
+        }
+
+        function toggleCoreGui() {
+            isCoreGuiVisible = !isCoreGuiVisible;
+            setButtonState(document.getElementById('btnCoreGui'), 'Roblox CoreGui', isCoreGuiVisible);
+            const coreGui = document.getElementById('robloxCoreGui');
+            coreGui.classList.toggle('hidden', !isCoreGuiVisible);
+
+            const vitals = document.getElementById('topLeftVitals');
+            if (isCoreGuiVisible) {
+                vitals.classList.remove('top-8');
+                vitals.classList.add('top-16');
+            } else {
+                vitals.classList.add('top-8');
+                vitals.classList.remove('top-16');
+            }
         }
 
         function changeAspectRatio(selectElement) {
