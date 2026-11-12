@@ -83,7 +83,7 @@ Positioned at `absolute top-4 left-6 pointer-events-none z-30 opacity-90 transit
   - Sprint ($190^\circ$, `#btnMobileSprint`)
   - Moo ($135^\circ$, `#btnMobileMoo`)
   - Emote ($80^\circ$, `#btnMobileEmote` with `onclick="toggleEmoteRadial()"`)
-  - Emote Flyout (`#mobileEmoteFlyout`): Radial arc crown ($R=56\text{px}$) surrounding Emote button with 3 quick emotes: Heart ($\theta = 160^\circ$, `-left-[45px] -top-[11px]`), Cheer/Sparkles ($\theta = 100^\circ$, `-left-[2px] -top-[47px]`), Snooze/Chew ($\theta = 40^\circ$, `left-[51px] -top-[28px]`)
+  - Emote Flyout (`#mobileEmoteFlyout`): Mini-arc above Emote button with 3 quick emotes (Heart, Cheer/Sparkles, Snooze)
   - Kick ($235^\circ$, `#btnMobileKick` at `left-[47px] bottom-[25px]`)
 
 ---
