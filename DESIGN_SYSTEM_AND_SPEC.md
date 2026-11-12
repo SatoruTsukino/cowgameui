@@ -89,6 +89,25 @@ All dimensions are in virtual 720p coordinate units ($1\text{px} \to 1$ Roblox o
 
 ---
 
+### Legibility, touch and phone rules (phase 5)
+
+- **Text floor:** every label renders at no less than 12pt, and captions (wireframe size under 12px) at no less than 11pt, on the actual device. Text in a fixed-size box grows only as far as the box allows, and never below its wireframe size.
+- **Touch targets:** on touch screens every button's hit area is at least 44pt; the visible button keeps its size.
+- **Phones** (touch screens whose HUD scale sits at the 0.75 floor, a canvas about 480–520px tall) use bigger boxes so their labels reach the text floor:
+
+| Element | Wireframe | Phone |
+| :--- | :--- | :--- |
+| Sidebar buttons (INV/BAG, Closet, Trade, Herd) | $64\text{px}$ wide (INV/BAG $72\text{px}$ tall) | $72\text{px}$ (INV/BAG $80\text{px}$ tall) |
+| Herd stacked squares | $48\text{px}$ | $54\text{px}$ |
+| Left sidebar | $136\text{px}$ below the vitals, $16\text{px}$ gaps | $112\text{px}$, $8\text{px}$ gaps (clears the thumbstick) |
+| Action arc satellites | $56\text{px}$ | $68\text{px}$ |
+| Build tool buttons | $56\text{px}$ | $64\text{px}$ (keyboard hints hidden on touch) |
+| Catalog slots | $96 \times 112\text{px}$ | $120 \times 128\text{px}$ (tray scrolls) |
+| Catalog tab / slot name blocks | $26$ / $22\text{px}$ | $36\text{px}$ (two lines) |
+| Vital bars | $208\text{px}$ | $160\text{px}$ |
+
+---
+
 ## 4. Theme System & Color Palettes
 
 The UI uses dynamic CSS custom properties mapped across all structural elements. Every preset is WCAG-checked: text is at least 4.5:1 and borders at least 3:1 (phase 5, T1/T8). Roblox `Theme.Presets` uses the same values.

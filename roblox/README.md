@@ -81,6 +81,15 @@ The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 - **Color Theme:** Mono, Meadow, Sunrise, Lavender or Sky (state `theme`). The palette is WCAG-checked: text is at least 4.5:1 and borders at least 3:1. Colours are role tokens (`Theme.Color.Card`, `Border`, `Text`, …), so switching presets recolours the live HUD.
 - **Motion:** Full, Reduced or Off (state `motion`). It starts at Reduced when the player has Roblox's Reduced Motion setting on. Reduced removes spring overshoot and hover growth. Off makes changes instant.
 
+## Touch, phones and legibility
+- **Text floor:** labels render at no less than 12pt (11pt for captions) at any HUD scale (`Util.label`).
+- **Touch targets:** every `Util.button` takes input through a transparent hit area that grows to 44pt on touch screens; the visible button keeps its size.
+- **Phone profile:** `CowHUD.mount` sets `Theme.phone` once, before building: a touch screen whose HUD scale sits at the 0.75 floor. Phones get bigger boxes so labels reach the text floor (`Theme.size`; see the table in `DESIGN_SYSTEM_AND_SPEC.md`). In the Studio emulator, switching between phone and tablet/desktop needs a fresh Play.
+
+## Verifying
+- **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.
+- **Roblox:** Studio device emulator at 1920×1080, iPhone 14 landscape and iPad, in normal mode and after `/build`. Use `/boost` to show the boost tab.
+
 ## Known differences from the HTML
 - Dashed borders (area actions) are solid strokes, because Roblox has no dashed `UIStroke`.
 - Mobile safe zones are not drawn. They only preview Roblox's native thumbstick and Jump.

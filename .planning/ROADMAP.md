@@ -26,9 +26,9 @@
 - [ ] Compact toggle merges the sidebars and menus
 - [ ] Nunito Heavy renders. If not, swap `Theme.Font`.
 
-## Phase 5 — Legibility, accessibility, ergonomics 📝 (plan awaiting review)
+## Phase 5 — Legibility, accessibility, ergonomics ✅ (code done; Studio re-check pending)
 See `phases/05-legibility-ergonomics/05-PLAN.md`.
-- [x] T0a theme tokens + presets (Roblox) · T0b action arc (Roblox) · T0c building GUI + /build /normal · T0d motion + theme settings — code done, needs Studio check
-- [x] T1 contrast audit
-- [ ] T2 type tokens · T3 hit areas · T4 device profiles
-- [ ] T5 phone layout · T5b building phone layout · T5c kick arc · T5d reduced motion · T6 tablet thumb band · T7 overlap/size verify · T8 contrast fixes · T9 docs
+- [x] T0a theme tokens + presets (Roblox) · T0b action arc (Roblox) · T0c building GUI + /build /normal · T0d motion + theme settings
+- [x] T1 contrast audit · T2 legibility floor (Roblox + HTML) · T3 44pt touch hit areas · T4 device profiles (touch scale floor, phone profile, HTML presets)
+- [x] T5 phone layout (bigger boxes) · T5b building phone layout · T5c arc angles · T5d reduced motion · T7 verify-hud.mjs · T8 WCAG palette · T9 docs · T10 boost tab
+- [~] T6 tablet thumb band: dropped (current iPad layout approved in Studio)

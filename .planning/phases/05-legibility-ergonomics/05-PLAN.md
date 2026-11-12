@@ -182,6 +182,16 @@ Script: `/private/tmp/claude-501/-Users-jsph-cowgameui/c1988756-da6d-412a-b925-2
 - **Build icons:** emoji are replaced with the wireframe's SVG paths traced as Frame strokes (`Icons.luau`: close, cog, grid, wood, stone, rotate, paint, undo, redo, trash, fence, gate, hay, wall, lantern, clover).
 - **Compact vitals (Roblox and HTML):** the profile goes from 112 to 88 (radius 26), the bars from 256×40 to 208×32 (border 5), and the gaps tighten. The left sidebar moves to top-[168px] (`SidebarOffset` 136). The cluster takes about 35% less of the screen, and its height matches the label plus both bars.
 
+## Phase 5 completion (2026-11-12)
+- **T2 legibility floor:** Roblox `Util.label`, and HTML `fitText()` with per-preset simulated HUD scales. Wrapped labels grow to the full floor.
+- **T3 hit areas:** `Util.button` routes input through a transparent hit child that grows to 44pt on touch screens. Visuals keep their size, and the Upgrades tab grows downward only.
+- **T4 device profiles:** a touch scale floor of 0.75, plus `Theme.phone` decided at mount. The HTML presets simulate device scales, and the phone preset uses a 520px canvas.
+- **T5 phones (decision: grow boxes):** the `Theme.size` table (sidebar 72, herd 54, satellites 68, tools 64, slots 120×128, two-line tabs and names, tighter left sidebar) and the HTML `ps-*` classes. Touch hides keyboard hints.
+- **T5c:** the HTML arc matches Roblox (60° → 200°). **T5d:** HTML `prefers-reduced-motion`. **T8:** the HTML palette matches Roblox. **T6:** dropped (iPad approved).
+- **T7:** `tools/verify-hud.mjs` passes on all 4 presets × 2 pages, with no overlaps and every text at 11pt or more (12pt or more for labels).
+- **T9:** spec §2C, §3 (with a phone table) and §4, `UI_ELEMENTS_MAP.md` line references, and the Roblox README.
+- **Still open:** a Studio re-check on phone, iPad and desktop. Roblox has no automated equivalent of `verify-hud.mjs`.
+
 ## Original open questions (answered in D1–D6)
 1. **Phone compact default:** should compact mode be forced on phones (merged BAG / `•••`), or only defaulted so players can turn it off?
 2. **Minimum text size:** is an 11pt floor OK? Going to 12pt is more comfortable but costs more layout room.
