@@ -22,126 +22,95 @@
 
 ---
 
-## 2. Dev Controls Bar & Theme Customizer Drawer ([L116-L214](file:///Users/jsph/cowgameui/index.html#L116-L214))
+## 1.5. Top Page Navigation Tabs ([L116-L125](file:///Users/jsph/cowgameui/index.html#L116-L125))
 
 | Line Range | Element ID / Selector | Purpose & Triggers |
 | :--- | :--- | :--- |
-| [`L117-L148`](file:///Users/jsph/cowgameui/index.html#L117-L148) | Controls Bar | ScreenGui Controls top card wrapper. |
-| [`L123-L128`](file:///Users/jsph/cowgameui/index.html#L123-L128) | `#aspectRatioSelect` | Dropdown: switches aspect ratio (`16:9`, `21:9`, `19.5:9`, `4:3`) & triggers `resizeUI()`. |
-| [`L130-L132`](file:///Users/jsph/cowgameui/index.html#L130-L132) | `#btnCompact` | Toggle Button: switches Compact Mode (`toggleCompactMode()`). |
-| [`L133-L135`](file:///Users/jsph/cowgameui/index.html#L133-L135) | `#btnBulletin` | Toggle Button: hides/shows Town Bulletin (`toggleBulletin()`). |
-| [`L136-L138`](file:///Users/jsph/cowgameui/index.html#L136-L138) | `#btnSafeZones` | Toggle Button: displays mobile thumbstick & radial action cluster (`toggleSafeZones()`). |
-| [`L139-L141`](file:///Users/jsph/cowgameui/index.html#L139-L141) | `#btnCoreGui` | Toggle Button: displays native Roblox CoreGui top bar (`toggleCoreGui()`). |
-| [`L142-L144`](file:///Users/jsph/cowgameui/index.html#L142-L144) | `#btnTheme` | Toggle Button: expands/collapses theme color customizer drawer (`toggleThemeDrawer()`). |
-| [`L148-L213`](file:///Users/jsph/cowgameui/index.html#L148-L213) | `#themeDrawer` | Palette bar: 5 presets (`Mono`, `Meadow`, `Sunrise`, `Lavender`, `Sky`) + 6 live `<input type="color">` pickers (`Cards`, `Borders`, `Fills`, `Accents`, `Text`, `Canvas`). |
+| [`L116`](file:///Users/jsph/cowgameui/index.html#L116) | `#pageTabsContainer` | Top view switcher dock. Controls active ScreenGui page via `switchPage(pageId)`. |
+| [`L117-L119`](file:///Users/jsph/cowgameui/index.html#L117-L119) | `#tabBtnPasture` | Tab button: switches to `#pagePasture` (Main Game HUD). |
+| [`L120-L124`](file:///Users/jsph/cowgameui/index.html#L120-L124) | `#tabBtnBuilding` | Tab button: switches to `#pageBuilding` (Building & Construction GUI). |
 
 ---
 
-## 3. Game Screen & Scaler Root ([L216-L222](file:///Users/jsph/cowgameui/index.html#L216-L222))
+## 2. Dev Controls Bar & Theme Customizer Drawer ([L127-L225](file:///Users/jsph/cowgameui/index.html#L127-L225))
+
+| Line Range | Element ID / Selector | Purpose & Triggers |
+| :--- | :--- | :--- |
+| [`L128-L157`](file:///Users/jsph/cowgameui/index.html#L128-L157) | Controls Bar | ScreenGui Controls top card wrapper. |
+| [`L134-L139`](file:///Users/jsph/cowgameui/index.html#L134-L139) | `#aspectRatioSelect` | Dropdown: switches aspect ratio (`16:9`, `21:9`, `19.5:9`, `4:3`) & triggers `resizeUI()`. |
+| [`L141-L143`](file:///Users/jsph/cowgameui/index.html#L141-L143) | `#btnCompact` | Toggle Button: switches Compact Mode (`toggleCompactMode()`). |
+| [`L144-L146`](file:///Users/jsph/cowgameui/index.html#L144-L146) | `#btnBulletin` | Toggle Button: hides/shows Town Bulletin (`toggleBulletin()`). |
+| [`L147-L149`](file:///Users/jsph/cowgameui/index.html#L147-L149) | `#btnSafeZones` | Toggle Button: displays mobile thumbstick & radial action cluster (`toggleSafeZones()`). |
+| [`L150-L152`](file:///Users/jsph/cowgameui/index.html#L150-L152) | `#btnCoreGui` | Toggle Button: displays native Roblox CoreGui top bar (`toggleCoreGui()`). |
+| [`L153-L155`](file:///Users/jsph/cowgameui/index.html#L153-L155) | `#btnTheme` | Toggle Button: expands/collapses theme color customizer drawer (`toggleThemeDrawer()`). |
+| [`L159-L224`](file:///Users/jsph/cowgameui/index.html#L159-L224) | `#themeDrawer` | Palette bar: 5 presets (`Mono`, `Meadow`, `Sunrise`, `Lavender`, `Sky`) + 6 live `<input type="color">` pickers (`Cards`, `Borders`, `Fills`, `Accents`, `Text`, `Canvas`). |
+
+---
+
+## 3. Game Screen & Scaler Root ([L227-L233](file:///Users/jsph/cowgameui/index.html#L227-L233))
 
 | Line Range | Element ID / Selector | Purpose & Dimensions |
 | :--- | :--- | :--- |
-| [`L216`](file:///Users/jsph/cowgameui/index.html#L216) | `.game-screen` | Roblox viewport container: `rounded-[3rem]`, `border-[8px] border-gray-500`, `overflow-hidden`. |
-| [`L219`](file:///Users/jsph/cowgameui/index.html#L219) | `#ui-container` | Scaler layer: transformed via `scale(${scale})` from `origin-top-left` to match `screen.clientWidth/clientHeight`. |
+| [`L228`](file:///Users/jsph/cowgameui/index.html#L228) | `.game-screen` | Roblox viewport container: `rounded-[3rem]`, `border-[8px] border-gray-500`, `overflow-hidden`. |
+| [`L231`](file:///Users/jsph/cowgameui/index.html#L231) | `#ui-container` | Scaler layer: transformed via `scale(${scale})` from `origin-top-left` to match `screen.clientWidth/clientHeight`. Houses `#pagePasture` and `#pageBuilding`. |
 
 ---
 
-## 3.5. Roblox CoreGui Overlay Mockup ([L225-L250](file:///Users/jsph/cowgameui/index.html#L225-L250))
+## 4. Page 1: Pasture ScreenGui ([L233-L456](file:///Users/jsph/cowgameui/index.html#L233-L456))
 
+### A. Roblox CoreGui Overlay Mockup ([L236-L261](file:///Users/jsph/cowgameui/index.html#L236-L261))
 Positioned at `absolute top-4 left-6 pointer-events-none z-30 opacity-90 transition-opacity`.
+- `#robloxCoreGui`: Top-Left Unibar with Roblox Hexagon, Hamburger menu (`≡`), and Chat with unread badge. Shifts `#topLeftVitals` to `top-16` when active.
 
-| Line Range | Selector | Description |
-| :--- | :--- | :--- |
-| [`L225`](file:///Users/jsph/cowgameui/index.html#L225) | `#robloxCoreGui` | Top bar mockup toggled via `toggleCoreGui()`. Shifts `#topLeftVitals` between `top-8` and `top-16` when active. |
-| [`L227-L249`](file:///Users/jsph/cowgameui/index.html#L227-L249) | Top-Left Unibar | Dark pill (`bg-black/75`) containing Roblox Hexagon, Hamburger menu (`≡`), and Chat with unread badge. |
+### B. Top-Left: Player Vitals & Quest ([L264-L296](file:///Users/jsph/cowgameui/index.html#L264-L296))
+- Cow Profile Box (`w-28 h-28`), Rebirth chip, `#profileHerdBadge`, `.shape-leaf` Grazing Quest bar (`68%`), Stamina/HP bar (`HP 100`).
 
----
+### C. Top-Right: Economy & Settings ([L299-L319](file:///Users/jsph/cowgameui/index.html#L299-L319))
+- Calories Pill (`h-14 px-5`), Upgrades tab, `#topRightStandard` (Settings cowbell), `#topRightCompact` (`•••` menu).
 
-## 4. Top HUD Elements (Decoupled Top-Left & Top-Right)
+### D. Top-Center: Town Bulletin ([L322-L368](file:///Users/jsph/cowgameui/index.html#L322-L368))
+- `#townBulletinWrapper`: Elevated to `top-4`. `#bulletinFull` (Cycle timer + World Event bar + 2x Calories boost chip) and `#bulletinCompact`.
 
-### A. Top-Left: Player Vitals & Quest ([L253-L285](file:///Users/jsph/cowgameui/index.html#L253-L285))
-Positioned at `absolute top-8 left-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring`. Shifted to `top-16` when Roblox CoreGui is toggled ON.
+### E. Sidebars ([L371-L400](file:///Users/jsph/cowgameui/index.html#L371-L400))
+- `#leftSidebar`: Inventory + Closet (`top-48`) or single `BAG` button.
+- `#rightSidebar`: Herd + Trade (`top-32`).
 
-| Line Range | Element ID / Selector | Description & Reactive States |
-| :--- | :--- | :--- |
-| [`L255-L265`](file:///Users/jsph/cowgameui/index.html#L255-L265) | Cow Profile Box | `w-28 h-28` rounded squircle card (`rounded-[2rem] border-[6px] border-gray-400`). |
-| [`L258-L260`](file:///Users/jsph/cowgameui/index.html#L258-L260) | `#profileHerdBadge` | `+ HERD` badge: `-top-3 -right-3`. Hidden by default; displayed when Compact Mode = ON. |
-| [`L262-L264`](file:///Users/jsph/cowgameui/index.html#L262-L264) | Rebirth Chip | Rebirth level chip docked to bottom: `-bottom-3.5 left-1/2 -translate-x-1/2`. |
-| [`L270-L276`](file:///Users/jsph/cowgameui/index.html#L270-L276) | Grazing Quest Bar | `w-64 h-10` `.shape-leaf` progress bar with `p-1` (4px gap) + inner `.shape-leaf-inner` fill (`68%`). |
-| [`L279-L283`](file:///Users/jsph/cowgameui/index.html#L279-L283) | HP / Stamina Pill | `w-full h-10 rounded-full border-[6px] border-gray-500` inner progress pill (`HP 100`). |
-
-### B. Top-Right: Economy & Settings ([L288-L308](file:///Users/jsph/cowgameui/index.html#L288-L308))
-Positioned at `absolute top-4 right-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring` (Elevated to reclaim headroom).
-
-| Line Range | Element ID / Selector | Description & Reactive States |
-| :--- | :--- | :--- |
-| [`L289-L296`](file:///Users/jsph/cowgameui/index.html#L289-L296) | Calories Pill & Tab | `h-14 px-5` rounded pill (`Calories: 1,500`) with docked `#upgradesPill` underneath. |
-| [`L293-L295`](file:///Users/jsph/cowgameui/index.html#L293-L295) | `#upgradesPill` | `h-8 px-4 -mt-2 rounded-b-xl` Upgrades button tab. Hidden when Compact Mode = ON. |
-| [`L298-L303`](file:///Users/jsph/cowgameui/index.html#L298-L303) | `#topRightStandard` | Standard container for Settings (`w-14 h-14` `.shape-cowbell`). Hidden in Compact Mode. |
-| [`L305-L307`](file:///Users/jsph/cowgameui/index.html#L305-L307) | `#topRightCompact` | `w-14 h-14` overflow menu button (`•••`). Unified action hub for Settings + Herd + Trade when Compact Mode = ON. |
+### F. Mobile Action Cluster & Safe Zones ([L403-L446](file:///Users/jsph/cowgameui/index.html#L403-L446))
+- `#safeZoneLeft`: Mobile thumbstick (`w-48 h-48`).
+- `#safeZoneRight`: Mobile action cluster (`w-64 h-64`). Centered `#btnMobileJump` (`80px`), Radial Arc satellites ($D=56\text{px}$, $R=92\text{px}$): Sprint ($190^\circ$), Moo ($135^\circ$), Emote ($80^\circ$).
 
 ---
 
-## 5. Top-Center: Town Bulletin ([L311-L355](file:///Users/jsph/cowgameui/index.html#L311-L355))
+## 5. Page 2: Building & Construction GUI ([L458-L650](file:///Users/jsph/cowgameui/index.html#L458-L650))
 
-Positioned at `absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto z-20` (Elevated to reclaim headroom).
-
-| Line Range | Element ID / Selector | Description & Reactive States |
+| Line Range | Element ID / Selector | Description & Functionality |
 | :--- | :--- | :--- |
-| [`L311`](file:///Users/jsph/cowgameui/index.html#L311) | `#townBulletinWrapper` | Main parent wrapper; toggles opacity/scale via `toggleBulletin()`. |
-| [`L312-L345`](file:///Users/jsph/cowgameui/index.html#L312-L345) | `#bulletinFull` | Expanded Bulletin card: Cycle timer (Day/Night icon + `DAY • 02:45`), World Event progress bar (`Clover Bloom 55%`), and 2x Calories boost chip. Hidden in Compact Mode. |
-| [`L347-L354`](file:///Users/jsph/cowgameui/index.html#L347-L354) | `#bulletinCompact` | Collapsed mini-pill (`w-7` icon + `02:45` text + notification dot). Displayed in Compact Mode. |
+| [`L458`](file:///Users/jsph/cowgameui/index.html#L458) | `#pageBuilding` | Root wrapper for Construction Mode wireframe. Toggled via `switchPage('building')`. |
+| [`L461-L508`](file:///Users/jsph/cowgameui/index.html#L461-L508) | Building Top Bar | Top HUD: Exit Build button (`[✕] Exit Build`), center title chip (`CONSTRUCTION MODE • Tier 2`), grid snap button (`#btnGridSnap`), and resource budget (`🪵 450 • 🌾 1,500`). |
+| [`L510-L523`](file:///Users/jsph/cowgameui/index.html#L510-L523) | Placement Boundary | Dashed building boundary ring with central animated `Placement Cursor` target. |
+| [`L525-L567`](file:///Users/jsph/cowgameui/index.html#L525-L567) | Right Utility Tools | Vertical action stack: Rotate (`ROT [R]`), Paint (`PAINT`), Undo (`UNDO [Z]`), Redo (`REDO [Y]`), Demolish (`TRASH [X]`). |
+| [`L569-L648`](file:///Users/jsph/cowgameui/index.html#L569-L648) | Bottom Catalog Dock | Category tabs (`Fences`, `Barns`, `Feeders`, `Paths`, `Decor`) + horizontal scrollable prop tray with 6 slot cards (Rustic Fence, Picket Gate, Hay Bale, Stone Wall, Cozy Lantern, Clover Bed). |
 
 ---
 
-## 6. Sidebars ([L358-L387](file:///Users/jsph/cowgameui/index.html#L358-L387))
-
-### A. Left Sidebar: Inventory & Wardrobe ([L358-L373](file:///Users/jsph/cowgameui/index.html#L358-L373))
-Positioned at `absolute left-8 top-48 flex flex-col gap-4 pointer-events-auto z-10`.
-| Line Range | Element ID / Selector | Description & Reactive States |
-| :--- | :--- | :--- |
-| [`L359-L367`](file:///Users/jsph/cowgameui/index.html#L359-L367) | `#leftSidebarStandard` | Standard 2-button stack: Inventory (`w-16 h-[4.5rem]` with backpack flap) + Closet (`w-16 h-16` squircle). Hidden in Compact Mode. |
-| [`L369-L372`](file:///Users/jsph/cowgameui/index.html#L369-L372) | `#leftSidebarCompact` | Single unified `BAG` button (`w-16 h-[4.5rem]`). Displayed when Compact Mode = ON. |
-
-### B. Right Sidebar: Social & Trade ([L375-L387](file:///Users/jsph/cowgameui/index.html#L375-L387))
-Positioned at `absolute right-8 top-32 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring` (Elevated to reclaim headroom).
-| Line Range | Element ID / Selector | Description & Reactive States |
-| :--- | :--- | :--- |
-| [`L375-L387`](file:///Users/jsph/cowgameui/index.html#L375-L387) | `#rightSidebar` | 2-button stack: Herd (`w-16 h-16` overlapping dual boxes) + Trade (`w-16 h-16` squircle). Entire container hidden in Compact Mode (actions absorb into Top-Right `#topRightCompact`). |
-
----
-
-## 7. Bottom Safe Zones & Mobile Action Cluster ([L389-L440](file:///Users/jsph/cowgameui/index.html#L389-L440))
-
-Toggled together via `#btnSafeZones` (`toggleSafeZones()`). Redundant Graze button removed.
-
-| Line Range | Element ID / Selector | Description & Radial Geometry |
-| :--- | :--- | :--- |
-| [`L390-L395`](file:///Users/jsph/cowgameui/index.html#L390-L395) | `#safeZoneLeft` | `w-48 h-48` mobile thumbstick touch zone with inner base (`w-20`) and nub. |
-| [`L397-L433`](file:///Users/jsph/cowgameui/index.html#L397-L433) | `#safeZoneRight` | Mobile action cluster root container (`w-64 h-64`) positioned at `bottom-8 right-8`. |
-| [`L402-L408`](file:///Users/jsph/cowgameui/index.html#L402-L408) | `#btnMobileJump` | **Anchor:** Centered `w-20 h-20` rounded-full Jump button with bold up-arrow. Center at `(128, 128)` in safe zone. |
-| [`L411-L417`](file:///Users/jsph/cowgameui/index.html#L411-L417) | `#btnMobileSprint` | **Bottom of Arc ($\theta \approx 190^\circ$):** Enlarged `w-14 h-14` (56px) Sprint button (`SPRINT`). Located at `left-2.5 top-[116px]` ($R=92\text{px}$). |
-| [`L419-L425`](file:///Users/jsph/cowgameui/index.html#L419-L425) | `#btnMobileMoo` | **Middle of Arc ($\theta = 135^\circ$):** Enlarged `w-14 h-14` (56px) Moo button (`MOO`). Located at `left-[35px] top-[35px]` ($R=92\text{px}$). |
-| [`L427-L433`](file:///Users/jsph/cowgameui/index.html#L427-L433) | `#btnMobileEmote` | **Top of Arc ($\theta \approx 80^\circ$):** Enlarged `w-14 h-14` (56px) Emote button (`EMOTE`). Located at `left-[116px] top-2.5` ($R=92\text{px}$). |
-| [`L435-L440`](file:///Users/jsph/cowgameui/index.html#L435-L440) | Bottom-Center Area Actions | `w-1/3 max-w-sm` dashed squircle (`Area Actions (WIP)`). Reserved for context-sensitive prompts. |
-
----
-
-## 8. JavaScript Engine ([L445-L655](file:///Users/jsph/cowgameui/index.html#L445-L655))
+## 6. JavaScript Engine ([L652-L915](file:///Users/jsph/cowgameui/index.html#L652-L915))
 
 | Line Range | Function / Variable | Functionality |
 | :--- | :--- | :--- |
-| [`L446-L450`](file:///Users/jsph/cowgameui/index.html#L446-L450) | `isCompact`, `isBulletinVisible`, `areSafeZonesVisible`, `isCoreGuiVisible`, `isThemeDrawerOpen` | Runtime UI boolean state flags. |
-| [`L452-L493`](file:///Users/jsph/cowgameui/index.html#L452-L493) | `THEME_PRESETS` | Dictionary of 5 color schemes: `monochrome`, `meadow`, `sunrise`, `lavender`, `sky`. |
-| [`L495-L514`](file:///Users/jsph/cowgameui/index.html#L495-L514) | `updateThemeProp(prop, val)` | Dynamically injects CSS custom properties into `.game-screen` with cascade updates. |
-| [`L516-L530`](file:///Users/jsph/cowgameui/index.html#L516-L530) | `applyThemePreset(presetKey)` | Applies palette preset and syncs native `<input type="color">` pickers. |
-| [`L532-L534`](file:///Users/jsph/cowgameui/index.html#L532-L534) | `resetTheme()` | Reverts to Default Monochrome wireframe palette. |
-| [`L536-L541`](file:///Users/jsph/cowgameui/index.html#L536-L541) | `toggleThemeDrawer()` | Shows/hides `#themeDrawer` palette panel. |
-| [`L543-L550`](file:///Users/jsph/cowgameui/index.html#L543-L550) | `setButtonState(btn, label, active)` | Updates control button labels (`ON`/`OFF`) and background pill styling. |
-| [`L552-L577`](file:///Users/jsph/cowgameui/index.html#L552-L577) | `toggleCompactMode()` | Toggles `#profileHerdBadge`, `#leftSidebar*`, `#rightSidebar*`, `#topRight*`, `#upgradesPill`, `#bulletin*`. |
-| [`L579-L588`](file:///Users/jsph/cowgameui/index.html#L579-L588) | `toggleBulletin()` | Shows / hides `#townBulletinWrapper` with spring transitions. |
-| [`L590-L595`](file:///Users/jsph/cowgameui/index.html#L590-L595) | `toggleSafeZones()` | Shows / hides `#safeZoneLeft` thumbstick and `#safeZoneRight` radial action cluster. |
-| [`L597-L611`](file:///Users/jsph/cowgameui/index.html#L597-L611) | `toggleCoreGui()` | Shows/hides `#robloxCoreGui` and shifts `#topLeftVitals` between `top-8` and `top-16`. |
-| [`L613-L623`](file:///Users/jsph/cowgameui/index.html#L613-L623) | `changeAspectRatio(selectElement)` | Swaps `.aspect-*` class on `.game-screen` and runs 500ms smooth polling resize loop. |
-| [`L625-L645`](file:///Users/jsph/cowgameui/index.html#L625-L645) | `resizeUI()` | Derives `virtualWidth` and scales `#ui-container` to virtual 720p resolution. |
-| [`L647-L654`](file:///Users/jsph/cowgameui/index.html#L647-L654) | `ResizeObserver` & init | Listens to `.game-screen` size changes and runs initial `resizeUI()` on `DOMContentLoaded`. |
+| [`L653-L657`](file:///Users/jsph/cowgameui/index.html#L653-L657) | Runtime State Flags | `activePage`, `isCompact`, `isBulletinVisible`, `areSafeZonesVisible`, `isCoreGuiVisible`, `isThemeDrawerOpen`. |
+| [`L659-L681`](file:///Users/jsph/cowgameui/index.html#L659-L681) | `switchPage(pageId)` | Switches view between `#pagePasture` and `#pageBuilding` and updates tab pills. |
+| [`L683-L686`](file:///Users/jsph/cowgameui/index.html#L683-L686) | `cycleGridSnap()` | Cycles grid snap setting (`2 Studs`, `4 Studs`, `1 Stud`, `Free / Off`). |
+| [`L688-L699`](file:///Users/jsph/cowgameui/index.html#L688-L699) | `filterBuildCategory(cat)` | Highlights active category tab in building catalog dock. |
+| [`L701-L742`](file:///Users/jsph/cowgameui/index.html#L701-L742) | `THEME_PRESETS` | Palette presets: `monochrome`, `meadow`, `sunrise`, `lavender`, `sky`. |
+| [`L744-L763`](file:///Users/jsph/cowgameui/index.html#L744-L763) | `updateThemeProp(prop, val)` | Injects CSS variables into `.game-screen` with cascade overrides. |
+| [`L765-L779`](file:///Users/jsph/cowgameui/index.html#L765-L779) | `applyThemePreset(key)` | Applies palette preset and syncs native `<input type="color">` pickers. |
+| [`L781-L783`](file:///Users/jsph/cowgameui/index.html#L781-L783) | `resetTheme()` | Reverts to Default Monochrome wireframe palette. |
+| [`L785-L790`](file:///Users/jsph/cowgameui/index.html#L785-L790) | `toggleThemeDrawer()` | Shows/hides `#themeDrawer` palette panel. |
+| [`L792-L799`](file:///Users/jsph/cowgameui/index.html#L792-L799) | `setButtonState(btn, label, active)` | Updates control button labels (`ON`/`OFF`) and background pill styling. |
+| [`L801-L826`](file:///Users/jsph/cowgameui/index.html#L801-L826) | `toggleCompactMode()` | Toggles `#profileHerdBadge`, `#leftSidebar*`, `#rightSidebar*`, `#topRight*`, `#upgradesPill`, `#bulletin*`. |
+| [`L828-L837`](file:///Users/jsph/cowgameui/index.html#L828-L837) | `toggleBulletin()` | Shows / hides `#townBulletinWrapper` with spring transitions. |
+| [`L839-L844`](file:///Users/jsph/cowgameui/index.html#L839-L844) | `toggleSafeZones()` | Shows / hides `#safeZoneLeft` thumbstick and `#safeZoneRight` radial action cluster. |
+| [`L846-L860`](file:///Users/jsph/cowgameui/index.html#L846-L860) | `toggleCoreGui()` | Shows/hides `#robloxCoreGui` and shifts `#topLeftVitals` between `top-8` and `top-16`. |
+| [`L862-L872`](file:///Users/jsph/cowgameui/index.html#L862-L872) | `changeAspectRatio(selectElement)` | Swaps `.aspect-*` class on `.game-screen` and runs 500ms smooth polling resize loop. |
+| [`L874-L894`](file:///Users/jsph/cowgameui/index.html#L874-L894) | `resizeUI()` | Derives `virtualWidth` and scales `#ui-container` to virtual 720p resolution. |
+| [`L896-L913`](file:///Users/jsph/cowgameui/index.html#L896-L913) | `ResizeObserver` & init | Listens to `.game-screen` size changes and parses URL query params (`page`, `safezones`, `coregui`, `compact`, `theme`). |
