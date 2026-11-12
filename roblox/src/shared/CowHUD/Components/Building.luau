@@ -12,7 +12,8 @@
 
 	Spring buttons get explicit widths from measured text (Util.fitWidth), never AutomaticSize.
 	The wireframe's placement boundary and cursor are world-space and belong to the game's placement system.
-	Icons are emoji or ASCII: Nunito has no arrows/symbols (✕ ↻ ⬟ … render as empty boxes in Roblox).
+	Icons are the wireframe's SVGs traced with Frames (Icons.luau): Nunito has no symbol glyphs and emoji
+	don't fit the wireframe look.
 
 	Fires: GridSnap (payload = label), BuildCategory (id), BuildItem (name), Rotate, Paint, Undo, Redo, Trash.
 	Exit Build sets state.mode = "normal" (init fires ExitBuild).
@@ -25,6 +26,7 @@ local UserInputService = game:GetService("UserInputService")
 local CowHUD = script.Parent.Parent
 local Theme = require(CowHUD.Theme)
 local Util = require(CowHUD.Util)
+local Icons = require(CowHUD.Icons)
 local C = Theme.Color
 
 local GRID_SNAPS = { "2 Studs", "4 Studs", "1 Stud", "Free / Off" }
@@ -53,14 +55,14 @@ local SLOT = Vector2.new(96, 112) -- w-24 h-28
 local SLOT_GAP = 12 -- gap-3
 
 local TOOLS = {
-	{ action = "Rotate", glyph = "🔄", text = "ROT [R]", key = Enum.KeyCode.R },
-	{ action = "Paint", glyph = "🎨", text = "PAINT" },
-	{ action = "Undo", glyph = "↩️", text = "UNDO [Z]", key = Enum.KeyCode.Z },
-	{ action = "Redo", glyph = "↪️", text = "REDO [Y]", key = Enum.KeyCode.Y },
-	{ action = "Trash", glyph = "🗑️", text = "TRASH [X]", key = Enum.KeyCode.X, danger = true },
+	{ action = "Rotate", icon = "rotate", text = "ROT [R]", key = Enum.KeyCode.R },
+	{ action = "Paint", icon = "paint", text = "PAINT" },
+	{ action = "Undo", icon = "undo", text = "UNDO [Z]", key = Enum.KeyCode.Z },
+	{ action = "Redo", icon = "redo", text = "REDO [Y]", key = Enum.KeyCode.Y },
+	{ action = "Trash", icon = "trash", text = "TRASH [X]", key = Enum.KeyCode.X, danger = true },
 }
 
-export type CatalogItem = { name: string, cost: string, glyph: string }
+export type CatalogItem = { name: string, cost: string, icon: string } -- icon: a key in Icons.luau
 export type Category = { id: string, label: string, items: { CatalogItem } }
 
 -- The wireframe's catalog; pass `options.catalog` to CowHUD.mount to replace it.
@@ -69,12 +71,12 @@ local DEFAULT_CATALOG: { Category } = {
 		id = "fences",
 		label = "Fences & Gates",
 		items = {
-			{ name = "Rustic Fence", cost = "20 Wood", glyph = "#" },
-			{ name = "Picket Gate", cost = "35 Wood", glyph = "🚪" },
-			{ name = "Hay Bale", cost = "15 Wood", glyph = "🌾" },
-			{ name = "Stone Wall", cost = "40 Stone", glyph = "▦" },
-			{ name = "Cozy Lantern", cost = "25 Stone", glyph = "🏮" },
-			{ name = "Clover Bed", cost = "10 Stone", glyph = "🍀" },
+			{ name = "Rustic Fence", cost = "20 Wood", icon = "fence" },
+			{ name = "Picket Gate", cost = "35 Wood", icon = "gate" },
+			{ name = "Hay Bale", cost = "15 Wood", icon = "hay" },
+			{ name = "Stone Wall", cost = "40 Stone", icon = "wall" },
+			{ name = "Cozy Lantern", cost = "25 Stone", icon = "lantern" },
+			{ name = "Clover Bed", cost = "10 Stone", icon = "clover" },
 		},
 	},
 	{ id = "barns", label = "Barns & Sheds", items = {} },
@@ -134,14 +136,14 @@ local function topBar(layer: Instance, ctx)
 		state:set("mode", "normal")
 	end)
 	row(exitFace, 8)
-	text(exitFace, "X", 14, 1)
+	Icons.slot("close", exitFace, ICON, C.Text, 1)
 	text(exitFace, "EXIT BUILD", 12, 2)
 	Util.fitWidth(exit, "EXIT BUILD", 12, 2 * (20 + BAR_BORDER) + ICON + 8)
 
 	-- Centre: parts limit (px-5, gap-2.5)
 	local centre, centreFace = barBox(layer, "PartsLimit", 20, 10, { AnchorPoint = Vector2.new(0.5, 0) })
 	local _, cog = Util.box({ Size = UDim2.fromOffset(28, 28), Radius = 8, Border = 2, Fill = C.Screen, LayoutOrder = 1, Parent = centreFace })
-	Util.label({ Text = "⚙", TextSize = 16, Size = UDim2.fromScale(1, 1), Parent = cog })
+	Icons.draw("cog", cog, ICON, C.Text)
 	local partsLabel = text(centreFace, "", 12, 2)
 	local function updateParts()
 		partsLabel.Text = string.format("PARTS: %d / %d", state:get("buildParts") or 0, state:get("buildPartsMax") or 0)
@@ -158,7 +160,7 @@ local function topBar(layer: Instance, ctx)
 		ctx.fire("GridSnap", GRID_SNAPS[state:get("gridSnap")])
 	end)
 	row(snapFace, 8)
-	text(snapFace, "▦", 14, 1, C.Accent)
+	Icons.slot("grid", snapFace, ICON, C.Accent, 1)
 	local snapLabel = text(snapFace, "", 10, 2)
 	state:observe("gridSnap", function(index)
 		snapLabel.Text = "GRID: " .. string.upper(GRID_SNAPS[index or 1])
@@ -167,15 +169,15 @@ local function topBar(layer: Instance, ctx)
 
 	local resources, resourceFace = barBox(right, "Resources", 16, 12)
 	resources.LayoutOrder = 2
-	local function counter(order: number, glyph: string): TextLabel
+	local function counter(order: number, icon: string): TextLabel
 		local group = Util.frame({ AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = order, Parent = resourceFace })
 		Util.list(group, Enum.FillDirection.Horizontal, 6, { VerticalAlignment = Enum.VerticalAlignment.Center })
-		text(group, glyph, 14, 1)
+		Icons.slot(icon, group, ICON, C.Text, 1)
 		return text(group, "", 11, 2)
 	end
-	local woodLabel = counter(1, "🌲")
+	local woodLabel = counter(1, "wood")
 	Util.frame({ Name = "Divider", Size = UDim2.fromOffset(2, 20), BackgroundColor3 = C.Subtle, LayoutOrder = 2, Parent = resourceFace })
-	local stoneLabel = counter(3, "🧱")
+	local stoneLabel = counter(3, "stone")
 	state:observe("wood", function(value)
 		woodLabel.Text = Util.formatNumber(value or 0)
 	end)
@@ -205,7 +207,8 @@ local function toolStack(layer: Instance, ctx)
 			end,
 		})
 		local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 16, Border = BAR_BORDER, Parent = visual })
-		Util.label({ Text = tool.glyph, TextSize = 20, TextColor3 = color, Position = UDim2.fromOffset(0, 3), Size = UDim2.new(1, 0, 0, 22), Parent = face })
+		local iconBox = Util.frame({ Name = "IconBox", Position = UDim2.fromOffset(0, 4), Size = UDim2.new(1, 0, 0, 22), Parent = face })
+		Icons.draw(tool.icon, iconBox, 20, color)
 		Util.label({
 			Text = tool.text,
 			TextSize = 9,
@@ -292,7 +295,7 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 	})
 	local name = Util.label({ Text = string.upper(item.name), TextSize = 9, TextWrapped = true, Size = UDim2.new(1, 0, 0, 22), LayoutOrder = 1, Parent = face })
 	local iconBorder, icon = Util.box({ Size = UDim2.fromOffset(48, 40), Radius = 8, Border = 2, LayoutOrder = 2, Parent = face })
-	local glyph = Util.label({ Text = item.glyph, TextSize = 20, Size = UDim2.fromScale(1, 1), Parent = icon })
+	local glyph = Icons.draw(item.icon, icon, 24, C.Accent)
 	local chip = Util.frame({ Name = "Cost", Size = UDim2.fromOffset(SLOT.X - 20, 18), LayoutOrder = 3, Parent = face })
 	Util.corner(chip, 6)
 	local cost = Util.label({ Text = string.upper(item.cost), TextSize = 9, Size = UDim2.fromScale(1, 1), Parent = chip })
@@ -307,7 +310,7 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 		Theme.paint(icon, "BackgroundColor3", if on then C.Card else C.Screen)
 		Theme.paint(chip, "BackgroundColor3", if on then C.Fill else C.Subtle)
 		Theme.paint(name, "TextColor3", if on then C.Text else C.Accent)
-		Theme.paint(glyph, "TextColor3", if on then C.Text else C.Accent)
+		Icons.paint(glyph, if on then C.Text else C.Accent)
 		Theme.paint(cost, "TextColor3", C.Text)
 	end)
 end

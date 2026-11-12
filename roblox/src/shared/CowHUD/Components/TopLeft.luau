@@ -17,17 +17,19 @@ return function(parent: Instance, ctx)
 		ZIndex = 2,
 		Parent = parent,
 	})
-	Util.list(cluster, Enum.FillDirection.Horizontal, 16)
+	Util.list(cluster, Enum.FillDirection.Horizontal, 12)
 
-	-- Cow profile (w-28 h-28, rounded-[2rem], border-6)
-	local _, profile = Util.button({ Name = "Profile", Size = UDim2.fromOffset(112, 112), LayoutOrder = 1, Parent = cluster }, {
+	-- Compact vitals (phase 5): profile 88 (was w-28 112), bars 208×32 (was w-64 h-10), so the cluster takes
+	-- ~35% less of the screen; its height matches the label + two bars exactly.
+	-- Cow profile (88×88, rounded 26, border-6)
+	local _, profile = Util.button({ Name = "Profile", Size = UDim2.fromOffset(88, 88), LayoutOrder = 1, Parent = cluster }, {
 		HoverScale = 1.05,
 		OnActivated = function()
 			ctx.trigger("Profile")
 		end,
 	})
-	local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 32, Border = 6, Parent = profile })
-	Util.label({ Text = "COW", TextSize = 18, Size = UDim2.fromScale(1, 1), Parent = face })
+	local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 26, Border = 6, Parent = profile })
+	Util.label({ Text = "COW", TextSize = 16, Size = UDim2.fromScale(1, 1), Parent = face })
 
 	-- "+ HERD" badge (-top-3 -right-3), shown in compact mode where the right sidebar is hidden.
 	local herdBadge, badgeVisual = Util.button({
@@ -56,7 +58,7 @@ return function(parent: Instance, ctx)
 	local _, chipFace = Util.box({
 		Name = "RebirthChip",
 		AnchorPoint = Vector2.new(0.5, 1),
-		Position = UDim2.new(0.5, 0, 1, 14),
+		Position = UDim2.new(0.5, 0, 1, 12),
 		AutomaticSize = Enum.AutomaticSize.XY,
 		Radius = 12,
 		Border = 4,
@@ -68,16 +70,15 @@ return function(parent: Instance, ctx)
 	})
 	local rebirthLabel = Util.label({ TextSize = 10, TextColor3 = C.Card, Parent = chipFace })
 
-	-- Vitals column (w-64, gap-3, pt-1)
+	-- Vitals column (208 wide, gap-2)
 	local vitals = Util.frame({
 		Name = "Vitals",
-		Size = UDim2.fromOffset(256, 0),
+		Size = UDim2.fromOffset(208, 0),
 		AutomaticSize = Enum.AutomaticSize.Y,
 		LayoutOrder = 2,
 		Parent = cluster,
 	})
-	Util.paddingEach(vitals, 0, 4, 0, 0)
-	Util.list(vitals, Enum.FillDirection.Vertical, 12)
+	Util.list(vitals, Enum.FillDirection.Vertical, 8)
 
 	local grazing = Util.frame({
 		Name = "Grazing",
@@ -86,7 +87,7 @@ return function(parent: Instance, ctx)
 		LayoutOrder = 1,
 		Parent = vitals,
 	})
-	Util.list(grazing, Enum.FillDirection.Vertical, 4)
+	Util.list(grazing, Enum.FillDirection.Vertical, 2)
 
 	local areaLabel = Util.label({
 		Size = UDim2.new(1, 0, 0, 14),
@@ -98,22 +99,22 @@ return function(parent: Instance, ctx)
 	})
 	Util.paddingEach(areaLabel, 4, 0, 4, 0)
 
-	-- Leaf bar: border-6 gray-400, TL/BR 40 (clamped), TR/BL 8; 4px gap; fill keeps TL/BR round, TR/BL sharp.
-	local leaf = Util.frame({ Name = "GrazingBar", Size = UDim2.fromOffset(256, 40), LayoutOrder = 2, Parent = grazing })
-	Util.shape({ Name = "Border", Color = C.Border, Radius = 40, Corners = { TR = 8, BL = 8 }, Parent = leaf })
+	-- Leaf bar: border-5, TL/BR fully round, TR/BL 6; 3px gap; fill keeps TL/BR round, TR/BL sharp.
+	local leaf = Util.frame({ Name = "GrazingBar", Size = UDim2.new(1, 0, 0, 32), LayoutOrder = 2, Parent = grazing })
+	Util.shape({ Name = "Border", Color = C.Border, Radius = 16, Corners = { TR = 6, BL = 6 }, Parent = leaf })
 	local track = Util.shape({
 		Name = "Track",
-		Size = UDim2.new(1, -12, 1, -12),
-		Position = UDim2.fromOffset(6, 6),
+		Size = UDim2.new(1, -10, 1, -10),
+		Position = UDim2.fromOffset(5, 5),
 		Color = C.Card,
-		Radius = 34,
-		Corners = { TR = 2, BL = 2 },
+		Radius = 11,
+		Corners = { TR = 1, BL = 1 },
 		Parent = leaf,
 	})
 	local fillArea = Util.frame({
 		Name = "FillArea",
-		Size = UDim2.new(1, -8, 1, -8),
-		Position = UDim2.fromOffset(4, 4),
+		Size = UDim2.new(1, -6, 1, -6),
+		Position = UDim2.fromOffset(3, 3),
 		ZIndex = 2,
 		Parent = track,
 	})
@@ -121,7 +122,7 @@ return function(parent: Instance, ctx)
 		Name = "Fill",
 		Size = UDim2.fromScale(0, 1),
 		Color = C.Fill,
-		Radius = 30,
+		Radius = 8,
 		Corners = { TR = 0, BL = 0 },
 		Parent = fillArea,
 	})
@@ -135,14 +136,14 @@ return function(parent: Instance, ctx)
 		Parent = track,
 	})
 
-	-- HP pill (border-6 gray-500, p-1)
+	-- HP pill (border-5 gray-500, p-[3px])
 	local _, hpTrack = Util.box({
 		Name = "HealthBar",
-		Size = UDim2.new(1, 0, 0, 40),
+		Size = UDim2.new(1, 0, 0, 32),
 		Radius = "full",
-		Border = 6,
+		Border = 5,
 		BorderColor = C.Accent,
-		Padding = { 4, 4 },
+		Padding = { 3, 3 },
 		LayoutOrder = 2,
 		Parent = vitals,
 	})

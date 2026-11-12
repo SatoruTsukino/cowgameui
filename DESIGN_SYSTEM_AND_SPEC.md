@@ -64,11 +64,11 @@ All dimensions are in virtual 720p coordinate units ($1\text{px} \to 1$ Roblox o
 
 | Component | Dimensions ($W \times H$) | Border Stroke | Corner Radius | Position Anchor |
 | :--- | :--- | :--- | :--- | :--- |
-| **Cow Profile Squircle** | $112\text{px} \times 112\text{px}$ | $6\text{px}$ | $32\text{px}$ (`2rem`) | `top-8, left-8` |
+| **Cow Profile Squircle** | $88\text{px} \times 88\text{px}$ | $6\text{px}$ | $26\text{px}$ | `top-8, left-8` |
 | **Rebirth Chip** | Auto $\times 26\text{px}$ | $4\text{px}$ | $12\text{px}$ (`0.75rem`) | Bottom of profile card |
 | **+HERD Badge** | Auto $\times 24\text{px}$ | $4\text{px}$ | $9999\text{px}$ (Pill) | Top-right of profile card |
-| **Grazing Quest Leaf** | $256\text{px} \times 40\text{px}$ | $6\text{px}$ | Asymmetric ($40/8/40/8\text{px}$) | Top vitals row |
-| **Stamina / HP Pill** | $256\text{px} \times 40\text{px}$ | $6\text{px}$ | $9999\text{px}$ (Pill) | Top vitals row |
+| **Grazing Quest Leaf** | $208\text{px} \times 32\text{px}$ | $5\text{px}$ | Asymmetric (round / $6\text{px}$) | Top vitals row |
+| **Stamina / HP Pill** | $208\text{px} \times 32\text{px}$ | $5\text{px}$ | $9999\text{px}$ (Pill) | Top vitals row |
 | **Town Bulletin (Full)** | $430\text{px} \times 64\text{px}$ | $6\text{px}$ | $32\text{px}$ (`2rem`) | `top-4, center` |
 | **Town Bulletin (Compact)** | $96\text{px} \times 44\text{px}$ | $6\text{px}$ | $9999\text{px}$ (Pill) | `top-4, center` |
 | **Calories Pill** | $160\text{px} \times 56\text{px}$ | $6\text{px}$ | $24\text{px}$ (`1.5rem`) | `top-4, right-8` |

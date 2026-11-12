@@ -178,6 +178,10 @@ Script: `/private/tmp/claude-501/-Users-jsph-cowgameui/c1988756-da6d-412a-b925-2
 - **Cowbell:** SET and the compact MENU share the wireframe cowbell (24px domed top, 9px flare, loop). Compact MENU was a squircle "•••".
 - **HTML:** the quick emotes now use the Roblox design (they swap into the Moo / Sprint / Kick slots, and Emote reads BACK).
 
+## Studio review round 3 (2026-11-11)
+- **Build icons:** emoji are replaced with the wireframe's SVG paths traced as Frame strokes (`Icons.luau`: close, cog, grid, wood, stone, rotate, paint, undo, redo, trash, fence, gate, hay, wall, lantern, clover).
+- **Compact vitals (Roblox and HTML):** the profile goes from 112 to 88 (radius 26), the bars from 256×40 to 208×32 (border 5), and the gaps tighten. The left sidebar moves to top-[168px] (`SidebarOffset` 136). The cluster takes about 35% less of the screen, and its height matches the label plus both bars.
+
 ## Original open questions (answered in D1–D6)
 1. **Phone compact default:** should compact mode be forced on phones (merged BAG / `•••`), or only defaulted so players can turn it off?
 2. **Minimum text size:** is an 11pt floor OK? Going to 12pt is more comfortable but costs more layout room.

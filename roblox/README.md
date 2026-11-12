@@ -25,6 +25,7 @@ ReplicatedStorage
    ├─ Bindings           (ModuleScript)  ← Bindings.luau
    ├─ Layout             (ModuleScript)  ← Layout.luau
    ├─ Commands           (ModuleScript)  ← Commands.luau
+   ├─ Icons              (ModuleScript)  ← Icons.luau
    └─ Components         (Folder)
       ├─ TopLeft         (ModuleScript)
       ├─ TopRight        (ModuleScript)
@@ -80,6 +81,6 @@ The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 ## Known differences from the HTML
 - Dashed borders (area actions) are solid strokes, because Roblox has no dashed `UIStroke`.
 - Mobile safe zones are not drawn. They only preview Roblox's native thumbstick and Jump.
-- Icons are emoji or ASCII, because Nunito has no arrow or symbol glyphs.
+- Icons are the wireframe's SVGs traced with Frames (`Icons.luau`), because Roblox can't render SVG and Nunito has no symbol glyphs. They scale with the HUD and follow the theme.
 - No drop shadows.
 - The font is Nunito Heavy (`Theme.Font`). Roblox has no letter-spacing, so `tracking-widest` is dropped.

@@ -99,7 +99,7 @@ Theme.Scale = {
 
 Theme.Margin = 32 -- Tailwind `top-8` / `left-8`
 Theme.ClusterGap = 16 -- minimum breathing room between top clusters and the bulletin
-Theme.SidebarOffset = 160 -- sidebars start this far below the top-left cluster (HTML: top-48 - top-8)
+Theme.SidebarOffset = 136 -- sidebars start this far below the top-left cluster (HTML: top-[168px] - top-8)
 Theme.TopRowHeight = 56 -- calories pill / settings height, centred on the core topbar buttons
 Theme.TopRowMinY = 12 -- closest the topbar row may sit to the screen top
 Theme.MinTouchTarget = 44 -- rendered px (Apple HIG 44pt); hit areas grow to this, visuals keep spec size
