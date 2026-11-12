@@ -77,7 +77,8 @@ Positioned at `absolute top-4 left-6 pointer-events-none z-30 opacity-90 transit
   1. `#sidebarHerd`: Herd button (`HERD`).
   2. `#sidebarTrade`: Trade button (`TRADE`).
 
-### F. Mobile Action Cluster & Safe Zones ([L438-L495](file:///Users/jsph/cowgameui/index.html#L438-L495))
+### F. Mobile Action Cluster & Safe Zones ([L633-L708](file:///Users/jsph/cowgameui/index.html#L633-L708))
+- Global in `#ui-container` (`z-30`): Overlays across both Pasture and Building GUIs without obstruction.
 - `#safeZoneLeft`: Mobile thumbstick (`w-48 h-48`).
 - `#safeZoneRight`: Mobile action cluster (`w-64 h-64`). Centered `#btnMobileJump` (`80px`), Radial Arc satellites ($D=56\text{px}$, $R=92\text{px}$):
   - Sprint ($190^\circ$, `#btnMobileSprint`)
@@ -88,15 +89,15 @@ Positioned at `absolute top-4 left-6 pointer-events-none z-30 opacity-90 transit
 
 ---
 
-## 5. Page 2: Building & Construction GUI ([L500-L716](file:///Users/jsph/cowgameui/index.html#L500-L716))
+## 5. Page 2: Building & Construction GUI ([L425-L630](file:///Users/jsph/cowgameui/index.html#L425-L630))
 
 | Line Range | Element ID / Selector | Description & Functionality |
 | :--- | :--- | :--- |
-| [`L500`](file:///Users/jsph/cowgameui/index.html#L500) | `#pageBuilding` | Root wrapper for Construction Mode wireframe. Toggled via `switchPage('building')`. |
-| [`L503-L563`](file:///Users/jsph/cowgameui/index.html#L503-L563) | Building Top Bar | Top HUD: Exit Build button (`[✕] Exit Build`), center title chip (`CONSTRUCTION MODE • Tier 2`), grid snap button (`#btnGridSnap`), and dual Wood (`450`) & Stone (`320`) side-by-side SVG counters (Calorie counter removed). |
-| [`L565-L578`](file:///Users/jsph/cowgameui/index.html#L565-L578) | Placement Boundary | Dashed building boundary ring with central animated `Placement Cursor` target. |
-| [`L580-L622`](file:///Users/jsph/cowgameui/index.html#L580-L622) | Right Utility Tools | Vertical action stack: Rotate (`ROT [R]`), Paint (`PAINT`), Undo (`UNDO [Z]`), Redo (`REDO [Y]`), Demolish (`TRASH [X]`). |
-| [`L624-L701`](file:///Users/jsph/cowgameui/index.html#L624-L701) | Bottom Catalog Dock | Category tabs (`Fences`, `Barns`, `Feeders`, `Paths`, `Decor`) + horizontal scrollable prop tray with 6 slot cards (Rustic Fence: 20 Wood, Picket Gate: 35 Wood, Hay Bale: 15 Wood, Stone Wall: 40 Stone, Cozy Lantern: 25 Stone, Clover Bed: 10 Stone), all 100% SVG vectorized. |
+| [`L425`](file:///Users/jsph/cowgameui/index.html#L425) | `#pageBuilding` | Root wrapper for Construction Mode wireframe. Toggled via `switchPage('building')`. |
+| [`L428-L475`](file:///Users/jsph/cowgameui/index.html#L428-L475) | Building Top Bar | Top HUD: Exit Build button (`[✕] Exit Build`), centered Object/Parts Limit pill (`Parts: 34 / 50`) with Cog icon (`absolute left-1/2 -translate-x-1/2`), grid snap button (`#btnGridSnap`), and dual Wood (`450`) & Stone (`320`) side-by-side SVG counters. |
+| [`L477-L490`](file:///Users/jsph/cowgameui/index.html#L477-L490) | Placement Boundary | Dashed building boundary ring with central animated `Placement Cursor` target. |
+| [`L493-L534`](file:///Users/jsph/cowgameui/index.html#L493-L534) | Right Utility Tools | Vertical action stack (`top-20`, gap-2.5): Rotate (`ROT [R]`), Paint (`PAINT`), Undo (`UNDO [Z]`), Redo (`REDO [Y]`), Demolish (`TRASH [X]`). Kept strictly above right safe zone. |
+| [`L536-L628`](file:///Users/jsph/cowgameui/index.html#L536-L628) | Bottom Catalog Dock | Category tabs (`Fences`, `Barns`, `Feeders`, `Paths`, `Decor`) + horizontal scrollable prop tray with 6 slot cards (Rustic Fence, Picket Gate, Hay Bale, Stone Wall, Cozy Lantern, Clover Bed). Constrained to `max-w-[680px]` centered strictly between mobile safe zones. |
 
 ---
 
