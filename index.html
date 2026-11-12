@@ -64,36 +64,152 @@
         .aspect-21-9 { aspect-ratio: 21 / 9; }
         .aspect-4-3 { aspect-ratio: 4 / 3; }
         .aspect-19-5-9 { aspect-ratio: 19.5 / 9; }
+
+        /* Dynamic Theme System */
+        :root {
+            --theme-screen-bg: #f3f4f6;
+            --theme-grid-dot: #d1d5db;
+            --theme-card-bg: #ffffff;
+            --theme-card-subtle: #f3f4f6;
+            --theme-border: #9ca3af;
+            --theme-border-dark: #6b7280;
+            --theme-border-darker: #4b5563;
+            --theme-fill-primary: #d1d5db;
+            --theme-fill-subtle: #e5e7eb;
+            --theme-accent: #6b7280;
+            --theme-accent-light: #9ca3af;
+            --theme-accent-dark: #4b5563;
+            --theme-text-main: #6b7280;
+            --theme-text-dark: #4b5563;
+            --theme-text-muted: #9ca3af;
+        }
+
+        .game-screen {
+            background-color: var(--theme-screen-bg) !important;
+            background-image: radial-gradient(var(--theme-grid-dot) 2px, transparent 2px) !important;
+            transition: background-color 0.25s ease;
+        }
+
+        .game-screen .bg-white { background-color: var(--theme-card-bg) !important; }
+        .game-screen .bg-gray-100 { background-color: var(--theme-card-subtle) !important; }
+        .game-screen .bg-gray-200 { background-color: var(--theme-fill-subtle) !important; }
+        .game-screen .bg-gray-300 { background-color: var(--theme-fill-primary) !important; }
+        .game-screen .bg-gray-400 { background-color: var(--theme-accent-light) !important; }
+        .game-screen .bg-gray-500 { background-color: var(--theme-accent) !important; }
+        .game-screen .bg-gray-600 { background-color: var(--theme-accent-dark) !important; }
+
+        .game-screen .border-gray-300 { border-color: var(--theme-fill-primary) !important; }
+        .game-screen .border-gray-400 { border-color: var(--theme-border) !important; }
+        .game-screen .border-gray-500 { border-color: var(--theme-border-dark) !important; }
+        .game-screen .border-gray-600 { border-color: var(--theme-border-darker) !important; }
+
+        .game-screen .text-gray-400 { color: var(--theme-text-muted) !important; }
+        .game-screen .text-gray-500 { color: var(--theme-text-main) !important; }
+        .game-screen .text-gray-600 { color: var(--theme-text-dark) !important; }
+
+        .game-screen .stroke-gray-500 { stroke: var(--theme-text-main) !important; }
+        .game-screen .stroke-gray-400 { stroke: var(--theme-text-muted) !important; }
     </style>
 </head>
 <body class="gap-6 w-full">
 
     <!-- ================= CONTROLS ================= -->
-    <div class="flex flex-wrap items-center justify-between gap-4 w-full max-w-[1280px] px-6 py-4 bg-white rounded-[2rem] border-[6px] border-gray-400 shadow-sm z-50">
-        <div class="flex items-center gap-3">
-            <span class="w-4 h-4 rounded-full bg-gray-500 animate-pulse"></span>
-            <span class="text-gray-500 font-black text-sm tracking-widest uppercase">ScreenGui Controls</span>
+    <div class="flex flex-col gap-3 w-full max-w-[1280px] px-6 py-4 bg-white rounded-[2rem] border-[6px] border-gray-400 shadow-sm z-50">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="w-4 h-4 rounded-full bg-gray-500 animate-pulse"></span>
+                <span class="text-gray-500 font-black text-sm tracking-widest uppercase">ScreenGui Controls</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <select id="aspectRatioSelect" onchange="changeAspectRatio(this)" class="px-4 py-2 rounded-full border-[4px] border-gray-400 bg-white text-gray-600 font-black text-xs tracking-wider uppercase outline-none cursor-pointer hover:bg-gray-50">
+                    <option value="aspect-video">Desktop (16:9)</option>
+                    <option value="aspect-21-9">Ultrawide (21:9)</option>
+                    <option value="aspect-19-5-9">Mobile (19.5:9)</option>
+                    <option value="aspect-4-3">Tablet (4:3)</option>
+                </select>
+                <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                <button id="btnCompact" onclick="toggleCompactMode()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
+                    Compact Mode: OFF
+                </button>
+                <button id="btnBulletin" onclick="toggleBulletin()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-600 bg-gray-600 text-white font-black text-xs tracking-wider uppercase hover:opacity-90 transition-opacity">
+                    World Bulletin: ON
+                </button>
+                <button id="btnSafeZones" onclick="toggleSafeZones()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
+                    Mobile Safe Zones: OFF
+                </button>
+                <button id="btnCoreGui" onclick="toggleCoreGui()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
+                    Roblox CoreGui: OFF
+                </button>
+                <button id="btnTheme" onclick="toggleThemeDrawer()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
+                    Theme / Colors: OFF
+                </button>
+            </div>
         </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <select id="aspectRatioSelect" onchange="changeAspectRatio(this)" class="px-4 py-2 rounded-full border-[4px] border-gray-400 bg-white text-gray-600 font-black text-xs tracking-wider uppercase outline-none cursor-pointer hover:bg-gray-50">
-                <option value="aspect-video">Desktop (16:9)</option>
-                <option value="aspect-21-9">Ultrawide (21:9)</option>
-                <option value="aspect-19-5-9">Mobile (19.5:9)</option>
-                <option value="aspect-4-3">Tablet (4:3)</option>
-            </select>
-            <div class="w-px h-6 bg-gray-300 mx-1"></div>
-            <button id="btnCompact" onclick="toggleCompactMode()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
-                Compact Mode: OFF
-            </button>
-            <button id="btnBulletin" onclick="toggleBulletin()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-600 bg-gray-600 text-white font-black text-xs tracking-wider uppercase hover:opacity-90 transition-opacity">
-                World Bulletin: ON
-            </button>
-            <button id="btnSafeZones" onclick="toggleSafeZones()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
-                Mobile Safe Zones: OFF
-            </button>
-            <button id="btnCoreGui" onclick="toggleCoreGui()" class="px-5 py-2.5 rounded-full border-[4px] border-gray-400 bg-gray-100 text-gray-600 font-black text-xs tracking-wider uppercase hover:bg-gray-200 transition-colors">
-                Roblox CoreGui: OFF
-            </button>
+
+        <!-- EXPANDABLE THEME & COLOR PICKER DRAWER -->
+        <div id="themeDrawer" class="hidden w-full pt-3 mt-1 border-t-4 border-gray-200 flex flex-col gap-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <!-- Preset buttons -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-gray-400 font-black text-xs tracking-wider uppercase mr-1">Palettes:</span>
+                    <button onclick="applyThemePreset('monochrome')" class="px-3.5 py-1.5 rounded-full border-2 border-gray-400 bg-gray-100 text-gray-700 font-black text-[11px] tracking-wider uppercase hover:bg-gray-200">Default Mono</button>
+                    <button onclick="applyThemePreset('meadow')" class="px-3.5 py-1.5 rounded-full border-2 border-green-500 bg-green-50 text-green-700 font-black text-[11px] tracking-wider uppercase hover:bg-green-100">Cozy Meadow</button>
+                    <button onclick="applyThemePreset('sunrise')" class="px-3.5 py-1.5 rounded-full border-2 border-amber-500 bg-amber-50 text-amber-700 font-black text-[11px] tracking-wider uppercase hover:bg-amber-100">Golden Sunrise</button>
+                    <button onclick="applyThemePreset('lavender')" class="px-3.5 py-1.5 rounded-full border-2 border-purple-500 bg-purple-50 text-purple-700 font-black text-[11px] tracking-wider uppercase hover:bg-purple-100">Lavender Dusk</button>
+                    <button onclick="applyThemePreset('sky')" class="px-3.5 py-1.5 rounded-full border-2 border-sky-500 bg-sky-50 text-sky-700 font-black text-[11px] tracking-wider uppercase hover:bg-sky-100">Sky Pasture</button>
+                </div>
+
+                <!-- Reset Button -->
+                <button onclick="resetTheme()" class="px-3.5 py-1.5 rounded-full border-2 border-red-300 bg-red-50 text-red-600 font-black text-[11px] tracking-wider uppercase hover:bg-red-100">
+                    Reset to Wireframe
+                </button>
+            </div>
+
+            <!-- Live Element Color Pickers -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 pt-1">
+                <label class="flex items-center gap-2 bg-gray-50 border-2 border-gray-300 rounded-xl px-2.5 py-1.5 cursor-pointer hover:border-gray-400">
+                    <input type="color" id="pickerCard" value="#ffffff" oninput="updateThemeProp('--theme-card-bg', this.value)" class="w-7 h-7 rounded-lg border-none cursor-pointer bg-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-gray-400 uppercase leading-none">Part</span>
+                        <span class="text-[11px] font-black text-gray-700 uppercase">Cards</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-2 bg-gray-50 border-2 border-gray-300 rounded-xl px-2.5 py-1.5 cursor-pointer hover:border-gray-400">
+                    <input type="color" id="pickerBorder" value="#9ca3af" oninput="updateThemeProp('--theme-border', this.value)" class="w-7 h-7 rounded-lg border-none cursor-pointer bg-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-gray-400 uppercase leading-none">Part</span>
+                        <span class="text-[11px] font-black text-gray-700 uppercase">Borders</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-2 bg-gray-50 border-2 border-gray-300 rounded-xl px-2.5 py-1.5 cursor-pointer hover:border-gray-400">
+                    <input type="color" id="pickerFill" value="#d1d5db" oninput="updateThemeProp('--theme-fill-primary', this.value)" class="w-7 h-7 rounded-lg border-none cursor-pointer bg-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-gray-400 uppercase leading-none">Part</span>
+                        <span class="text-[11px] font-black text-gray-700 uppercase">Fills</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-2 bg-gray-50 border-2 border-gray-300 rounded-xl px-2.5 py-1.5 cursor-pointer hover:border-gray-400">
+                    <input type="color" id="pickerAccent" value="#4b5563" oninput="updateThemeProp('--theme-accent', this.value)" class="w-7 h-7 rounded-lg border-none cursor-pointer bg-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-gray-400 uppercase leading-none">Part</span>
+                        <span class="text-[11px] font-black text-gray-700 uppercase">Accents</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-2 bg-gray-50 border-2 border-gray-300 rounded-xl px-2.5 py-1.5 cursor-pointer hover:border-gray-400">
+                    <input type="color" id="pickerText" value="#4b5563" oninput="updateThemeProp('--theme-text-main', this.value)" class="w-7 h-7 rounded-lg border-none cursor-pointer bg-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-gray-400 uppercase leading-none">Part</span>
+                        <span class="text-[11px] font-black text-gray-700 uppercase">Text</span>
+                    </div>
+                </label>
+                <label class="flex items-center gap-2 bg-gray-50 border-2 border-gray-300 rounded-xl px-2.5 py-1.5 cursor-pointer hover:border-gray-400">
+                    <input type="color" id="pickerCanvas" value="#f3f4f6" oninput="updateThemeProp('--theme-screen-bg', this.value)" class="w-7 h-7 rounded-lg border-none cursor-pointer bg-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black text-gray-400 uppercase leading-none">Part</span>
+                        <span class="text-[11px] font-black text-gray-700 uppercase">Canvas</span>
+                    </div>
+                </label>
+            </div>
         </div>
     </div>
 
@@ -270,12 +386,50 @@
                 </div>
             </div>
 
-            <!-- ================= BOTTOM SAFE ZONES ================= -->
-            <div id="safeZoneLeft" class="hidden absolute bottom-8 left-8 w-48 h-48 rounded-full border-[4px] border-dashed border-gray-400 bg-gray-300/30 flex flex-col items-center justify-center pointer-events-none">
-                <span class="text-gray-500 font-black text-[10px] tracking-widest uppercase">Thumbstick</span>
+            <!-- ================= BOTTOM SAFE ZONES & MOBILE ACTION CLUSTER ================= -->
+            <div id="safeZoneLeft" class="hidden absolute bottom-8 left-8 w-48 h-48 rounded-full border-[4px] border-dashed border-gray-400/50 bg-gray-300/20 flex flex-col items-center justify-center pointer-events-none">
+                <div class="w-20 h-20 rounded-full border-[5px] border-gray-400 bg-white/70 flex items-center justify-center shadow-inner">
+                    <div class="w-8 h-8 rounded-full bg-gray-400"></div>
+                </div>
+                <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">Thumbstick</span>
             </div>
-            <div id="safeZoneRight" class="hidden absolute bottom-8 right-8 w-56 h-48 rounded-[2.5rem] border-[4px] border-dashed border-gray-400 bg-gray-300/30 flex flex-col items-center justify-center pointer-events-none">
-                <span class="text-gray-500 font-black text-[10px] tracking-widest uppercase">Jump / Interact</span>
+
+            <div id="safeZoneRight" class="hidden absolute bottom-8 right-8 w-60 h-60 pointer-events-auto">
+                <!-- Safe zone background ring -->
+                <div class="absolute inset-0 rounded-[3rem] border-[4px] border-dashed border-gray-400/30 bg-gray-300/10 pointer-events-none -z-10"></div>
+                
+                <!-- Anchor: Jump Button (Bottom-Right) -->
+                <div id="btnMobileJump" class="absolute bottom-2 right-2 w-20 h-20 rounded-full border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 active:scale-95 cursor-pointer transition-transform" title="Jump">
+                    <svg class="w-8 h-8 stroke-gray-500 stroke-[3.5] fill-none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">JUMP</span>
+                </div>
+
+                <!-- Radial Arc Satellite Buttons (Bottom to Top: Sprint -> Moo -> Emote) -->
+                <!-- 1. Sprint (Bottom / West, θ ≈ 180°) -->
+                <div id="btnMobileSprint" class="absolute bottom-[24px] right-[106px] w-12 h-12 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
+                    <svg class="w-5 h-5 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span class="text-gray-500 font-black text-[7px] tracking-wider uppercase -mt-0.5">SPRINT</span>
+                </div>
+
+                <!-- 2. Moo (Middle / North-West, θ ≈ 135°) -->
+                <div id="btnMobileMoo" class="absolute bottom-[82px] right-[82px] w-12 h-12 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
+                    <svg class="w-5 h-5 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M16 12h.01M9 16c1.5 1 4.5 1 6 0M4 9a8 8 0 1 1 16 0c0 5-4 8-8 8s-8-3-8-8z"/>
+                    </svg>
+                    <span class="text-gray-500 font-black text-[7px] tracking-wider uppercase -mt-0.5">MOO</span>
+                </div>
+
+                <!-- 3. Emote (Top / North, θ ≈ 90°) -->
+                <div id="btnMobileEmote" class="absolute bottom-[106px] right-[24px] w-12 h-12 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
+                    <svg class="w-5 h-5 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-gray-500 font-black text-[7px] tracking-wider uppercase -mt-0.5">EMOTE</span>
+                </div>
             </div>
 
             <!-- ================= BOTTOM-CENTER AREA ACTIONS ================= -->
@@ -293,6 +447,98 @@
         let isBulletinVisible = true;
         let areSafeZonesVisible = false;
         let isCoreGuiVisible = false;
+        let isThemeDrawerOpen = false;
+
+        const THEME_PRESETS = {
+            monochrome: {
+                '--theme-card-bg': '#ffffff',
+                '--theme-border': '#9ca3af',
+                '--theme-fill-primary': '#d1d5db',
+                '--theme-accent': '#6b7280',
+                '--theme-text-main': '#6b7280',
+                '--theme-screen-bg': '#f3f4f6'
+            },
+            meadow: {
+                '--theme-card-bg': '#f7fdf9',
+                '--theme-border': '#4ade80',
+                '--theme-fill-primary': '#86efac',
+                '--theme-accent': '#16a34a',
+                '--theme-text-main': '#166534',
+                '--theme-screen-bg': '#ecfdf5'
+            },
+            sunrise: {
+                '--theme-card-bg': '#fffdf5',
+                '--theme-border': '#f59e0b',
+                '--theme-fill-primary': '#fde68a',
+                '--theme-accent': '#d97706',
+                '--theme-text-main': '#78350f',
+                '--theme-screen-bg': '#fef3c7'
+            },
+            lavender: {
+                '--theme-card-bg': '#faf5ff',
+                '--theme-border': '#c084fc',
+                '--theme-fill-primary': '#e9d5ff',
+                '--theme-accent': '#9333ea',
+                '--theme-text-main': '#581c87',
+                '--theme-screen-bg': '#f3e8ff'
+            },
+            sky: {
+                '--theme-card-bg': '#f0f9ff',
+                '--theme-border': '#38bdf8',
+                '--theme-fill-primary': '#bae6fd',
+                '--theme-accent': '#0284c7',
+                '--theme-text-main': '#075985',
+                '--theme-screen-bg': '#e0f2fe'
+            }
+        };
+
+        function updateThemeProp(prop, val) {
+            const screen = document.querySelector('.game-screen');
+            screen.style.setProperty(prop, val);
+
+            if (prop === '--theme-border') {
+                screen.style.setProperty('--theme-border-dark', val);
+                screen.style.setProperty('--theme-border-darker', val);
+            }
+            if (prop === '--theme-text-main') {
+                screen.style.setProperty('--theme-text-dark', val);
+                screen.style.setProperty('--theme-text-muted', val);
+            }
+            if (prop === '--theme-accent') {
+                screen.style.setProperty('--theme-accent-light', val);
+                screen.style.setProperty('--theme-accent-dark', val);
+            }
+            if (prop === '--theme-screen-bg') {
+                screen.style.setProperty('--theme-grid-dot', val);
+            }
+        }
+
+        function applyThemePreset(presetKey) {
+            const preset = THEME_PRESETS[presetKey];
+            if (!preset) return;
+
+            for (const [prop, val] of Object.entries(preset)) {
+                updateThemeProp(prop, val);
+            }
+
+            document.getElementById('pickerCard').value = preset['--theme-card-bg'];
+            document.getElementById('pickerBorder').value = preset['--theme-border'];
+            document.getElementById('pickerFill').value = preset['--theme-fill-primary'];
+            document.getElementById('pickerAccent').value = preset['--theme-accent'];
+            document.getElementById('pickerText').value = preset['--theme-text-main'];
+            document.getElementById('pickerCanvas').value = preset['--theme-screen-bg'];
+        }
+
+        function resetTheme() {
+            applyThemePreset('monochrome');
+        }
+
+        function toggleThemeDrawer() {
+            isThemeDrawerOpen = !isThemeDrawerOpen;
+            const drawer = document.getElementById('themeDrawer');
+            drawer.classList.toggle('hidden', !isThemeDrawerOpen);
+            setButtonState(document.getElementById('btnTheme'), 'Theme / Colors', isThemeDrawerOpen);
+        }
 
         function setButtonState(btn, label, active) {
             btn.textContent = `${label}: ${active ? 'ON' : 'OFF'}`;
@@ -404,6 +650,15 @@
             const screen = document.querySelector('.game-screen');
             resizeObserver.observe(screen);
             resizeUI();
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('safezones') === '1') toggleSafeZones();
+            if (params.get('coregui') === '1') toggleCoreGui();
+            if (params.get('compact') === '1') toggleCompactMode();
+            if (params.get('theme')) {
+                toggleThemeDrawer();
+                applyThemePreset(params.get('theme'));
+            }
         });
     </script>
 </body>
