@@ -99,9 +99,34 @@ Theme.Scale = {
 
 Theme.Margin = 32 -- Tailwind `top-8` / `left-8`
 Theme.ClusterGap = 16 -- minimum breathing room between top clusters and the bulletin
-Theme.SidebarOffset = 136 -- sidebars start this far below the top-left cluster (HTML: top-[168px] - top-8)
 Theme.TopRowHeight = 56 -- calories pill / settings height, centred on the core topbar buttons
 Theme.TopRowMinY = 12 -- closest the topbar row may sit to the screen top
+--[[
+	Phone sizes (phase 5 decision: grow boxes on phones). Text in fixed-size boxes can only reach the 11pt floor
+	on a phone if the box is bigger, so these boxes grow when Theme.phone is set. CowHUD.mount decides it once,
+	before building: a touch screen whose HUD scale sits at TouchMinScale (short screens). Desktop and tablet keep
+	the wireframe sizes. Changing devices in the Studio emulator needs a fresh Play to switch.
+]]
+Theme.phone = false
+local SIZES = {
+	SidebarWidth = { 64, 72 }, -- INV / BAG / CLOSET / TRADE / HERD (w-16)
+	BackpackHeight = { 72, 80 }, -- INV / BAG (h-[4.5rem])
+	HerdSquare = { 48, 54 }, -- the two stacked herd squares (w-12)
+	Satellite = { 56, 68 }, -- action arc buttons (w-14)
+	Tool = { 56, 64 }, -- build tool buttons (w-14)
+	SlotWidth = { 96, 120 }, -- catalog slot (w-24); the tray scrolls on phones
+	SlotHeight = { 112, 128 }, -- catalog slot (h-28)
+	SlotName = { 22, 36 }, -- catalog slot name block (two lines on phones)
+	TabLines = { 26, 36 }, -- catalog tab label block (two lines)
+	SidebarOffset = { 136, 112 }, -- left sidebar below the top-left cluster; tighter on phones to clear the thumbstick
+	SidebarGap = { 16, 8 }, -- gap-4 between sidebar buttons
+}
+function Theme.size(key: string): number
+	local pair = SIZES[key]
+	assert(pair, "unknown size " .. key)
+	return if Theme.phone then pair[2] else pair[1]
+end
+
 Theme.MinTouchTarget = 44 -- rendered px (Apple HIG 44pt); hit areas grow to this, visuals keep spec size
 
 --[[

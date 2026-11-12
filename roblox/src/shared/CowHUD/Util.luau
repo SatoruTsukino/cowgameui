@@ -130,7 +130,7 @@ local function applyLabel(label: TextLabel, base: number)
 		return
 	end
 	if label.TextWrapped then
-		label.TextSize = math.min(target, math.floor(base * 1.25)) -- wrapping absorbs width; keep height sane
+		label.TextSize = target -- wrapping absorbs the width; boxes that wrap get two-line height on phones
 		return
 	end
 	-- Fixed box: grow towards the floor only while the text still fits the box width.

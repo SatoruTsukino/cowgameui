@@ -36,7 +36,7 @@ local BAR_BORDER = 5
 local BAR_RADIUS = 16 -- rounded-2xl
 local ICON = 16 -- w-4 h-4
 
-local TOOL_SIZE = 56 -- w-14
+local TOOL_SIZE = 56 -- w-14; Theme.size("Tool") when built (64 on phones)
 local TOOL_GAP = 10 -- gap-2.5
 
 local DOCK_BOTTOM = 24 -- bottom-6
@@ -46,12 +46,19 @@ local DOCK_TOUCH_CLEARANCE = 256 -- touch: keep clear of Roblox's native thumbst
 local TAB_GAP = 6 -- gap-1.5
 local TAB_PAD_X = 8 -- px-3.5 minus the border, so two-line labels fit when five tabs share 680px
 local TAB_TEXT = 10
-local TAB_LINES = 26 -- labels wrap to two lines like the wireframe ("FENCES & / GATES")
-local TAB_ACTIVE_HEIGHT = 5 + 8 + TAB_LINES + 8 -- border-t-5 + py-2 + lines + py-2
-local TAB_INACTIVE_HEIGHT = 4 + 6 + TAB_LINES + 6 -- border-t-4 + py-1.5 + lines + py-1.5
+-- Tab label block: two lines like the wireframe ("FENCES & / GATES"); Theme.size("TabLines") when built.
+local TAB_LINES = 26
+local TAB_ACTIVE_HEIGHT, TAB_INACTIVE_HEIGHT
+local function setTabLines(lines: number)
+	TAB_LINES = lines
+	TAB_ACTIVE_HEIGHT = 5 + 8 + lines + 8 -- border-t-5 + py-2 + lines + py-2
+	TAB_INACTIVE_HEIGHT = 4 + 6 + lines + 6 -- border-t-4 + py-1.5 + lines + py-1.5
+end
+setTabLines(TAB_LINES)
 local TRAY_BORDER = 5
 local TRAY_PAD = Vector2.new(20, 14) -- px-5 py-3.5
-local SLOT = Vector2.new(96, 112) -- w-24 h-28
+local SLOT = Vector2.new(96, 112) -- w-24 h-28; Theme.size("SlotWidth"/"SlotHeight") when built
+local SLOT_NAME = 22
 local SLOT_GAP = 12 -- gap-3
 
 local TOOLS = {
@@ -299,7 +306,7 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 		HorizontalAlignment = Enum.HorizontalAlignment.Center,
 		VerticalAlignment = Enum.VerticalAlignment.Center,
 	})
-	local name = Util.label({ Text = string.upper(item.name), TextSize = 9, TextWrapped = true, Size = UDim2.new(1, 0, 0, 22), LayoutOrder = 1, Parent = face })
+	local name = Util.label({ Text = string.upper(item.name), TextSize = 9, TextWrapped = true, Size = UDim2.new(1, 0, 0, SLOT_NAME), LayoutOrder = 1, Parent = face })
 	local iconBorder, icon = Util.box({ Size = UDim2.fromOffset(48, 40), Radius = 8, Border = 2, LayoutOrder = 2, Parent = face })
 	local glyph = Icons.draw(item.icon, icon, 24, C.Accent)
 	local chip = Util.frame({ Name = "Cost", Size = UDim2.fromOffset(SLOT.X - 20, 18), LayoutOrder = 3, Parent = face })
@@ -417,6 +424,10 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category })
 end
 
 return function(parent: Instance, ctx, catalog: { Category }?)
+	TOOL_SIZE = Theme.size("Tool")
+	SLOT = Vector2.new(Theme.size("SlotWidth"), Theme.size("SlotHeight"))
+	SLOT_NAME = Theme.size("SlotName")
+	setTabLines(Theme.size("TabLines"))
 	local state = ctx.state
 	local categories = catalog or DEFAULT_CATALOG
 	if state:get("buildCategory") == nil and categories[1] then

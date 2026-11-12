@@ -10,7 +10,7 @@ local C = Theme.Color
 local function backpackButton(props)
 	local slot, _, face, label = Util.iconButton({
 		Name = props.Name,
-		Size = UDim2.fromOffset(64, 72),
+		Size = UDim2.fromOffset(Theme.size("SidebarWidth"), Theme.size("BackpackHeight")),
 		Radius = 12,
 		Text = props.Text,
 		LayoutOrder = props.LayoutOrder,
@@ -51,15 +51,15 @@ return function(parent: Instance, ctx)
 	---------------------------------------------------------------- left
 	local left = Util.frame({
 		Name = "LeftSidebar",
-		Position = UDim2.fromOffset(Theme.Margin, Theme.Margin + Theme.SidebarOffset),
+		Position = UDim2.fromOffset(Theme.Margin, Theme.Margin + Theme.size("SidebarOffset")),
 		AutomaticSize = Enum.AutomaticSize.XY,
 		ZIndex = 1,
 		Parent = parent,
 	})
-	Util.list(left, Enum.FillDirection.Vertical, 16)
+	Util.list(left, Enum.FillDirection.Vertical, Theme.size("SidebarGap"))
 
 	local standard = Util.frame({ Name = "Standard", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 1, Parent = left })
-	Util.list(standard, Enum.FillDirection.Vertical, 16)
+	Util.list(standard, Enum.FillDirection.Vertical, Theme.size("SidebarGap"))
 	backpackButton({
 		Name = "Inventory",
 		Text = "INV",
@@ -71,7 +71,7 @@ return function(parent: Instance, ctx)
 	})
 	Util.iconButton({
 		Name = "Closet",
-		Size = UDim2.fromOffset(64, 64),
+		Size = UDim2.fromOffset(Theme.size("SidebarWidth"), Theme.size("SidebarWidth")),
 		Radius = 16,
 		Text = "CLOSET",
 		LayoutOrder = 2,
@@ -95,7 +95,7 @@ return function(parent: Instance, ctx)
 	local right = Util.frame({
 		Name = "RightSidebar",
 		AnchorPoint = Vector2.new(1, 0),
-		Position = UDim2.new(1, -Theme.Margin, 0, Theme.Margin + Theme.SidebarOffset),
+		Position = UDim2.new(1, -Theme.Margin, 0, Theme.Margin + Theme.size("SidebarOffset")),
 		AutomaticSize = Enum.AutomaticSize.XY,
 		ZIndex = 1,
 		Parent = parent,
@@ -103,7 +103,8 @@ return function(parent: Instance, ctx)
 	Util.list(right, Enum.FillDirection.Vertical, 16, { HorizontalAlignment = Enum.HorizontalAlignment.Right })
 
 	-- Herd: two overlapping rounded squares
-	local _, herd = Util.button({ Name = "Herd", Size = UDim2.fromOffset(64, 64), LayoutOrder = 1, Parent = right }, {
+	local herdSize, square = Theme.size("SidebarWidth"), Theme.size("HerdSquare")
+	local _, herd = Util.button({ Name = "Herd", Size = UDim2.fromOffset(herdSize, herdSize), LayoutOrder = 1, Parent = right }, {
 		OnActivated = function()
 			ctx.trigger("Herd")
 		end,
@@ -112,7 +113,7 @@ return function(parent: Instance, ctx)
 		Name = "Back",
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.fromScale(1, 0),
-		Size = UDim2.fromOffset(48, 48),
+		Size = UDim2.fromOffset(square, square),
 		Radius = 13,
 		Border = 6,
 		Fill = C.Subtle,
@@ -123,7 +124,7 @@ return function(parent: Instance, ctx)
 		Name = "Front",
 		AnchorPoint = Vector2.new(0, 1),
 		Position = UDim2.fromScale(0, 1),
-		Size = UDim2.fromOffset(48, 48),
+		Size = UDim2.fromOffset(square, square),
 		Radius = 13,
 		Border = 6,
 		ZIndex = 2,
@@ -133,7 +134,7 @@ return function(parent: Instance, ctx)
 
 	Util.iconButton({
 		Name = "Trade",
-		Size = UDim2.fromOffset(64, 64),
+		Size = UDim2.fromOffset(herdSize, herdSize),
 		Radius = 16,
 		Text = "TRADE",
 		TextSize = 10,

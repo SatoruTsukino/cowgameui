@@ -98,7 +98,7 @@ function Layout.attach(root: GuiObject, scaler, refs: Refs)
 		building.tools.Position = UDim2.fromOffset(topRightX, toolsY)
 		building.tools.Size = UDim2.fromOffset(0, math.max(56, scaler.virtualSize.Y - toolsY - toolsReserve))
 
-		refs.leftSidebar.Position = UDim2.fromOffset(Theme.Margin, topLeftY + Theme.SidebarOffset)
+		refs.leftSidebar.Position = UDim2.fromOffset(Theme.Margin, topLeftY + Theme.size("SidebarOffset"))
 		refs.rightSidebar.Position = UDim2.new(1, -Theme.Margin, 0, rowY + RIGHT_SIDEBAR_DROP)
 	end
 

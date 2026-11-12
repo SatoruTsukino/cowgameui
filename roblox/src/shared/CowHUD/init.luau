@@ -76,6 +76,15 @@ local CowHUD = {}
 
 function CowHUD.mount(player: Player, options: Options?)
 	local opts = options or {}
+	-- Phone profile (Theme.size): decided once, before anything is built, from the viewport the HUD will get.
+	local camera = workspace.CurrentCamera
+	while camera.ViewportSize.Y <= 1 do
+		camera:GetPropertyChangedSignal("ViewportSize"):Wait()
+	end
+	local UserInputService = game:GetService("UserInputService")
+	Theme.phone = UserInputService.TouchEnabled
+		and camera.ViewportSize.Y / Theme.Scale.ReferenceHeight < Theme.Scale.TouchMinScale
+
 	local initial = table.clone(DEFAULT_STATE)
 	if GuiService.ReducedMotionEnabled then
 		initial.motion = "Reduced"

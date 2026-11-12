@@ -20,7 +20,7 @@ local CowHUD = script.Parent.Parent
 local Theme = require(CowHUD.Theme)
 local Util = require(CowHUD.Util)
 
-local SATELLITE = 56
+local SATELLITE = 56 -- set from Theme.size("Satellite") when the arc is built (64 on phones)
 local SATELLITE_BORDER = 5
 local CLEARANCE = 24
 local FLYOUT_BUTTON = 48 -- quick emotes: w-10 in the wireframe, raised so the glyphs read at phone scale
@@ -81,6 +81,7 @@ local function satellite(parent: Instance, ctx, spec): (ImageButton, TextLabel)
 end
 
 return function(parent: Instance, ctx)
+	SATELLITE = Theme.size("Satellite")
 	local state = ctx.state
 	local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
