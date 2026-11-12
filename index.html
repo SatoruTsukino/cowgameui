@@ -972,8 +972,11 @@
             const scale = clientH / virtualHeight;
             ui.style.transform = `scale(${scale})`;
 
-            // Vital bars: 208px on 16:9+ down to 160px on narrow canvases (4:3 = 960 wide); Roblox also shrinks on short phones.
-            const vitalsT = Math.min(1, Math.max(0, (virtualWidth - 960) / (1280 - 960)));
+            // Vital bars (Roblox Layout parity): 208px on 16:9+ down to 160px on narrow (4:3 = 960 wide) or phone-height
+            // canvases. The preview is always 720 tall, so the Mobile preset stands in for a phone's ~520px canvas.
+            const isPhonePreview = screen.classList.contains('aspect-19-5-9');
+            const byWidth = Math.min(1, Math.max(0, (virtualWidth - 960) / (1280 - 960)));
+            const vitalsT = isPhonePreview ? 0 : byWidth;
             document.getElementById('vitalsColumn').style.width = `${Math.round(160 + 48 * vitalsT)}px`;
             ui.style.left = `0px`;
             ui.style.top = `0px`;
