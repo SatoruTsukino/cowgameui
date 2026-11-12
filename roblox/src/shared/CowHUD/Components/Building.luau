@@ -42,7 +42,7 @@ local TOOL_GAP = 10 -- gap-2.5
 local DOCK_BOTTOM = 24 -- bottom-6
 local DOCK_MAX_WIDTH = 680
 local DOCK_PADDING = 8 -- px-2
-local DOCK_TOUCH_CLEARANCE = 200 -- touch: keep clear of Roblox's native thumbstick and Jump (the arc is hidden here)
+local DOCK_TOUCH_CLEARANCE = 256 -- touch: keep clear of Roblox's native thumbstick and Jump (the arc is hidden here)
 local TAB_GAP = 6 -- gap-1.5
 local TAB_PAD_X = 8 -- px-3.5 minus the border, so two-line labels fit when five tabs share 680px
 local TAB_TEXT = 10
@@ -209,7 +209,7 @@ local function toolStack(layer: Instance, ctx)
 		local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 16, Border = BAR_BORDER, Parent = visual })
 		local iconBox = Util.frame({ Name = "IconBox", Position = UDim2.fromOffset(0, 4), Size = UDim2.new(1, 0, 0, 22), Parent = face })
 		Icons.draw(tool.icon, iconBox, 20, color)
-		Util.label({
+		local caption = Util.label({
 			Text = tool.text,
 			TextSize = 9,
 			TextColor3 = if tool.danger then C.Danger else C.Accent,
@@ -217,6 +217,12 @@ local function toolStack(layer: Instance, ctx)
 			Size = UDim2.new(1, 0, 0, 12),
 			Parent = face,
 		})
+		-- Keyboard hints ("[R]") only make sense with a keyboard; touch screens show the bare tool name.
+		local function updateCaption()
+			caption.Text = if UserInputService.TouchEnabled then (tool.text:gsub(" %[.%]$", "")) else tool.text
+		end
+		UserInputService.LastInputTypeChanged:Connect(updateCaption)
+		updateCaption()
 	end
 	return stack
 end
