@@ -1,0 +1,17 @@
+{
+  "name": "CowHUD",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "CowHUD": { "$path": "src/shared/CowHUD" }
+    },
+    "ServerScriptService": {
+      "CowHUDDemo": { "$path": "src/server/CowHUDDemo.server.luau" }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "CowHUDClient": { "$path": "src/client/CowHUDClient.client.luau" }
+      }
+    }
+  }
+}
