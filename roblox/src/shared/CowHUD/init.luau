@@ -11,7 +11,7 @@
 	  Mobile:    Emote, Moo, Sprint, Kick, EmoteHeart, EmoteCheer, EmoteSnooze
 	  Mode:      EnterBuild, ExitBuild (whenever state.mode changes: Exit Build button, /build, /normal)
 	  Building:  GridSnap, BuildCategory, BuildItem, Rotate, Paint, Undo, Redo, Trash (see Components/Building)
-	State keys: mode ("normal" | "build"), compact, bulletinVisible, safeZones, theme, motion (UI)
+	State keys: mode ("normal" | "build"), compact, bulletinVisible, theme, motion (UI)
 	            + data keys fed by Bindings (see Bindings.luau)
 ]]
 
@@ -44,8 +44,6 @@ local DEFAULT_STATE = {
 	gridSnap = 1,
 	compact = false,
 	bulletinVisible = true,
-	safeZones = false,
-	bulletinCrowded = false, -- derived: screen too narrow for the full bulletin
 	-- menu = { anchor, side, items } | nil
 	-- panel = action name | nil
 
@@ -133,8 +131,7 @@ function CowHUD.mount(player: Player, options: Options?)
 	local topRight = TopRight(hudLayer, ctx)
 	local bulletin = Bulletin(hudLayer, ctx)
 	local sidebars = Sidebars(hudLayer, ctx)
-	-- Safe-zone previews are global; Bottom hides its Area Actions bar in build mode itself.
-	Bottom(root, ctx)
+	Bottom(hudLayer, ctx)
 	local building = Building(root, ctx, opts.catalog)
 	-- Global across both modes (UI_ELEMENTS_MAP §4F), above the page layers.
 	ActionCluster(root, ctx)
@@ -158,7 +155,7 @@ function CowHUD.mount(player: Player, options: Options?)
 			layout.schedule()
 		end
 	end)
-	layout = Layout.attach(root, scaler, state, {
+	layout = Layout.attach(root, scaler, {
 		topLeft = topLeft,
 		topRight = topRight,
 		bulletin = bulletin,

@@ -1,5 +1,6 @@
 -- Instance factory + reusable visual primitives for the HUD.
 
+local TextService = game:GetService("TextService")
 local TweenService = game:GetService("TweenService")
 
 local Theme = require(script.Parent.Theme)
@@ -327,6 +328,29 @@ function Util.sunIcon(parent: Instance, size: number, color: Theme.Token): Frame
 		Util.corner(ray, "full")
 	end
 	return icon
+end
+
+--[[
+	Sizes `target` to fit `text` at `textSize` (Theme.Font) plus `inset` px, keeping its height.
+	For spring buttons (Util.button): AutomaticSize can't be used there because the scale-sized visual inside
+	the slot feeds back into it and grows unbounded. Measuring yields, so this runs async; the latest call wins.
+]]
+local fitTokens = setmetatable({}, { __mode = "k" })
+function Util.fitWidth(target: GuiObject, text: string, textSize: number, inset: number, minWidth: number?)
+	local token = (fitTokens[target] or 0) + 1
+	fitTokens[target] = token
+	task.spawn(function()
+		local params = Instance.new("GetTextBoundsParams")
+		params.Text = text
+		params.Font = Theme.Font
+		params.Size = textSize
+		params.Width = math.huge
+		local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
+		if ok and fitTokens[target] == token then
+			local width = math.max(minWidth or 0, math.ceil(bounds.X) + inset)
+			target.Size = UDim2.new(0, width, target.Size.Y.Scale, target.Size.Y.Offset)
+		end
+	end)
 end
 
 -- 1500 -> "1,500"

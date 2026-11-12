@@ -9,8 +9,8 @@
 	hit areas keep ≥ 8px apart (verified for 360–1440px tall screens). If the arc would still cross a screen edge
 	(large scales), the whole arc shifts inward so its spacing is kept.
 
-	Shown on touch devices, or anywhere while the "Mobile Safe Zones" preview toggle is on.
-	Fires: Emote (toggles the flyout), Moo, Sprint, Kick, EmoteHeart, EmoteCheer, EmoteSnooze.
+	Shown on touch devices only. Tapping Emote swaps Moo/Sprint/Kick for three quick emotes in the same slots.
+	Fires: Emote (toggles the quick emotes), Moo, Sprint, Kick, EmoteHeart, EmoteCheer, EmoteSnooze.
 ]]
 
 local Players = game:GetService("Players")
@@ -23,12 +23,11 @@ local Util = require(CowHUD.Util)
 local SATELLITE = 56
 local SATELLITE_BORDER = 5
 local CLEARANCE = 24
-local FLYOUT_BUTTON = 40
-local FLYOUT_GAP = 8
+local FLYOUT_BUTTON = 48 -- quick emotes: w-10 in the wireframe, raised so the glyphs read at phone scale
 
 local ARC_START, ARC_END = 60, 200
 
--- Top of the thumb arc to the bottom: Emote (with flyout) · Moo · Sprint (nearest the thumb rest) · Kick
+-- Top of the thumb arc to the bottom: Emote (opens quick emotes) · Moo · Sprint (nearest the thumb rest) · Kick
 local SATELLITES = {
 	{ action = "Emote", text = "EMOTE" },
 	{ action = "Moo", text = "MOO" },
@@ -61,7 +60,7 @@ local function findJumpButton(playerGui: Instance): GuiObject?
 end
 
 -- Round button with a caption; the slot grows to the minimum touch target, the visual keeps its size.
-local function satellite(parent: Instance, ctx, spec): ImageButton
+local function satellite(parent: Instance, ctx, spec): (ImageButton, TextLabel)
 	local slot, visual = Util.button({
 		Name = spec.action,
 		AnchorPoint = Vector2.new(0.5, 0.5),
@@ -77,8 +76,8 @@ local function satellite(parent: Instance, ctx, spec): ImageButton
 	})
 	visual.Size = UDim2.fromOffset(SATELLITE, SATELLITE)
 	local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = "full", Border = SATELLITE_BORDER, Parent = visual })
-	Util.label({ Text = spec.text, TextSize = 10, Size = UDim2.fromScale(1, 1), Parent = face })
-	return slot
+	local caption = Util.label({ Text = spec.text, TextSize = 10, Size = UDim2.fromScale(1, 1), Parent = face })
+	return slot, caption
 end
 
 return function(parent: Instance, ctx)
@@ -88,27 +87,25 @@ return function(parent: Instance, ctx)
 	local arc = Util.frame({ Name = "ActionArc", Size = UDim2.fromScale(1, 1), ZIndex = 5, Parent = parent })
 
 	local slots = {}
+	local emoteCaption
 	for _, spec in SATELLITES do
-		slots[spec.action] = satellite(arc, ctx, spec)
+		local slot, caption = satellite(arc, ctx, spec)
+		slots[spec.action] = slot
+		if spec.action == "Emote" then
+			emoteCaption = caption
+		end
 	end
 
-	-- Emote flyout: a row of quick emotes above the Emote satellite, right-aligned so it never leaves the screen.
-	local flyout = Util.frame({
-		Name = "EmoteFlyout",
-		AnchorPoint = Vector2.new(1, 1),
-		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.fromOffset(0, FLYOUT_BUTTON),
-		Visible = false,
-		Parent = arc,
-	})
-	Util.list(flyout, Enum.FillDirection.Horizontal, FLYOUT_GAP)
-	local flyoutSlots = {}
+	-- Quick emotes: tapping Emote swaps Moo/Sprint/Kick for the three emotes in the same arc slots, so each
+	-- emote sits one thumb-step from Emote with the arc's verified spacing; tapping Emote again (or an emote) closes.
+	local emoteSlots = {}
 	for index, spec in EMOTES do
 		local slot, visual = Util.button({
 			Name = spec.action,
+			AnchorPoint = Vector2.new(0.5, 0.5),
 			Size = UDim2.fromOffset(FLYOUT_BUTTON, FLYOUT_BUTTON),
-			LayoutOrder = index,
-			Parent = flyout,
+			Visible = false,
+			Parent = arc,
 		}, {
 			OnActivated = function()
 				state:set("emoteFlyout", false)
@@ -117,8 +114,8 @@ return function(parent: Instance, ctx)
 		})
 		visual.Size = UDim2.fromOffset(FLYOUT_BUTTON, FLYOUT_BUTTON)
 		local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = "full", Border = 4, Parent = visual })
-		Util.label({ Text = spec.glyph, TextSize = 18, Size = UDim2.fromScale(1, 1), Parent = face })
-		table.insert(flyoutSlots, slot)
+		Util.label({ Text = spec.glyph, TextSize = 20, Size = UDim2.fromScale(1, 1), Parent = face })
+		emoteSlots[index] = slot
 	end
 
 	local jumpButton: GuiObject? = nil
@@ -157,13 +154,11 @@ return function(parent: Instance, ctx)
 			slot.Position = UDim2.fromOffset(point.X, point.Y)
 		end
 
-		local flyoutHit = math.max(FLYOUT_BUTTON, Theme.MinTouchTarget / scale)
-		for _, slot in flyoutSlots do
-			slot.Size = UDim2.fromOffset(flyoutHit, flyoutHit)
+		-- Quick emote i takes the slot of satellite i + 1 (Moo, Sprint, Kick).
+		for index, slot in emoteSlots do
+			slot.Size = UDim2.fromOffset(hit, hit)
+			slot.Position = slots[SATELLITES[index + 1].action].Position
 		end
-		flyout.Size = UDim2.fromOffset(0, flyoutHit)
-		local emote = slots.Emote.Position
-		flyout.Position = UDim2.fromOffset(emote.X.Offset + SATELLITE / 2, emote.Y.Offset - SATELLITE / 2 - FLYOUT_GAP)
 	end
 
 	local function bindJump()
@@ -189,14 +184,20 @@ return function(parent: Instance, ctx)
 	arc:GetPropertyChangedSignal("AbsoluteSize"):Connect(place)
 	bindJump()
 
+	-- Touch only: on desktop and console these actions live on keys/buttons, not on screen.
 	local function updateVisible()
-		arc.Visible = UserInputService.TouchEnabled or state:get("safeZones")
+		arc.Visible = UserInputService.TouchEnabled
 	end
 	UserInputService.LastInputTypeChanged:Connect(updateVisible)
-	state:observe("safeZones", updateVisible)
+	updateVisible()
 
 	state:observe("emoteFlyout", function(open)
-		flyout.Visible = open == true
+		open = open == true
+		for index, slot in emoteSlots do
+			slots[SATELLITES[index + 1].action].Visible = not open
+			slot.Visible = open
+		end
+		emoteCaption.Text = if open then "BACK" else "EMOTE"
 	end)
 
 	return arc

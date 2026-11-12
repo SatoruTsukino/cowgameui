@@ -158,6 +158,16 @@ Script: `/private/tmp/claude-501/-Users-jsph-cowgameui/c1988756-da6d-412a-b925-2
 - **Colour presets** live in Settings and use the T1 palette. That means T8 is done for Roblox; the HTML still needs it.
 - **T5b (partly done):** the Building tools wrap into columns above the right safe zone, and the catalog dock is `min(680, width − 2·304)` with a tray that scrolls.
 
+## Studio review round 1 (2026-11-11)
+- **Themes:** the theme registry held Instances in a weak table, and Roblox can collect an Instance's Lua wrapper while the Instance is still alive. The registry is now strong, and entries are removed on `Destroying`.
+- **Herd and Trade** now sit at `rowY + 112` (HTML top-32 vs top-4), independent of the top-left cluster.
+- **Calories and Upgrades:** the tab is positioned explicitly, 8px under the pill, and both widths are measured from their text.
+- **Compact is never forced (D1 hardened):** `bulletinCrowded` is removed. When the bulletin doesn't fit, it moves below the clusters at full size. This replaces PROJECT R5.
+- **Mobile safe zones** are removed from Roblox (the setting and the outlines).
+- **Touch scale floor** is now 0.75: phones get a 480–520px virtual canvas, and 56px controls render at 42pt or more. The arc check passes with tap areas at least 14.6px apart.
+- **Quick emotes** reuse the Moo, Sprint and Kick arc slots while open.
+- **Building GUI** is rebuilt. Button widths are measured from text (`AutomaticSize` inside spring buttons grew without limit), tabs share the tray width with two-line labels, and the 6-slot fences catalog matches the HTML.
+
 ## Original open questions (answered in D1–D6)
 1. **Phone compact default:** should compact mode be forced on phones (merged BAG / `•••`), or only defaulted so players can turn it off?
 2. **Minimum text size:** is an 11pt floor OK? Going to 12pt is more comfortable but costs more layout room.

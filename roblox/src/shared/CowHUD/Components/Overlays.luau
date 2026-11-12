@@ -13,7 +13,6 @@ local MENU_GAP = 12
 local SETTINGS_TOGGLES = {
 	{ key = "compact", label = "Compact Mode" },
 	{ key = "bulletinVisible", label = "World Bulletin" },
-	{ key = "safeZones", label = "Mobile Safe Zones" },
 }
 
 -- Converts a HUD element's on-screen rect into virtual (root) coordinates.

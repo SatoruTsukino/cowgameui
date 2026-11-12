@@ -1,5 +1,5 @@
 -- Top-centre town bulletin: full card (cycle, world event, boost chip) or compact pill.
--- Collapses to the pill in compact mode, or when the screen is too narrow (`bulletinCrowded`, set by init).
+-- Collapses to the pill only in compact mode (the player's choice); Layout moves the card when space is tight.
 
 local TweenService = game:GetService("TweenService")
 
@@ -132,12 +132,11 @@ return function(parent: Instance, ctx)
 
 	---------------------------------------------------------------- bindings
 	local function refreshLayout()
-		local collapsed = state:get("compact") or state:get("bulletinCrowded")
+		local collapsed = state:get("compact")
 		full.Visible = not collapsed
 		compact.Visible = collapsed
 	end
 	state:observe("compact", refreshLayout)
-	state:observe("bulletinCrowded", refreshLayout)
 
 	local fadeTween: Tween? = nil
 	state:observe("bulletinVisible", function(visible)

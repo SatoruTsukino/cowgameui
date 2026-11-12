@@ -4,6 +4,8 @@
 -- real aspect ratio, then a UIScale maps it onto the screen. Children are authored in virtual px and
 -- anchored with Scale positions, so ultrawide screens gain space at the edges and nothing stretches.
 
+local UserInputService = game:GetService("UserInputService")
+
 local Scaler = {}
 
 export type Scaler = {
@@ -23,7 +25,8 @@ function Scaler.attach(screenGui: ScreenGui, root: GuiObject, config, onChanged:
 		if screen.X <= 0 or screen.Y <= 0 then
 			return
 		end
-		local scale = math.clamp(screen.Y / config.ReferenceHeight, config.MinScale, config.MaxScale)
+		local minScale = if UserInputService.TouchEnabled then config.TouchMinScale else config.MinScale
+		local scale = math.clamp(screen.Y / config.ReferenceHeight, minScale, config.MaxScale)
 		scaler.scale = scale
 		scaler.virtualSize = screen / scale
 		uiScale.Scale = scale

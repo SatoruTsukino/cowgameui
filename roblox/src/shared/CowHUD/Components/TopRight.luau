@@ -1,7 +1,5 @@
 -- Top-right cluster: calories pill + upgrades tab, cowbell settings button, compact "•••" menu.
 
-local TextService = game:GetService("TextService")
-
 local CowHUD = script.Parent.Parent
 local Theme = require(CowHUD.Theme)
 local Util = require(CowHUD.Util)
@@ -9,6 +7,8 @@ local C = Theme.Color
 
 local CALORIES_INSET = 52 -- (px-5 + border-6) * 2
 local CALORIES_MIN_WIDTH = 120
+local UPGRADES_TOP = 56 - 8 -- h-14 pill, -mt-2 tab
+local UPGRADES_INSET = 40 -- (px-4 + border-4) * 2
 
 return function(parent: Instance, ctx)
 	local state = ctx.state
@@ -23,16 +23,17 @@ return function(parent: Instance, ctx)
 	})
 	Util.list(cluster, Enum.FillDirection.Horizontal, 16)
 
-	-- Economy column: pill with the upgrades tab tucked 8px underneath (-mt-2).
-	local economy = Util.frame({ Name = "Economy", AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = 1, Parent = cluster })
-	Util.list(economy, Enum.FillDirection.Vertical, -8, { HorizontalAlignment = Enum.HorizontalAlignment.Center })
+	-- Economy column (flex-col items-center): pill with the upgrades tab tucked 8px underneath (-mt-2).
+	-- Positioned explicitly instead of with a negative list gap so the tab always docks flush to the pill.
+	local economy = Util.frame({ Name = "Economy", Size = UDim2.fromOffset(CALORIES_MIN_WIDTH, UPGRADES_TOP + 32), LayoutOrder = 1, Parent = cluster })
 
 	-- Calories pill (h-14, px-5, rounded-[1.5rem], border-6). Width is set explicitly from measured text bounds:
 	-- AutomaticSize can't be used here because the scale-sized visual inside the slot feeds back into it and grows unbounded.
 	local calories, caloriesVisual = Util.button({
 		Name = "Calories",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.fromScale(0.5, 0),
 		Size = UDim2.fromOffset(CALORIES_MIN_WIDTH, 56),
-		LayoutOrder = 1,
 		ZIndex = 2,
 		Parent = economy,
 	}, {
@@ -47,8 +48,9 @@ return function(parent: Instance, ctx)
 	-- Upgrades tab (h-8, rounded-b-xl, border-4 without top, gray-200)
 	local upgrades, upgradesVisual = Util.button({
 		Name = "Upgrades",
+		AnchorPoint = Vector2.new(0.5, 0),
+		Position = UDim2.new(0.5, 0, 0, UPGRADES_TOP),
 		Size = UDim2.fromOffset(112, 32),
-		LayoutOrder = 2,
 		ZIndex = 1,
 		Parent = economy,
 	}, {
@@ -126,27 +128,22 @@ return function(parent: Instance, ctx)
 
 	state:observe("compact", function(compact)
 		upgrades.Visible = not compact
+		economy.Size = UDim2.fromOffset(economy.Size.X.Offset, if compact then 56 else UPGRADES_TOP + 32)
 		standard.Visible = not compact
 		more.Visible = compact
 	end)
-	local measureToken = 0
+	Util.fitWidth(upgrades, "UPGRADES ⬆", 9, UPGRADES_INSET)
+	local function sizeEconomy()
+		local height = if state:get("compact") then 56 else UPGRADES_TOP + 32
+		economy.Size = UDim2.fromOffset(math.max(calories.Size.X.Offset, upgrades.Size.X.Offset), height)
+	end
+	calories:GetPropertyChangedSignal("Size"):Connect(sizeEconomy)
+	upgrades:GetPropertyChangedSignal("Size"):Connect(sizeEconomy)
+
 	state:observe("calories", function(value)
 		local text = "CALORIES: " .. Util.formatNumber(tonumber(value) or 0)
 		caloriesLabel.Text = text
-
-		measureToken += 1
-		local token = measureToken
-		task.spawn(function()
-			local params = Instance.new("GetTextBoundsParams")
-			params.Text = text
-			params.Font = Theme.Font
-			params.Size = 12
-			params.Width = math.huge
-			local ok, bounds = pcall(TextService.GetTextBoundsAsync, TextService, params)
-			if ok and token == measureToken then
-				calories.Size = UDim2.fromOffset(math.max(CALORIES_MIN_WIDTH, math.ceil(bounds.X) + CALORIES_INSET), 56)
-			end
-		end)
+		Util.fitWidth(calories, text, 12, CALORIES_INSET, CALORIES_MIN_WIDTH)
 	end)
 
 	return cluster

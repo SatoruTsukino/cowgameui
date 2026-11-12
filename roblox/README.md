@@ -42,11 +42,11 @@ StarterPlayer/StarterPlayerScripts
 
 ## Scaling model
 - Every element is authored in **virtual 720p pixels**, the same numbers as the Tailwind classes (`w-28` → 112).
-- `Scaler` sets `scale = clamp(screenHeight / 720, 0.6, 4)` on a `UIScale` and sizes the root to `screen / scale`. Height always maps to about 720 virtual px, and width follows the aspect ratio (16:9 → 1280, 21:9 → 1680, 4:3 → 960).
+- `Scaler` sets `scale = clamp(screenHeight / 720, minScale, 4)` on a `UIScale` and sizes the root to `screen / scale`. `minScale` is 0.75 on touch devices and 0.6 elsewhere. Height maps to about 720 virtual px (480–520 on phones, so controls render big enough to tap), and width follows the aspect ratio (16:9 → 1280, 21:9 → 1680, 4:3 → 960).
 - Elements are anchored to the edges and centre, so ultrawide screens get more space in the middle instead of stretched UI.
 - `ScreenInsets = DeviceSafeInsets` keeps the HUD clear of device notches. The HUD shares the top bar row with Roblox's own buttons: `Layout.luau` reads `GuiService.TopbarInset` so the top-right cluster and bulletin sit in that row next to the core buttons, and the top-left cluster (with the sidebars) moves down below the left core buttons.
-- **Aspect guard:** if the full bulletin would overlap the corner clusters (for example on 4:3), it collapses to the compact pill on its own.
-- Change `Theme.Scale.MinScale` if phone text feels too small or too large.
+- **Bulletin placement:** the bulletin never switches to compact on its own, because Compact Mode is only ever the player's choice. If the full card doesn't fit between the corner clusters in the top row (for example on 4:3), it moves below them at full size.
+- Change `Theme.Scale.TouchMinScale` (touch) or `MinScale` (desktop) if text feels too small or too large.
 
 ## Using it from game code
 ```lua
@@ -55,7 +55,7 @@ hud.ActionTriggered:Connect(function(action) --[[ open your own UI ]] end)
 hud.State:set("compact", true)
 ```
 - **Actions:** `Profile Herd Calories Upgrades Settings Inventory Closet Trade Bulletin AreaActions`, mobile `Emote Moo Sprint Kick EmoteHeart EmoteCheer EmoteSnooze`, mode `EnterBuild ExitBuild`, and building `GridSnap BuildCategory BuildItem Rotate Paint Undo Redo Trash`. Some actions also pass a second `payload` argument.
-- **UI state:** `mode`, `compact`, `bulletinVisible`, `safeZones`, `theme`, `motion`. All of them except `mode` can also be changed in-game from the **Settings** (cowbell) panel.
+- **UI state:** `mode`, `compact`, `bulletinVisible`, `theme`, `motion`. All of them except `mode` can also be changed in-game from the **Settings** (cowbell) panel.
 - **Data contract:** documented at the top of `Bindings.luau`. The server sets attributes on `Player` and `Workspace`. HP is read from the `Humanoid`.
 
 ## Build mode
@@ -67,15 +67,17 @@ hud.State:set("compact", true)
 
 ## Mobile action arc
 - The wireframe's thumbstick and Jump are placeholders for Roblox's own touch controls, so the HUD never draws a Jump. `ActionCluster.luau` finds `PlayerGui.TouchGui.TouchControlFrame.JumpButton` and places Emote, Moo, Sprint and Kick on an arc around it, evenly spaced from 60° to 200°. The radius is half the jump size + 24 + 28.
-- Each satellite's hit area grows to 44pt while the visible button stays 56px. Emote opens a flyout with three quick emotes (`EmoteHeart`, `EmoteCheer`, `EmoteSnooze`).
-- The arc shows on touch devices. On desktop it also shows while **Mobile Safe Zones** is on, placed around where Roblox would put the Jump button.
+- Each satellite's hit area grows to 44pt while the visible button stays 56px.
+- **Quick emotes:** tapping Emote swaps Moo, Sprint and Kick for the three quick emotes (`EmoteHeart`, `EmoteCheer`, `EmoteSnooze`) in the same arc slots, one thumb-step from Emote, and Emote's label changes to BACK. Tapping an emote or BACK restores the arc.
+- The arc shows on touch devices only. The wireframe's safe-zone outlines are not drawn in Roblox.
 
 ## Settings
-The cowbell panel has toggles for Compact Mode, World Bulletin and Mobile Safe Zones. It also has:
+The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 - **Color Theme:** Mono, Meadow, Sunrise, Lavender or Sky (state `theme`). The palette is WCAG-checked: text is at least 4.5:1 and borders at least 3:1. Colours are role tokens (`Theme.Color.Card`, `Border`, `Text`, …), so switching presets recolours the live HUD.
 - **Motion:** Full, Reduced or Off (state `motion`). It starts at Reduced when the player has Roblox's Reduced Motion setting on. Reduced removes spring overshoot and hover growth. Off makes changes instant.
 
 ## Known differences from the HTML
-- Dashed borders (safe zones, area actions) are solid strokes, because Roblox has no dashed `UIStroke`.
+- Dashed borders (area actions) are solid strokes, because Roblox has no dashed `UIStroke`.
+- Mobile safe zones are not drawn. They only preview Roblox's native thumbstick and Jump.
 - No drop shadows.
 - The font is Nunito Heavy (`Theme.Font`). Roblox has no letter-spacing, so `tracking-widest` is dropped.

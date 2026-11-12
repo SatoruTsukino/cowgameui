@@ -45,8 +45,10 @@ end
 local active = Theme.Presets.Mono
 Theme.presetName = "Mono"
 
--- instance -> { [property] = role }; weak keys so destroyed HUD pieces are collected.
-local tracked = setmetatable({}, { __mode = "k" })
+-- instance -> { [property] = role }. Strong keys: Roblox may collect an Instance's Lua wrapper from a weak
+-- table while the Instance itself is still on screen, which silently dropped elements from re-theming.
+-- Entries are removed when the instance is destroyed instead.
+local tracked = {}
 
 function Theme.isToken(value: any): boolean
 	return type(value) == "table" and value.__token ~= nil
@@ -61,6 +63,9 @@ function Theme.paint(instance: Instance, property: string, token: Token)
 	if not props then
 		props = {}
 		tracked[instance] = props
+		instance.Destroying:Connect(function()
+			tracked[instance] = nil
+		end)
 	end
 	props[property] = token.__token;
 	(instance :: any)[property] = active[token.__token]
@@ -83,10 +88,12 @@ end
 Theme.Font = Font.new("rbxasset://fonts/families/Nunito.json", Enum.FontWeight.Heavy)
 
 -- Virtual canvas: everything is authored in 720p pixels, then scaled by viewport height.
--- MinScale keeps 9-10px labels legible on short phone screens (the virtual canvas grows instead).
+-- Touch screens get a higher floor so 56px controls render at ~42pt+ and hit areas reach 44pt with little growth
+-- (a 390pt landscape phone would otherwise drop to 0.54); the virtual canvas shrinks to ~480–520px tall instead.
 Theme.Scale = {
 	ReferenceHeight = 720,
 	MinScale = 0.6,
+	TouchMinScale = 0.75,
 	MaxScale = 4,
 }
 
