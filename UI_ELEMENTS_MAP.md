@@ -118,11 +118,11 @@ Toggled together via `#btnSafeZones` (`toggleSafeZones()`). Redundant Graze butt
 | Line Range | Element ID / Selector | Description & Radial Geometry |
 | :--- | :--- | :--- |
 | [`L390-L395`](file:///Users/jsph/cowgameui/index.html#L390-L395) | `#safeZoneLeft` | `w-48 h-48` mobile thumbstick touch zone with inner base (`w-20`) and nub. |
-| [`L397-L433`](file:///Users/jsph/cowgameui/index.html#L397-L433) | `#safeZoneRight` | Mobile action cluster root container (`w-60 h-60`) positioned at `bottom-8 right-8`. |
-| [`L402-L408`](file:///Users/jsph/cowgameui/index.html#L402-L408) | `#btnMobileJump` | **Anchor:** `w-20 h-20` rounded-full Jump button with bold up-arrow. Center at `(48, 48)` from bottom-right. |
-| [`L411-L417`](file:///Users/jsph/cowgameui/index.html#L411-L417) | `#btnMobileSprint` | **Bottom of Arc ($\theta \approx 180^\circ$):** `w-12 h-12` rounded-full Sprint button (`RUN`). Located at `bottom-[24px] right-[106px]` ($R=82\text{px}$). |
-| [`L419-L425`](file:///Users/jsph/cowgameui/index.html#L419-L425) | `#btnMobileMoo` | **Middle of Arc ($\theta \approx 135^\circ$):** `w-12 h-12` rounded-full Moo button (`MOO`). Located at `bottom-[82px] right-[82px]` ($R=82\text{px}$). |
-| [`L427-L433`](file:///Users/jsph/cowgameui/index.html#L427-L433) | `#btnMobileEmote` | **Top of Arc ($\theta \approx 90^\circ$):** `w-12 h-12` rounded-full Emote button (`EMOTE`). Located at `bottom-[106px] right-[24px]` ($R=82\text{px}$). |
+| [`L397-L433`](file:///Users/jsph/cowgameui/index.html#L397-L433) | `#safeZoneRight` | Mobile action cluster root container (`w-64 h-64`) positioned at `bottom-8 right-8`. |
+| [`L402-L408`](file:///Users/jsph/cowgameui/index.html#L402-L408) | `#btnMobileJump` | **Anchor:** Centered `w-20 h-20` rounded-full Jump button with bold up-arrow. Center at `(128, 128)` in safe zone. |
+| [`L411-L417`](file:///Users/jsph/cowgameui/index.html#L411-L417) | `#btnMobileSprint` | **Bottom of Arc ($\theta \approx 190^\circ$):** Enlarged `w-14 h-14` (56px) Sprint button (`SPRINT`). Located at `left-2.5 top-[116px]` ($R=92\text{px}$). |
+| [`L419-L425`](file:///Users/jsph/cowgameui/index.html#L419-L425) | `#btnMobileMoo` | **Middle of Arc ($\theta = 135^\circ$):** Enlarged `w-14 h-14` (56px) Moo button (`MOO`). Located at `left-[35px] top-[35px]` ($R=92\text{px}$). |
+| [`L427-L433`](file:///Users/jsph/cowgameui/index.html#L427-L433) | `#btnMobileEmote` | **Top of Arc ($\theta \approx 80^\circ$):** Enlarged `w-14 h-14` (56px) Emote button (`EMOTE`). Located at `left-[116px] top-2.5` ($R=92\text{px}$). |
 | [`L435-L440`](file:///Users/jsph/cowgameui/index.html#L435-L440) | Bottom-Center Area Actions | `w-1/3 max-w-sm` dashed squircle (`Area Actions (WIP)`). Reserved for context-sensitive prompts. |
 
 ---

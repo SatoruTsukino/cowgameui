@@ -394,41 +394,41 @@
                 <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">Thumbstick</span>
             </div>
 
-            <div id="safeZoneRight" class="hidden absolute bottom-8 right-8 w-60 h-60 pointer-events-auto">
+            <div id="safeZoneRight" class="hidden absolute bottom-8 right-8 w-64 h-64 pointer-events-auto">
                 <!-- Safe zone background ring -->
-                <div class="absolute inset-0 rounded-[3rem] border-[4px] border-dashed border-gray-400/30 bg-gray-300/10 pointer-events-none -z-10"></div>
+                <div class="absolute inset-0 rounded-[3.5rem] border-[4px] border-dashed border-gray-400/30 bg-gray-300/10 pointer-events-none -z-10"></div>
                 
-                <!-- Anchor: Jump Button (Bottom-Right) -->
-                <div id="btnMobileJump" class="absolute bottom-2 right-2 w-20 h-20 rounded-full border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 active:scale-95 cursor-pointer transition-transform" title="Jump">
+                <!-- Anchor: Centered Jump Button -->
+                <div id="btnMobileJump" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 active:scale-95 cursor-pointer transition-transform" title="Jump">
                     <svg class="w-8 h-8 stroke-gray-500 stroke-[3.5] fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M5 12l7-7 7 7"/>
                     </svg>
                     <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">JUMP</span>
                 </div>
 
-                <!-- Radial Arc Satellite Buttons (Bottom to Top: Sprint -> Moo -> Emote) -->
-                <!-- 1. Sprint (Bottom / West, θ ≈ 180°) -->
-                <div id="btnMobileSprint" class="absolute bottom-[24px] right-[106px] w-12 h-12 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
-                    <svg class="w-5 h-5 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                <!-- Radial Arc Satellite Buttons (Enlarged 56px, Bottom to Top: Sprint -> Moo -> Emote) -->
+                <!-- 1. Sprint (Bottom / West, θ ≈ 190°) -->
+                <div id="btnMobileSprint" class="absolute left-2.5 top-[116px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
+                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
-                    <span class="text-gray-500 font-black text-[7px] tracking-wider uppercase -mt-0.5">SPRINT</span>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">SPRINT</span>
                 </div>
 
-                <!-- 2. Moo (Middle / North-West, θ ≈ 135°) -->
-                <div id="btnMobileMoo" class="absolute bottom-[82px] right-[82px] w-12 h-12 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
-                    <svg class="w-5 h-5 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                <!-- 2. Moo (Middle / North-West, θ = 135°) -->
+                <div id="btnMobileMoo" class="absolute left-[35px] top-[35px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
+                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M16 12h.01M9 16c1.5 1 4.5 1 6 0M4 9a8 8 0 1 1 16 0c0 5-4 8-8 8s-8-3-8-8z"/>
                     </svg>
-                    <span class="text-gray-500 font-black text-[7px] tracking-wider uppercase -mt-0.5">MOO</span>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">MOO</span>
                 </div>
 
-                <!-- 3. Emote (Top / North, θ ≈ 90°) -->
-                <div id="btnMobileEmote" class="absolute bottom-[106px] right-[24px] w-12 h-12 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
-                    <svg class="w-5 h-5 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                <!-- 3. Emote (Top / North, θ ≈ 80°) -->
+                <div id="btnMobileEmote" class="absolute left-[116px] top-2.5 w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
+                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-gray-500 font-black text-[7px] tracking-wider uppercase -mt-0.5">EMOTE</span>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">EMOTE</span>
                 </div>
             </div>
 
