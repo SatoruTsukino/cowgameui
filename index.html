@@ -302,7 +302,7 @@
                 </div>
             </div>
 
-            <!-- 3. TOP-RIGHT: Economy & Compact Menu (Elevated to top-4) -->
+            <!-- 3. TOP-RIGHT: Economy & Settings / Menu (Elevated to top-4) -->
             <div id="topRightHud" class="absolute top-4 right-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring">
                 <div class="flex flex-col items-center">
                     <div class="h-14 px-5 rounded-[1.5rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm relative z-10 ui-element hover:scale-105 transition-transform cursor-pointer">
@@ -313,8 +313,16 @@
                     </div>
                 </div>
 
-                <!-- Unified Menu in Compact Mode retains iconic Cowbell -->
-                <div id="topRightCompact" class="hidden w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1 relative" title="Menu (Settings, Herd, Trade, Social)">
+                <!-- Standard Mode: Persistent Cowbell Settings -->
+                <div id="topRightStandard" class="flex items-start gap-3 pt-1">
+                    <div class="w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer relative" title="Settings">
+                        <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">SET</span>
+                        <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
+                    </div>
+                </div>
+
+                <!-- Compact Mode: Persistent Cowbell Menu -->
+                <div id="topRightCompact" class="hidden w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1 relative" title="Menu (Settings, Herd, Trade)">
                     <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">MENU</span>
                     <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
                 </div>
@@ -387,17 +395,8 @@
                 </div>
             </div>
 
-            <div id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-3.5 pointer-events-auto z-10 hud-spring">
-                <!-- 1. Settings Button (Cog Icon) -->
-                <div id="sidebarSettings" class="w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Settings">
-                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">SET</span>
-                </div>
-
-                <!-- 2. Herd Button -->
+            <div id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring">
+                <!-- Herd Button -->
                 <div class="relative w-16 h-16 ui-element hover:scale-110 cursor-pointer" title="Herd">
                     <div class="absolute top-0 right-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-gray-200"></div>
                     <div class="absolute bottom-0 left-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm">
@@ -405,17 +404,9 @@
                     </div>
                 </div>
 
-                <!-- 3. Trade Button -->
+                <!-- Trade Button -->
                 <div class="w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Trade">
                     <span class="text-gray-500 font-black text-[10px] tracking-wider uppercase">Trade</span>
-                </div>
-
-                <!-- 4. Emotes & Social Button -->
-                <div id="sidebarSocial" class="w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Emotes & Social">
-                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">SOCIAL</span>
                 </div>
             </div>
 

@@ -66,18 +66,16 @@ Positioned at `absolute top-4 left-6 pointer-events-none z-30 opacity-90 transit
 - Cow Profile Box (`w-28 h-28`), Rebirth chip, `#profileHerdBadge`, `.shape-leaf` Grazing Quest bar (`68%`), Stamina/HP bar (`HP 100`).
 
 ### C. Top-Right: Economy & Settings ([L299-L325](file:///Users/jsph/cowgameui/index.html#L299-L325))
-- Calories Pill (`h-14 px-5`), Upgrades tab, `#topRightStandard` (Settings cowbell), `#topRightCompact` (`.shape-cowbell` menu in Compact Mode with bell loop and `MENU` label).
+- Calories Pill (`h-14 px-5`), Upgrades tab, `#topRightStandard` (Persistent cowbell Settings with `SET`), `#topRightCompact` (Persistent cowbell Menu with `MENU` in Compact Mode).
 
 ### D. Top-Center: Town Bulletin ([L328-L375](file:///Users/jsph/cowgameui/index.html#L328-L375))
 - `#townBulletinWrapper`: Elevated to `top-4`. `#bulletinFull` (Cycle timer + World Event bar + 2x Calories boost chip) and `#bulletinCompact`.
 
-### E. Sidebars ([L378-L435](file:///Users/jsph/cowgameui/index.html#L378-L435))
+### E. Sidebars ([L378-L415](file:///Users/jsph/cowgameui/index.html#L378-L415))
 - `#leftSidebar`: Inventory + Closet (`top-48`) or single `BAG` button.
-- `#rightSidebar`: 4-button vertical stack (`top-32`, gap `3.5`):
-  1. `#sidebarSettings`: Cog/gear SVG icon button.
-  2. `#sidebarHerd`: Cow silhouette SVG button (`HERD`).
-  3. `#sidebarTrade`: Trade stall SVG button (`TRADE`).
-  4. `#sidebarSocial`: Emote/Social smiley SVG button (`SOCIAL`).
+- `#rightSidebar`: 2-button vertical stack (`top-32`, gap `4`):
+  1. `#sidebarHerd`: Herd button (`HERD`).
+  2. `#sidebarTrade`: Trade button (`TRADE`).
 
 ### F. Mobile Action Cluster & Safe Zones ([L438-L495](file:///Users/jsph/cowgameui/index.html#L438-L495))
 - `#safeZoneLeft`: Mobile thumbstick (`w-48 h-48`).
