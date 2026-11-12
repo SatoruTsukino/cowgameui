@@ -116,10 +116,16 @@
     <!-- ================= PAGE NAVIGATION TABS ================= -->
     <div id="pageTabsContainer" class="flex items-center gap-3 max-w-[1280px] w-full px-2 z-50">
         <button id="tabBtnPasture" onclick="switchPage('pasture')" class="flex items-center gap-2.5 px-6 py-2.5 rounded-full border-[4px] border-gray-600 bg-gray-600 text-white font-black text-xs tracking-wider uppercase shadow-sm transition-all hover:opacity-95">
-            <span>🐮</span> <span>Pasture ScreenGui</span>
+            <svg class="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                <path d="M4 9a8 8 0 1116 0c0 5-4 8-8 8s-8-3-8-8z"/>
+            </svg>
+            <span>Pasture ScreenGui</span>
         </button>
         <button id="tabBtnBuilding" onclick="switchPage('building')" class="flex items-center gap-2.5 px-6 py-2.5 rounded-full border-[4px] border-gray-400 bg-white text-gray-500 font-black text-xs tracking-wider uppercase shadow-sm transition-all hover:bg-gray-100 hover:text-gray-700">
-            <span>🔨</span> <span>Building GUI</span>
+            <svg class="w-4 h-4 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+            </svg>
+            <span>Building GUI</span>
             <span class="px-2 py-0.5 rounded-full bg-gray-200 text-gray-600 text-[9px] font-black tracking-widest uppercase">WIP</span>
         </button>
     </div>
@@ -296,7 +302,7 @@
                 </div>
             </div>
 
-            <!-- 3. TOP-RIGHT: Economy & Menus (Elevated to top-4) -->
+            <!-- 3. TOP-RIGHT: Economy & Compact Menu (Elevated to top-4) -->
             <div id="topRightHud" class="absolute top-4 right-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring">
                 <div class="flex flex-col items-center">
                     <div class="h-14 px-5 rounded-[1.5rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm relative z-10 ui-element hover:scale-105 transition-transform cursor-pointer">
@@ -307,15 +313,10 @@
                     </div>
                 </div>
 
-                <div id="topRightStandard" class="flex items-start gap-3 pt-1">
-                    <div class="w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer relative" title="Settings">
-                        <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">SET</span>
-                        <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
-                    </div>
-                </div>
-
-                <div id="topRightCompact" class="hidden w-14 h-14 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1" title="Menu (Settings, Herd, Trade)">
-                    <span class="text-gray-600 font-black text-sm tracking-widest leading-none">•••</span>
+                <!-- Unified Menu in Compact Mode retains iconic Cowbell -->
+                <div id="topRightCompact" class="hidden w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1 relative" title="Menu (Settings, Herd, Trade, Social)">
+                    <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">MENU</span>
+                    <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
                 </div>
             </div>
 
@@ -386,17 +387,35 @@
                 </div>
             </div>
 
-            <div id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring">
-                <!-- Herd Button -->
+            <div id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-3.5 pointer-events-auto z-10 hud-spring">
+                <!-- 1. Settings Button (Cog Icon) -->
+                <div id="sidebarSettings" class="w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Settings">
+                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">SET</span>
+                </div>
+
+                <!-- 2. Herd Button -->
                 <div class="relative w-16 h-16 ui-element hover:scale-110 cursor-pointer" title="Herd">
                     <div class="absolute top-0 right-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-gray-200"></div>
                     <div class="absolute bottom-0 left-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm">
                         <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase">Herd</span>
                     </div>
                 </div>
-                <!-- Trade Button -->
+
+                <!-- 3. Trade Button -->
                 <div class="w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Trade">
                     <span class="text-gray-500 font-black text-[10px] tracking-wider uppercase">Trade</span>
+                </div>
+
+                <!-- 4. Emotes & Social Button -->
+                <div id="sidebarSocial" class="w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Emotes & Social">
+                    <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">SOCIAL</span>
                 </div>
             </div>
 
@@ -438,11 +457,40 @@
                 </div>
 
                 <!-- 3. Emote (Top / North, θ ≈ 80°) -->
-                <div id="btnMobileEmote" class="absolute left-[116px] top-2.5 w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
+                <div class="absolute left-[116px] top-2.5">
+                    <div id="btnMobileEmote" onclick="toggleEmoteRadial()" class="w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
+                        <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">EMOTE</span>
+                    </div>
+
+                    <!-- Flyout Mini-Arc (3 Quick Emotes) -->
+                    <div id="mobileEmoteFlyout" class="hidden absolute -top-14 -left-16 flex items-center gap-2 pointer-events-auto z-30 hud-spring">
+                        <button class="w-10 h-10 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
+                            <svg class="w-5 h-5 fill-red-400 stroke-red-500 stroke-1" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
+                        <button class="w-10 h-10 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
+                            <svg class="w-5 h-5 fill-amber-400 stroke-amber-500 stroke-1" viewBox="0 0 24 24">
+                                <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/>
+                            </svg>
+                        </button>
+                        <button class="w-10 h-10 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
+                            <svg class="w-5 h-5 stroke-blue-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. Kick (Down-Left / Bot-Left, θ ≈ 235°) -->
+                <div id="btnMobileKick" class="absolute left-[47px] bottom-[25px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Kick">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
                     </svg>
-                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">EMOTE</span>
+                    <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">KICK</span>
                 </div>
             </div>
 
@@ -472,8 +520,10 @@
 
                     <!-- Center: Construction Mode Banner -->
                     <div class="flex items-center gap-3 px-6 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-md pointer-events-auto ui-element">
-                        <div class="w-7 h-7 rounded-full bg-gray-200 border-2 border-gray-400 flex items-center justify-center">
-                            <span class="text-xs">🔨</span>
+                        <div class="w-7 h-7 rounded-full bg-gray-100 border-2 border-gray-400 flex items-center justify-center">
+                            <svg class="w-4 h-4 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+                            </svg>
                         </div>
                         <div class="flex flex-col items-center">
                             <span class="text-gray-600 font-black text-xs tracking-widest uppercase">Construction Mode</span>
@@ -481,7 +531,7 @@
                         </div>
                     </div>
 
-                    <!-- Right: Quick Toggles & Budget -->
+                    <!-- Right: Quick Toggles & Wood/Stone Side-by-Side (No Calories) -->
                     <div class="flex items-center gap-3 pointer-events-auto">
                         <button id="btnGridSnap" onclick="cycleGridSnap()" class="h-12 px-4 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-2 shadow-sm ui-element hover:bg-gray-50 active:scale-95 cursor-pointer transition-transform" title="Toggle Grid Snap">
                             <svg class="w-4 h-4 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
@@ -493,15 +543,20 @@
                             <span id="labelGridSnap" class="text-gray-600 font-black text-[10px] tracking-wider uppercase">Grid: 2 Studs</span>
                         </button>
 
+                        <!-- Wood & Stone Side-by-Side Counters -->
                         <div class="h-12 px-4 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-3 shadow-sm ui-element">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs">🪵</span>
+                            <div class="flex items-center gap-1.5" title="Wood">
+                                <svg class="w-4 h-4 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
+                                </svg>
                                 <span class="text-gray-600 font-black text-[11px] tracking-wider uppercase">450</span>
                             </div>
                             <div class="w-px h-5 bg-gray-200"></div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-xs">🌾</span>
-                                <span class="text-gray-600 font-black text-[11px] tracking-wider uppercase">1,500</span>
+                            <div class="flex items-center gap-1.5" title="Stone">
+                                <svg class="w-4 h-4 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <polygon points="12 2 2 8.5 4 19 12 22 20 19 22 8.5 12 2"/>
+                                </svg>
+                                <span class="text-gray-600 font-black text-[11px] tracking-wider uppercase">320</span>
                             </div>
                         </div>
                     </div>
@@ -591,7 +646,9 @@
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-500 bg-gray-100/60 flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-transform">
                             <span class="text-[9px] font-black text-gray-600 uppercase text-center leading-tight">Rustic Fence</span>
                             <div class="w-12 h-10 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center bg-white/70">
-                                <span class="text-xs">🪵</span>
+                                <svg class="w-6 h-6 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 3v18M18 3v18M3 8h18M3 16h18"/>
+                                </svg>
                             </div>
                             <span class="px-2 py-0.5 rounded-md bg-gray-300 text-gray-700 font-black text-[9px] tracking-wider uppercase">20 Wood</span>
                         </div>
@@ -600,7 +657,9 @@
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-300 bg-white flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:border-gray-400 hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-all">
                             <span class="text-[9px] font-black text-gray-500 uppercase text-center leading-tight">Picket Gate</span>
                             <div class="w-12 h-10 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                                <span class="text-xs">🚪</span>
+                                <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v16M20 4v16M4 7h16M4 17h16M8 4v16M16 4v16M4 17l16-10"/>
+                                </svg>
                             </div>
                             <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">35 Wood</span>
                         </div>
@@ -609,16 +668,23 @@
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-300 bg-white flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:border-gray-400 hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-all">
                             <span class="text-[9px] font-black text-gray-500 uppercase text-center leading-tight">Hay Bale</span>
                             <div class="w-12 h-10 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                                <span class="text-xs">🌾</span>
+                                <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <ellipse cx="8" cy="12" rx="4" ry="7"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 5h8a4 7 0 0 1 4 7 4 7 0 0 1-4 7H8"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5v14"/>
+                                </svg>
                             </div>
-                            <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">50 Cal</span>
+                            <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">15 Wood</span>
                         </div>
 
                         <!-- Slot 4 -->
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-300 bg-white flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:border-gray-400 hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-all">
                             <span class="text-[9px] font-black text-gray-500 uppercase text-center leading-tight">Stone Wall</span>
                             <div class="w-12 h-10 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                                <span class="text-xs">🪨</span>
+                                <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M9 5v7M15 5v7M6 12v7M12 12v7M18 12v7"/>
+                                </svg>
                             </div>
                             <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">40 Stone</span>
                         </div>
@@ -627,18 +693,22 @@
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-300 bg-white flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:border-gray-400 hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-all">
                             <span class="text-[9px] font-black text-gray-500 uppercase text-center leading-tight">Cozy Lantern</span>
                             <div class="w-12 h-10 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                                <span class="text-xs">🏮</span>
+                                <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6M12 3v3M7 9h10l-2 9H9L7 9zM7 9l5-3 5 3M9 21h6"/>
+                                </svg>
                             </div>
-                            <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">80 Cal</span>
+                            <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">25 Stone</span>
                         </div>
 
                         <!-- Slot 6 -->
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-300 bg-white flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:border-gray-400 hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-all">
                             <span class="text-[9px] font-black text-gray-500 uppercase text-center leading-tight">Clover Bed</span>
                             <div class="w-12 h-10 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
-                                <span class="text-xs">🍀</span>
+                                <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12c-2-2-4.5-1-4.5 1s2.5 3 4.5 1zm0 0c-2 2-1 4.5 1 4.5s3-2.5 1-4.5zm0 0c2 2 4.5 1 4.5-1s-2.5-3-4.5-1zm0 0c2-2 1-4.5-1-4.5s-3 2.5-1 4.5zM12 14v7"/>
+                                </svg>
                             </div>
-                            <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">100 Cal</span>
+                            <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">10 Stone</span>
                         </div>
                     </div>
                 </div>
@@ -655,6 +725,7 @@
         let areSafeZonesVisible = false;
         let isCoreGuiVisible = false;
         let isThemeDrawerOpen = false;
+        let isEmoteRadialOpen = false;
 
         function switchPage(pageId) {
             activePage = pageId;
@@ -675,6 +746,14 @@
 
                 tabPasture.className = "flex items-center gap-2.5 px-6 py-2.5 rounded-full border-[4px] border-gray-600 bg-gray-600 text-white font-black text-xs tracking-wider uppercase shadow-sm transition-all hover:opacity-95";
                 tabBuilding.className = "flex items-center gap-2.5 px-6 py-2.5 rounded-full border-[4px] border-gray-400 bg-white text-gray-500 font-black text-xs tracking-wider uppercase shadow-sm transition-all hover:bg-gray-100 hover:text-gray-700";
+            }
+        }
+
+        function toggleEmoteRadial() {
+            isEmoteRadialOpen = !isEmoteRadialOpen;
+            const flyout = document.getElementById('mobileEmoteFlyout');
+            if (flyout) {
+                flyout.classList.toggle('hidden', !isEmoteRadialOpen);
             }
         }
 
