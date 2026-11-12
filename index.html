@@ -60,7 +60,91 @@
         .game-screen.aspect-19-5-9 .ps-slot { width: 120px !important; height: 128px !important; }
         .game-screen.aspect-19-5-9 #leftSidebar { top: 144px; }
         .game-screen.aspect-19-5-9 #leftSidebar, .game-screen.aspect-19-5-9 #leftSidebarStandard { gap: 8px; }
-        .game-screen.aspect-19-5-9 #eventColumn { min-width: 200px; }
+        /* Responsive Bulletin & Boost Card adaptation for mobile and smaller resolutions */
+        #bulletinCard {
+            min-width: 216px;
+        }
+        #eventColumn {
+            min-width: 155px;
+        }
+
+        .game-screen.aspect-19-5-9 #bulletinDaytime,
+        .game-screen.aspect-4-3 #bulletinDaytime,
+        .game-screen.narrow-screen #bulletinDaytime {
+            display: none !important;
+        }
+
+        .game-screen.aspect-19-5-9 #bulletinCard,
+        .game-screen.aspect-4-3 #bulletinCard,
+        .game-screen.narrow-screen #bulletinCard {
+            min-width: 216px;
+            padding-left: 14px;
+            padding-right: 14px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .game-screen.aspect-19-5-9 #eventColumn,
+        .game-screen.aspect-4-3 #eventColumn,
+        .game-screen.narrow-screen #eventColumn {
+            min-width: 180px;
+        }
+
+        .game-screen.aspect-19-5-9 #bulletinBoostCard,
+        .game-screen.aspect-4-3 #bulletinBoostCard,
+        .game-screen.narrow-screen #bulletinBoostCard {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 900px) {
+            #bulletinDaytime {
+                display: none !important;
+            }
+            #bulletinCard {
+                min-width: 216px !important;
+                padding-left: 14px !important;
+                padding-right: 14px !important;
+                padding-top: 8px !important;
+                padding-bottom: 8px !important;
+            }
+            #eventColumn {
+                min-width: 180px !important;
+            }
+            #bulletinBoostCard {
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+        }
+        /* Catalog Category Tabs Peek-and-Pop Animation */
+        #catalogTabsHeader {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .catalog-tab {
+            position: relative;
+            z-index: 5;
+            transform: translateY(5px);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            transform-origin: bottom center;
+            will-change: transform;
+        }
+
+        .catalog-tab:hover {
+            transform: translateY(-2px);
+            z-index: 8;
+        }
+
+        .catalog-tab.active {
+            z-index: 20 !important;
+            transform: translateY(0);
+        }
+
+        .catalog-tab.active:hover {
+            transform: translateY(-2px);
+        }
+
         .game-screen.aspect-19-5-9 #catalogDock { max-width: calc(100% - 2 * 256px); }
         .game-screen.aspect-19-5-9 #buildTools { flex-wrap: wrap-reverse; max-height: 220px; column-gap: 10px; }
 
@@ -372,8 +456,8 @@
             <!-- 2. TOP-CENTER: Town Bulletin (Elevated to top-4) -->
             <div id="townBulletinWrapper" class="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto ui-element hud-spring z-20">
                 <div id="bulletinFull" class="flex flex-col items-center">
-                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
-                        <div class="flex items-center gap-2 pr-3 border-r-4 border-gray-200">
+                    <div id="bulletinCard" class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
+                        <div id="bulletinDaytime" class="flex items-center gap-2 pr-3 border-r-4 border-gray-200">
                             <div class="w-8 h-8 rounded-full border-4 border-gray-400 bg-gray-100 flex items-center justify-center">
                                 <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="4"></circle>
@@ -400,7 +484,7 @@
                         </div>
                     </div>
 
-                    <div class="-mt-1.5 px-4 py-1 rounded-b-2xl rounded-t-lg border-4 border-gray-500 bg-gray-100 shadow-md flex items-center gap-2">
+                    <div id="bulletinBoostCard" class="-mt-1.5 px-4 py-1 rounded-b-2xl rounded-t-lg border-4 border-gray-500 bg-gray-100 shadow-md flex items-center justify-center gap-2 self-center">
                         <span class="w-2 h-2 rounded-full bg-gray-500"></span>
                         <span class="text-[10px] font-black text-gray-600 tracking-widest uppercase">2x Calories • 01:30</span>
                     </div>
@@ -577,20 +661,20 @@
                 <!-- 4. BOTTOM CATALOG & PALETTE DOCK (Constrained max-w-[680px] to clear mobile safe zones) -->
                 <div id="catalogDock" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto z-20 w-full max-w-[680px] px-2">
                     <!-- Category Tabs Header (Connected to Box) -->
-                    <div class="flex items-end gap-1.5 -mb-[5px] z-20">
-                        <button onclick="filterBuildCategory('fences')" id="catBtn-fences" class="px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none z-20 relative">
+                    <div id="catalogTabsHeader" class="flex items-end gap-1.5 -mb-[5px]">
+                        <button onclick="filterBuildCategory('fences')" id="catBtn-fences" class="catalog-tab active px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none">
                             Fences & Gates
                         </button>
-                        <button onclick="filterBuildCategory('barns')" id="catBtn-barns" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
+                        <button onclick="filterBuildCategory('barns')" id="catBtn-barns" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Barns & Sheds
                         </button>
-                        <button onclick="filterBuildCategory('feeders')" id="catBtn-feeders" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
+                        <button onclick="filterBuildCategory('feeders')" id="catBtn-feeders" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Feeders & Troughs
                         </button>
-                        <button onclick="filterBuildCategory('flooring')" id="catBtn-flooring" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
+                        <button onclick="filterBuildCategory('flooring')" id="catBtn-flooring" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Paths & Floors
                         </button>
-                        <button onclick="filterBuildCategory('decor')" id="catBtn-decor" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
+                        <button onclick="filterBuildCategory('decor')" id="catBtn-decor" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Cozy Decor
                         </button>
                     </div>
@@ -815,9 +899,9 @@
                 const btn = document.getElementById(`catBtn-${cat}`);
                 if (!btn) return;
                 if (cat === category) {
-                    btn.className = "px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none z-20 relative";
+                    btn.className = "catalog-tab active px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none";
                 } else {
-                    btn.className = "px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative";
+                    btn.className = "catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors";
                 }
             });
         }
@@ -1062,6 +1146,10 @@
             
             const scale = clientH / virtualHeight;
             ui.style.transform = `scale(${scale})`;
+
+            // Town bulletin responsive adaptation when resolution width shrinks
+            const isNarrow = virtualWidth < 1150 || clientW < 900 || preset === 'aspect-19-5-9' || preset === 'aspect-4-3';
+            screen.classList.toggle('narrow-screen', isNarrow);
 
             // Vital bars (Roblox Layout parity): 208px on 16:9+ down to 160px on narrow (4:3 = 960 wide) or phone-height
             // canvases, whichever is tighter.

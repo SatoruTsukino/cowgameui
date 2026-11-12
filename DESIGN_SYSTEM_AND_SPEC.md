@@ -70,22 +70,22 @@ All dimensions are in virtual 720p coordinate units ($1\text{px} \to 1$ Roblox o
 | **+HERD Badge** | Auto $\times 24\text{px}$ | $4\text{px}$ | $9999\text{px}$ (Pill) | Top-right of profile card |
 | **Grazing Quest Leaf** | $208\text{px} \times 32\text{px}$ | $5\text{px}$ | Asymmetric (round / $6\text{px}$) | Top vitals row |
 | **Stamina / HP Pill** | $208\text{px} \times 32\text{px}$ | $5\text{px}$ | $9999\text{px}$ (Pill) | Top vitals row |
-| **Town Bulletin (Full)** | $430\text{px} \times 64\text{px}$ | $6\text{px}$ | $32\text{px}$ (`2rem`) | `top-4, center` |
+| **Town Bulletin (Full)** | $430\text{px} \times 64\text{px}$ (Desktop) / $\ge 216\text{px} \times 52\text{px}$ (Mobile/Narrow) | $6\text{px}$ | $32\text{px}$ (`2rem`) | `top-4, center` |
 | **Town Bulletin (Compact)** | $96\text{px} \times 44\text{px}$ | $6\text{px}$ | $9999\text{px}$ (Pill) | `top-4, center` |
-| **Boost Tab** | Auto $\times \sim 28\text{px}$ | $4\text{px}$ | $8\text{px}$ top / $16\text{px}$ bottom | Under bulletin, $6\text{px}$ overlap |
-| **Calories Pill** | $160\text{px} \times 56\text{px}$ | $6\text{px}$ | $24\text{px}$ (`1.5rem`) | `top-4, right-8` |
-| **Upgrades Tab** | $110\text{px} \times 32\text{px}$ | $4\text{px}$ (no top) | Bottom $12\text{px}$ | Docked under Calories |
-| **Settings Cowbell** | $56\text{px} \times 56\text{px}$ | $6\text{px}$ | Bell flare ($35\%/15\%$) | Top-right standard |
-| **Unified Menu (`•••`)** | $56\text{px} \times 56\text{px}$ | $6\text{px}$ | $16\text{px}$ (`1rem`) | Top-right compact |
-| **Inventory Button** | $64\text{px} \times 72\text{px}$ | $6\text{px}$ | $12\text{px}$ | Left sidebar |
-| **Closet Button** | $64\text{px} \times 64\text{px}$ | $6\text{px}$ | $16\text{px}$ | Left sidebar |
-| **Unified Bag Button** | $64\text{px} \times 72\text{px}$ | $6\text{px}$ | $12\text{px}$ | Left compact sidebar |
-| **Herd Button** | $64\text{px} \times 64\text{px}$ | $6\text{px}$ | $13\text{px}$ (Dual layer) | Right sidebar |
-| **Trade Button** | $64\text{px} \times 64\text{px}$ | $6\text{px}$ | $16\text{px}$ | Right sidebar |
-| **Mobile Thumbstick Pad** | $192\text{px} \times 192\text{px}$ | $4\text{px}$ dashed | $9999\text{px}$ (Circle) | `bottom-8, left-8` |
-| **Mobile Action Safe Zone** | $256\text{px} \times 256\text{px}$ | $4\text{px}$ dashed | $56\text{px}$ (`3.5rem`) | `bottom-8, right-8` |
-| **Mobile Jump Button** | $80\text{px} \times 80\text{px}$ | $6\text{px}$ | $9999\text{px}$ (Circle) | Center of safe zone |
-| **Mobile Radial Satellites** | $56\text{px} \times 56\text{px}$ | $5\text{px}$ | $9999\text{px}$ (Circle) | $R = 92\text{px}$ from Jump |
+| **Boost Tab** | Auto $\times \sim 28\text{px}$ | $4\text{px}$ | $8\text{px}$ top / $16\text{px}$ bottom | Centered under bulletin, $6\text{px}$ overlap |
+| **Calories Pill** | $160\text{px} \\times 56\\text{px}$ | $6\\text{px}$ | $24\\text{px}$ (`1.5rem`) | `top-4, right-8` |
+| **Upgrades Tab** | $110\text{px} \\times 32\\text{px}$ | $4\\text{px}$ (no top) | Bottom $12\\text{px}$ | Docked under Calories |
+| **Settings Cowbell** | $56\text{px} \\times 56\\text{px}$ | $6\\text{px}$ | Bell flare ($35\\%/15\\%$) | Top-right standard |
+| **Unified Menu (`•••`)** | $56\text{px} \\times 56\\text{px}$ | $6\\text{px}$ | $16\\text{px}$ (`1rem`) | Top-right compact |
+| **Inventory Button** | $64\text{px} \\times 72\\text{px}$ | $6\\text{px}$ | $12\\text{px}$ | Left sidebar |
+| **Closet Button** | $64\text{px} \\times 64\\text{px}$ | $6\\text{px}$ | $16\\text{px}$ | Left sidebar |
+| **Unified Bag Button** | $64\text{px} \\times 72\\text{px}$ | $6\\text{px}$ | $12\\text{px}$ | Left compact sidebar |
+| **Herd Button** | $64\text{px} \\times 64\\text{px}$ | $6\\text{px}$ | $13\\text{px}$ (Dual layer) | Right sidebar |
+| **Trade Button** | $64\text{px} \\times 64\\text{px}$ | $6\\text{px}$ | $16\\text{px}$ | Right sidebar |
+| **Mobile Thumbstick Pad** | $192\text{px} \\times 192\\text{px}$ | $4\\text{px}$ dashed | $9999\\text{px}$ (Circle) | `bottom-8, left-8` |
+| **Mobile Action Safe Zone** | $256\text{px} \\times 256\\text{px}$ | $4\\text{px}$ dashed | $56\\text{px}$ (`3.5rem`) | `bottom-8, right-8` |
+| **Mobile Jump Button** | $80\text{px} \\times 80\\text{px}$ | $6\\text{px}$ | $9999\\text{px}$ (Circle) | Center of safe zone |
+| **Mobile Radial Satellites** | $56\text{px} \\times 56\\text{px}$ | $5\\text{px}$ | $9999\\text{px}$ (Circle) | $R = 92\\text{px}$ from Jump |
 
 ---
 
@@ -105,6 +105,7 @@ All dimensions are in virtual 720p coordinate units ($1\text{px} \to 1$ Roblox o
 | Catalog slots | $96 \times 112\text{px}$ | $120 \times 128\text{px}$ (tray scrolls) |
 | Catalog tab / slot name blocks | $26$ / $22\text{px}$ | $36\text{px}$ (two lines) |
 | Vital bars | $208\text{px}$ | $160\text{px}$ |
+| Town Bulletin (Full card) | $344\text{px} \times 58\text{px}$ ($430\text{px}$ spec) | $\ge 216\text{px} \times 52\text{px}$ (Daytime cycle collapsed, boost card centered) |
 
 ---
 

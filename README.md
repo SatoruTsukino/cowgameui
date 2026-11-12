@@ -8,7 +8,7 @@
 
 **Key UI Components & Rules:**
 *   **Top-Left (Vitals):** Cow Profile (with Rebirth badge), Leaf-shaped Grazing Quest progress bar (with a white inner gap `p-1`), and Stamina/HP pill. 
-*   **Top-Center (Town Bulletin):** Absolutely centered. Features a Sun icon, Day/Night timer, World Event progress, and Player Boost chip. Can toggle into a compact mini-pill.
+*   **Top-Center (Town Bulletin):** Absolutely centered. Features a Sun icon, Day/Night timer, World Event progress, and Player Boost chip. Can toggle into a compact mini-pill. On mobile and smaller resolutions, the daytime cycle collapses to shorten the pill (with a $216\text{px}$ minimum floor) and the boost chip remains centered underneath.
 *   **Top-Right (Economy & Settings):** Fused Calories pill with a thinner Upgrades tab tucked underneath. Trade button, and a Downward-Flared Cowbell shape for the Settings button.
 *   **Left Sidebar:** Pixel Backpack shape for Inventory (with a top flap), and a standard squircle for the Closet. (Merges into a "Bag" in Compact Mode).
 *   **Right Sidebar:** Herd button made of two interlocking/overlapping rounded squares. (Moves to Cow Profile in Compact Mode).
@@ -183,8 +183,8 @@
             <!-- 2. TOP-CENTER: Town Bulletin -->
             <div id="townBulletinWrapper" class="absolute top-6 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto ui-element hud-spring z-20">
                 <div id="bulletinFull" class="flex flex-col items-center">
-                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
-                        <div class="flex items-center gap-2 pr-3 border-r-4 border-gray-200">
+                    <div id="bulletinCard" class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
+                        <div id="bulletinDaytime" class="flex items-center gap-2 pr-3 border-r-4 border-gray-200">
                             <div class="w-8 h-8 rounded-full border-4 border-gray-400 bg-gray-100 flex items-center justify-center">
                                 <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="4"></circle>
@@ -197,7 +197,7 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col gap-1 min-w-[155px]">
+                        <div id="eventColumn" class="flex flex-col gap-1 min-w-[155px]">
                             <div class="flex items-center justify-between px-1">
                                 <span class="text-[9px] font-black text-gray-400 tracking-widest uppercase">World Event</span>
                                 <span class="text-[10px] font-black text-gray-500 tracking-wider">4m 12s</span>
@@ -211,7 +211,7 @@
                         </div>
                     </div>
 
-                    <div class="-mt-1.5 px-4 py-1 rounded-b-2xl rounded-t-lg border-4 border-gray-500 bg-gray-100 shadow-md flex items-center gap-2">
+                    <div id="bulletinBoostCard" class="-mt-1.5 px-4 py-1 rounded-b-2xl rounded-t-lg border-4 border-gray-500 bg-gray-100 shadow-md flex items-center justify-center gap-2 self-center">
                         <span class="w-2 h-2 rounded-full bg-gray-500"></span>
                         <span class="text-[10px] font-black text-gray-600 tracking-widest uppercase">2x Calories • 01:30</span>
                     </div>

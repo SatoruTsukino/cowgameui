@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^2.1.322",
+    "claude-cli": "^1.0.5"
+  },
+  "allowScripts": {
+    "@anthropic-ai/claude-code@2.1.322": true
+  }
+}
