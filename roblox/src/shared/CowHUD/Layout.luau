@@ -20,6 +20,7 @@ local Layout = {}
 
 export type Refs = {
 	topLeft: GuiObject,
+	vitals: GuiObject, -- grazing + HP column inside topLeft
 	topRight: GuiObject,
 	bulletin: { wrapper: GuiObject, scale: UIScale, edgeRoom: number, setPosition: (number, number) -> () },
 	leftSidebar: GuiObject,
@@ -29,6 +30,15 @@ export type Refs = {
 }
 
 local BUILD_BAR_HEIGHT = 48 -- h-12
+
+-- Vital bars: full 208px on 16:9-and-wider canvases at full height, down to 160px on narrow (4:3, 960 wide)
+-- or short (phones, ~520 tall) canvases; linear in between, whichever constraint is tighter.
+local VITALS_MAX, VITALS_MIN = 208, 160
+local function vitalsWidth(virtualSize: Vector2): number
+	local byWidth = math.clamp((virtualSize.X - 960) / (1280 - 960), 0, 1)
+	local byHeight = math.clamp((virtualSize.Y - 520) / (720 - 520), 0, 1)
+	return math.round(VITALS_MIN + (VITALS_MAX - VITALS_MIN) * math.min(byWidth, byHeight))
+end
 local BUILD_TOOLS_GAP_TOP = 16 -- HTML: tools at top-20, bar ends at top-4 + h-12
 local RIGHT_SIDEBAR_DROP = 112 -- HTML: #rightSidebar top-32 minus #topRightHud top-4
 local ACTION_ARC_RESERVE = Theme.Margin + 256 + 16 -- touch: build tools stay above the mobile action arc
@@ -56,6 +66,7 @@ function Layout.attach(root: GuiObject, scaler, refs: Refs)
 		local rowY = math.max(Theme.TopRowMinY, (barTop + barBottom - Theme.TopRowHeight) / 2)
 		local topRightX = math.min(virtualWidth - Theme.Margin, rightCoreEdge - Theme.ClusterGap)
 		refs.topRight.Position = UDim2.fromOffset(topRightX, rowY)
+		refs.vitals.Size = UDim2.fromOffset(vitalsWidth(scaler.virtualSize), refs.vitals.Size.Y.Offset)
 
 		-- Bulletin: top row, centred if possible, otherwise slid to fit between the core buttons and the top-right.
 		local bulletin = refs.bulletin

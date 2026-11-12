@@ -70,7 +70,7 @@ return function(parent: Instance, ctx)
 	})
 	local rebirthLabel = Util.label({ TextSize = 10, TextColor3 = C.Card, Parent = chipFace })
 
-	-- Vitals column (208 wide, gap-2)
+	-- Vitals column (208 wide, gap-2; Layout narrows it to 160 on small canvases)
 	local vitals = Util.frame({
 		Name = "Vitals",
 		Size = UDim2.fromOffset(208, 0),
@@ -184,5 +184,5 @@ return function(parent: Instance, ctx)
 	state:observe("hp", refreshHealth)
 	state:observe("maxHp", refreshHealth)
 
-	return cluster
+	return cluster, vitals
 end

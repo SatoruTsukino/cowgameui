@@ -127,7 +127,7 @@ function CowHUD.mount(player: Player, options: Options?)
 	state:observe("motion", Theme.setMotion)
 
 	local hudLayer = Util.frame({ Name = "HUD", Size = UDim2.fromScale(1, 1), ZIndex = 1, Parent = root })
-	local topLeft = TopLeft(hudLayer, ctx)
+	local topLeft, vitals = TopLeft(hudLayer, ctx)
 	local topRight = TopRight(hudLayer, ctx)
 	local bulletin = Bulletin(hudLayer, ctx)
 	local sidebars = Sidebars(hudLayer, ctx)
@@ -158,6 +158,7 @@ function CowHUD.mount(player: Player, options: Options?)
 	end)
 	layout = Layout.attach(root, scaler, {
 		topLeft = topLeft,
+		vitals = vitals,
 		topRight = topRight,
 		bulletin = bulletin,
 		leftSidebar = sidebars.left,
