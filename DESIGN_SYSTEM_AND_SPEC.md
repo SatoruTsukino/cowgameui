@@ -44,15 +44,16 @@ The Cozy Cow UI is designed to combine the charming, chunky aesthetics of cozy s
 ### C. Mobile Radial Action Cluster & Graze Removal
 - **Graze Removal**: In-game grazing is proximity-activated or triggered via context interaction; a permanent dedicated graze button created visual clutter.
 - **Centered Jump Anchor**: Centered inside a $256\text{px} \times 256\text{px}$ safe zone (`#safeZoneRight`) at $(128\text{px}, 128\text{px})$.
-- **Radial Satellite Placement ($R = 92\text{px}$ from Jump Center)**:
-  - Satellites enlarged from $48\text{px}$ to $56\text{px}$ (`w-14 h-14`) for effortless finger targeting.
-  - **Sprint (Bottom / West, $\theta \approx 190^\circ$)**: Nearest to thumb rest position. Quickest access for simultaneous sprint + jump.
-  - **Moo (Middle / North-West, $\theta = 135^\circ$)**: $45^\circ$ diagonal angle.
-  - **Emote (Top / North, $\theta \approx 80^\circ$)**: Top of thumb reach arc.
+- **Radial Satellite Placement ($R = 92\text{px}$ from Jump Center, $56\text{px}$ satellites)**: four satellites evenly spread from $60^\circ$ to $200^\circ$ (counter-clockwise from east), so the arc stays on screen beside Roblox's bottom-right Jump on small phones.
+  - **Emote ($60^\circ$)**: top of the thumb reach arc. Tapping it swaps Moo, Sprint and Kick for three quick emotes in the same slots; Emote then reads BACK.
+  - **Moo ($106.7^\circ$)**.
+  - **Sprint ($153.3^\circ$)**: nearest the thumb rest, for sprint + jump together.
+  - **Kick ($200^\circ$)**.
 - **Clearance Math**:
   - Distance from Jump: $92\text{px} - (40\text{px} + 28\text{px}) = 24\text{px}$ finger clearance.
-  - Gap between Satellites: $2 \times 92 \times \sin(27.5^\circ) - 56\text{px} \approx 28.9\text{px}$ gap.
-  - Prevents accidental multi-button presses.
+  - Gap between neighbouring satellites: $2 \times 92 \times \sin(23.3^\circ) - 56\text{px} \approx 16.9\text{px}$.
+  - In Roblox, hit areas grow to 44pt on touch screens; at the 0.75 touch scale floor they stay $\geq 14.6\text{px}$ apart.
+- Prevents accidental multi-button presses.
 
 ---
 

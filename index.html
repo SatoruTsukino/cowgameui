@@ -655,25 +655,25 @@
                     <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">JUMP</span>
                 </div>
 
-                <!-- Radial Arc Satellite Buttons (Enlarged 56px, Bottom to Top: Sprint -> Moo -> Emote) -->
-                <!-- 1. Sprint (Bottom / West, θ ≈ 190°) -->
-                <div id="btnMobileSprint" class="absolute left-2.5 top-[116px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
+                <!-- Radial arc (Roblox ActionCluster parity): R = 92 from Jump, evenly spread 60°→200° counter-clockwise from east. 56px satellites, ≥ 16.9px apart. -->
+                <!-- 1. Sprint (θ = 153.3°) -->
+                <div id="btnMobileSprint" class="absolute left-[18px] top-[59px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                     <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">SPRINT</span>
                 </div>
 
-                <!-- 2. Moo (Middle / North-West, θ = 135°) -->
-                <div id="btnMobileMoo" class="absolute left-[35px] top-[35px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
+                <!-- 2. Moo (θ = 106.7°) -->
+                <div id="btnMobileMoo" class="absolute left-[74px] top-[12px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M16 12h.01M9 16c1.5 1 4.5 1 6 0M4 9a8 8 0 1 1 16 0c0 5-4 8-8 8s-8-3-8-8z"/>
                     </svg>
                     <span class="text-gray-500 font-black text-[8px] tracking-wider uppercase -mt-0.5">MOO</span>
                 </div>
 
-                <!-- 3. Emote (Top / North, θ ≈ 80°) -->
-                <div class="absolute left-[116px] top-2.5">
+                <!-- 3. Emote (θ = 60°) -->
+                <div class="absolute left-[146px] top-[20px]">
                     <div id="btnMobileEmote" onclick="toggleEmoteRadial()" class="w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
                         <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -683,24 +683,24 @@
                 </div>
 
                 <!-- Quick emotes (Roblox parity): Emote swaps Moo / Sprint / Kick for these in the same arc slots -->
-                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[39px] top-[39px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
+                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[78px] top-[16px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
                     <svg class="w-5 h-5 fill-red-400 stroke-red-500 stroke-1" viewBox="0 0 24 24">
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                             </svg>
                 </button>
-                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[14px] top-[120px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
+                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[22px] top-[63px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
                     <svg class="w-5 h-5 fill-amber-400 stroke-amber-500 stroke-1" viewBox="0 0 24 24">
                                 <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/>
                             </svg>
                 </button>
-                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[51px] bottom-[29px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
+                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[18px] top-[135px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
                     <svg class="w-5 h-5 stroke-blue-500 stroke-2 fill-none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                             </svg>
                 </button>
 
-                <!-- 4. Kick (Down-Left / Bot-Left, θ ≈ 235°) -->
-                <div id="btnMobileKick" class="absolute left-[47px] bottom-[25px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Kick">
+                <!-- 4. Kick (θ = 200°) -->
+                <div id="btnMobileKick" class="absolute left-[14px] top-[131px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Kick">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
                     </svg>
