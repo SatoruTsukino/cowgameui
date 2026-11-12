@@ -25,3 +25,9 @@
 - [ ] Bulletin auto-collapses on 4:3 and expands on 16:9
 - [ ] Compact toggle merges the sidebars and menus
 - [ ] Nunito Heavy renders. If not, swap `Theme.Font`.
+
+## Phase 5 — Legibility, accessibility, ergonomics 📝 (plan awaiting review)
+See `phases/05-legibility-ergonomics/05-PLAN.md`.
+- [ ] T0a theme tokens (Roblox) · T0b radial cluster (Roblox) · T0c building GUI port · T0d settings toggles
+- [x] T1 contrast audit · T2 type tokens · T3 hit areas · T4 device profiles
+- [ ] T5 phone layout · T5b building phone layout · T5c kick arc · T5d reduced motion · T6 tablet thumb band · T7 overlap/size verify · T8 contrast fixes · T9 docs
