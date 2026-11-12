@@ -535,27 +535,27 @@
 
                 <!-- 4. BOTTOM CATALOG & PALETTE DOCK (Constrained max-w-[680px] to clear mobile safe zones) -->
                 <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto z-20 w-full max-w-[680px] px-2">
-                    <!-- Category Tabs Header -->
-                    <div class="flex items-center gap-2 mb-[-8px] z-10">
-                        <button onclick="filterBuildCategory('fences')" id="catBtn-fences" class="px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-500 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-sm">
+                    <!-- Category Tabs Header (Connected to Box) -->
+                    <div class="flex items-end gap-1.5 -mb-[5px] z-20">
+                        <button onclick="filterBuildCategory('fences')" id="catBtn-fences" class="px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none z-20 relative">
                             Fences & Gates
                         </button>
-                        <button onclick="filterBuildCategory('barns')" id="catBtn-barns" class="px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-400 bg-gray-100 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-white hover:text-gray-700 transition-colors">
+                        <button onclick="filterBuildCategory('barns')" id="catBtn-barns" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
                             Barns & Sheds
                         </button>
-                        <button onclick="filterBuildCategory('feeders')" id="catBtn-feeders" class="px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-400 bg-gray-100 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-white hover:text-gray-700 transition-colors">
+                        <button onclick="filterBuildCategory('feeders')" id="catBtn-feeders" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
                             Feeders & Troughs
                         </button>
-                        <button onclick="filterBuildCategory('flooring')" id="catBtn-flooring" class="px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-400 bg-gray-100 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-white hover:text-gray-700 transition-colors">
+                        <button onclick="filterBuildCategory('flooring')" id="catBtn-flooring" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
                             Paths & Floors
                         </button>
-                        <button onclick="filterBuildCategory('decor')" id="catBtn-decor" class="px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-400 bg-gray-100 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-white hover:text-gray-700 transition-colors">
+                        <button onclick="filterBuildCategory('decor')" id="catBtn-decor" class="px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative">
                             Cozy Decor
                         </button>
                     </div>
 
-                    <!-- Horizontal Item Slot Tray -->
-                    <div class="w-full px-6 py-4 rounded-[2.5rem] border-[6px] border-gray-400 bg-white shadow-xl flex items-center justify-between gap-3 overflow-x-auto">
+                    <!-- Horizontal Item Slot Tray (Flat Top Under Tabs) -->
+                    <div class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl flex items-center justify-between gap-3 overflow-x-auto relative z-10">
                         <!-- Slot 1 -->
                         <div class="w-24 h-28 rounded-2xl border-[4px] border-gray-500 bg-gray-100/60 flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-transform">
                             <span class="text-[9px] font-black text-gray-600 uppercase text-center leading-tight">Rustic Fence</span>
@@ -759,9 +759,9 @@
                 const btn = document.getElementById(`catBtn-${cat}`);
                 if (!btn) return;
                 if (cat === category) {
-                    btn.className = "px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-500 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-sm";
+                    btn.className = "px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none z-20 relative";
                 } else {
-                    btn.className = "px-4 py-1.5 rounded-t-xl rounded-b-md border-[4px] border-b-0 border-gray-400 bg-gray-100 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-white hover:text-gray-700 transition-colors";
+                    btn.className = "px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors z-10 relative";
                 }
             });
         }

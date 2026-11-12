@@ -97,7 +97,7 @@ Positioned at `absolute top-4 left-6 pointer-events-none z-30 opacity-90 transit
 | [`L428-L475`](file:///Users/jsph/cowgameui/index.html#L428-L475) | Building Top Bar | Top HUD: Exit Build button (`[✕] Exit Build`), centered Object/Parts Limit pill (`Parts: 34 / 50`) with Cog icon (`absolute left-1/2 -translate-x-1/2`), grid snap button (`#btnGridSnap`), and dual Wood (`450`) & Stone (`320`) side-by-side SVG counters. |
 | [`L477-L490`](file:///Users/jsph/cowgameui/index.html#L477-L490) | Placement Boundary | Dashed building boundary ring with central animated `Placement Cursor` target. |
 | [`L493-L534`](file:///Users/jsph/cowgameui/index.html#L493-L534) | Right Utility Tools | Vertical action stack (`top-20`, gap-2.5): Rotate (`ROT [R]`), Paint (`PAINT`), Undo (`UNDO [Z]`), Redo (`REDO [Y]`), Demolish (`TRASH [X]`). Kept strictly above right safe zone. |
-| [`L536-L628`](file:///Users/jsph/cowgameui/index.html#L536-L628) | Bottom Catalog Dock | Category tabs (`Fences`, `Barns`, `Feeders`, `Paths`, `Decor`) + horizontal scrollable prop tray with 6 slot cards (Rustic Fence, Picket Gate, Hay Bale, Stone Wall, Cozy Lantern, Clover Bed). Constrained to `max-w-[680px]` centered strictly between mobile safe zones. |
+| [`L536-L628`](file:///Users/jsph/cowgameui/index.html#L536-L628) | Bottom Catalog Dock | Connected category tabs (`rounded-t-xl rounded-b-none`, `-mb-[5px]`) + seamless horizontal prop tray (`rounded-b-[2rem] rounded-t-xl`, `border-[5px]`) with 6 slot cards (Rustic Fence, Picket Gate, Hay Bale, Stone Wall, Cozy Lantern, Clover Bed). Constrained to `max-w-[680px]` centered strictly between mobile safe zones. |
 
 ---
 
