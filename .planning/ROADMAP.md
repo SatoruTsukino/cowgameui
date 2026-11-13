@@ -37,5 +37,5 @@ See `phases/05-legibility-ergonomics/05-PLAN.md`.
 See `phases/06-port-tooling/06-PLAN.md`.
 - [x] T1 shared `tokens.json` + `gen-tokens.mjs`
 - [x] T2 `data-rbx` mapping
-- [ ] T3 SVG → `IconData.luau`
+- [x] T3 SVG → `IconData.luau`
 - [ ] T4 palette + colour-blind check
