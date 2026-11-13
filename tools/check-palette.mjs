@@ -2,7 +2,8 @@
 // Phase 6 T4: checks every palette preset in tokens.json for contrast and colour-blind safety (no npm deps).
 //   node tools/check-palette.mjs        # exit code 1 if any check fails
 // For normal vision and for simulated protanopia, deuteranopia and tritanopia (Machado et al. 2009, severity 1.0):
-//   - WCAG 2.2 contrast: Text ≥ 4.5:1 on Card, Screen and Fill; Accent ≥ 4.5:1 on Card; Border ≥ 3:1 on Card and Screen
+//   - WCAG 2.2 contrast: Text ≥ 4.5:1 on Card, Screen and Fill; Accent ≥ 4.5:1 on Card; Border ≥ 3:1 on Card and Screen;
+//     Danger ≥ 4.5:1 on Card (the TRASH label is text)
 //   - distinguishability: CIEDE2000 ΔE ≥ 10 between role pairs that carry meaning
 //       Fill / Subtle    selected vs idle catalog cost chip, progress fills
 //       Border / Card    button and card outlines
@@ -17,7 +18,7 @@ const { order, presets } = tokens.palette;
 
 const CONTRAST = [
     ['Text', 'Card', 4.5], ['Text', 'Screen', 4.5], ['Text', 'Fill', 4.5],
-    ['Accent', 'Card', 4.5],
+    ['Accent', 'Card', 4.5], ['Danger', 'Card', 4.5],
     ['Border', 'Card', 3], ['Border', 'Screen', 3],
 ];
 const DISTINCT = [['Fill', 'Subtle'], ['Border', 'Card'], ['Accent', 'Fill'], ['Danger', 'Text']];

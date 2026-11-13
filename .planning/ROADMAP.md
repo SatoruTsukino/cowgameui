@@ -39,3 +39,4 @@ See `phases/06-port-tooling/06-PLAN.md`.
 - [x] T2 `data-rbx` mapping
 - [x] T3 SVG → `IconData.luau`
 - [x] T4 palette + colour-blind check
+- [x] T5 colour fixes from T4 (Studio theme check pending)

@@ -115,13 +115,13 @@ The UI uses dynamic CSS custom properties mapped across all structural elements.
 | Token | Default Mono | Cozy Meadow | Golden Sunrise | Lavender Dusk | Sky Pasture |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `--theme-card-bg` | `#ffffff` | `#f7fdf9` | `#fffdf5` | `#faf5ff` | `#f0f9ff` |
-| `--theme-border` | `#6b7280` | `#16a34a` | `#c76b06` | `#a855f7` | `#0284c7` |
-| `--theme-fill-primary` | `#d1d5db` | `#86efac` | `#fde68a` | `#e9d5ff` | `#bae6fd` |
-| `--theme-accent` | `#4b5563` | `#15803d` | `#b45309` | `#9333ea` | `#0369a1` |
-| `--theme-text-main` | `#4b5563` | `#166534` | `#78350f` | `#581c87` | `#075985` |
+| `--theme-border` | `#6b7280` | `#159f48` | `#c76b06` | `#a855f7` | `#0284c7` |
+| `--theme-fill-primary` | `#bdc3cb` | `#86efac` | `#fcde67` | `#dcbcff` | `#97d9fc` |
+| `--theme-accent` | `#47505d` | `#15803d` | `#af5109` | `#9333ea` | `#0369a1` |
+| `--theme-text-main` | `#47505d` | `#166534` | `#78350f` | `#581c87` | `#075985` |
 | `--theme-screen-bg` | `#f3f4f6` | `#ecfdf5` | `#fef3c7` | `#f3e8ff` | `#e0f2fe` |
-| `--theme-fill-subtle` | `#e5e7eb` | `#dcfce7` | `#fef3c7` | `#f3e8ff` | `#e0f2fe` |
-| `--theme-danger` | `#dc2626` | `#dc2626` | `#dc2626` | `#dc2626` | `#dc2626` |
+| `--theme-fill-subtle` | `#eceef1` | `#dcfce7` | `#fef3c7` | `#f3e8ff` | `#e0f2fe` |
+| `--theme-danger` | `#be123c` | `#be123c` | `#be123c` | `#be123c` | `#be123c` |
 
 ---
 

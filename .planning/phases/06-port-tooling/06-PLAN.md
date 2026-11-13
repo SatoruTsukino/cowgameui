@@ -30,3 +30,12 @@ Normal-vision contrast passes for every preset (matches phase 5). Failures:
 - Fill/Subtle ΔE below 10 in Mono (4.3), Lavender (7.2) and Sky (7.6) even with normal vision, and in Sunrise under deuteranopia (9.8) and tritanopia (6.9). This pair separates the selected and idle catalog cost chip.
 - Meadow under protanopia: Border/Card 2.97:1 and Border/Screen 2.93:1 (min 3), and Danger/Text ΔE 2.7. The red trash tool and the green text look nearly the same.
 - Sunrise under protanopia: Danger/Text ΔE 8.7. Under deuteranopia: Accent/Card 4.40:1 (min 4.5).
+
+## T5: Colour fixes (approved 2026-11-12)
+Smallest ΔE changes that pass every check, plus a new rule: Danger ≥ 4.5:1 on Card (the TRASH label is text).
+- All presets: Danger `#dc2626` → `#be123c`.
+- Mono: Fill `#d1d5db` → `#bdc3cb`, Subtle `#e5e7eb` → `#eceef1`, Text and Accent `#4b5563` → `#47505d`. The cheaper fix, Subtle `#fcfcfd`, was rejected because it is nearly the same as the white Card.
+- Meadow: Border `#16a34a` → `#159f48`.
+- Sunrise: Fill `#fde68a` → `#fcde67`, Accent `#b45309` → `#af5109`.
+- Lavender: Fill `#e9d5ff` → `#dcbcff`. Sky: Fill `#bae6fd` → `#97d9fc`.
+- Result: `tools/check-palette.mjs` passes for all 5 presets × 4 vision modes.
