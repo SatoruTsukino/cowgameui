@@ -92,6 +92,7 @@ The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 Palette presets, scale config, the catalog deck budget, vital-bar widths and phone sizes live in `tokens.json` at the repo root, shared with `index.html`. Edit that file, then run `node tools/gen-tokens.mjs`. It writes `Tokens.luau` and the marked `tokens:*` regions in `index.html`. Don't edit either output by hand.
 
 ## Verifying
+- **Palette:** `node tools/check-palette.mjs` checks every preset in `tokens.json` for WCAG contrast and, under simulated protanopia, deuteranopia and tritanopia, for contrast plus CIEDE2000 ΔE ≥ 10 between meaningful role pairs.
 - **Icons:** `node tools/gen-icons.mjs --check` fails when `IconData.luau` is out of date with the SVGs in `index.html`.
 - **Tokens:** `node tools/gen-tokens.mjs --check` fails when `Tokens.luau` or `index.html` is out of date with `tokens.json`.
 - **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It first checks that every `data-rbx` path in `index.html` names Luau instances, then checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.

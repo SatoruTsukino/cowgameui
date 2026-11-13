@@ -24,3 +24,9 @@ Goal: make the HTML wireframe cheaper to port to and keep in sync with the Roblo
 - `tools/check-palette.mjs` reads `tokens.json`. It makes the phase-5 WCAG audit permanent (text ≥ 4.5:1 on Card/Screen/Fill, Accent ≥ 4.5:1 on Card, Border ≥ 3:1 on Card/Screen).
 - Adds colour-blind simulation (protanopia, deuteranopia, tritanopia; Machado 2009, full severity). Pairs Fill/Subtle, Border/Card, Accent/Fill and Danger/Text must keep CIEDE2000 ΔE ≥ 10 after simulation.
 - Failures are reported before any colour change.
+
+## T4 results (2026-11-12): 19 failures, no colours changed yet
+Normal-vision contrast passes for every preset (matches phase 5). Failures:
+- Fill/Subtle ΔE below 10 in Mono (4.3), Lavender (7.2) and Sky (7.6) even with normal vision, and in Sunrise under deuteranopia (9.8) and tritanopia (6.9). This pair separates the selected and idle catalog cost chip.
+- Meadow under protanopia: Border/Card 2.97:1 and Border/Screen 2.93:1 (min 3), and Danger/Text ΔE 2.7. The red trash tool and the green text look nearly the same.
+- Sunrise under protanopia: Danger/Text ΔE 8.7. Under deuteranopia: Accent/Card 4.40:1 (min 4.5).
