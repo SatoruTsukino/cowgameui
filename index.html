@@ -406,7 +406,7 @@
         <div id="ui-container" class="absolute pointer-events-none origin-top-left">
             
             <!-- ================= PAGE 1: PASTURE SCREENGUI ================= -->
-            <div id="pagePasture" class="w-full h-full relative pointer-events-none">
+            <div data-rbx="HUD" id="pagePasture" class="w-full h-full relative pointer-events-none">
             
             <!-- ROBLOX COREGUI OVERLAY (TOP BAR MOCKUP - LEFT UNIBAR ONLY) -->
             <div id="robloxCoreGui" data-verify-skip class="hidden absolute top-4 left-6 pointer-events-none z-30 opacity-90 transition-opacity">
@@ -437,25 +437,25 @@
             </div>
 
             <!-- 1. TOP-LEFT: Vitals & Quests (Safe below Unibar) -->
-            <div id="topLeftVitals" class="absolute top-8 left-8 flex items-start gap-3 pointer-events-auto shrink-0 z-20 hud-spring">
+            <div data-rbx="TopLeft" id="topLeftVitals" class="absolute top-8 left-8 flex items-start gap-3 pointer-events-auto shrink-0 z-20 hud-spring">
                 <!-- Cow Profile -->
-                <div class="relative w-[88px] h-[88px] rounded-[26px] border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 transition-transform cursor-pointer shrink-0">
+                <div data-rbx="TopLeft/Profile" class="relative w-[88px] h-[88px] rounded-[26px] border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-md ui-element hover:scale-105 transition-transform cursor-pointer shrink-0">
                     <span class="text-gray-500 font-black text-base tracking-widest">COW</span>
                     
-                    <div id="profileHerdBadge" class="hidden absolute -top-3 -right-3 px-3 py-1 bg-gray-600 text-white rounded-full border-[4px] border-white shadow-sm">
+                    <div data-rbx="TopLeft/Profile/HerdBadge" id="profileHerdBadge" class="hidden absolute -top-3 -right-3 px-3 py-1 bg-gray-600 text-white rounded-full border-[4px] border-white shadow-sm">
                         <span class="font-black text-[10px] tracking-widest uppercase">+ HERD</span>
                     </div>
 
-                    <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-400 rounded-xl border-[4px] border-white flex items-center shadow-sm whitespace-nowrap">
+                    <div data-rbx="TopLeft/Profile/RebirthChip" class="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gray-400 rounded-xl border-[4px] border-white flex items-center shadow-sm whitespace-nowrap">
                         <span class="text-white font-black text-[10px] tracking-wider uppercase">Rebirth 2</span>
                     </div>
                 </div>
 
                 <!-- Inline Vitals -->
-                <div id="vitalsColumn" class="flex flex-col gap-2 w-52 ui-element">
-                    <div class="flex flex-col gap-0.5">
+                <div data-rbx="TopLeft/Vitals" id="vitalsColumn" class="flex flex-col gap-2 w-52 ui-element">
+                    <div data-rbx="TopLeft/Vitals/Grazing" class="flex flex-col gap-0.5">
                         <span class="px-1 text-gray-500 font-black text-[10px] tracking-widest uppercase truncate">Grazing: Clover Meadow</span>
-                        <div class="w-full h-8 shape-leaf border-[5px] border-gray-400 bg-white p-[3px] flex items-center shadow-sm relative overflow-hidden">
+                        <div data-rbx="TopLeft/Vitals/Grazing/GrazingBar" class="w-full h-8 shape-leaf border-[5px] border-gray-400 bg-white p-[3px] flex items-center shadow-sm relative overflow-hidden">
                             <div class="h-full w-[68%] bg-gray-300 shape-leaf-inner rounded-r-sm"></div>
                             <div class="absolute inset-0 flex items-center px-3 pointer-events-none">
                                 <span class="text-gray-600 font-black text-xs tracking-wider">68%</span>
@@ -463,7 +463,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full rounded-full border-[5px] border-gray-500 bg-white p-[3px] shadow-sm relative h-8" title="Outer Border = Stamina">
+                    <div data-rbx="TopLeft/Vitals/HealthBar" class="w-full rounded-full border-[5px] border-gray-500 bg-white p-[3px] shadow-sm relative h-8" title="Outer Border = Stamina">
                         <div class="h-full w-[85%] bg-gray-300 rounded-full flex items-center px-2">
                             <span class="text-gray-600 font-black text-[10px] tracking-wider uppercase">HP 100</span>
                         </div>
@@ -472,35 +472,35 @@
             </div>
 
             <!-- 3. TOP-RIGHT: Economy & Settings / Menu (Elevated to top-4) -->
-            <div id="topRightHud" class="absolute top-4 right-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring">
-                <div class="flex flex-col items-center">
-                    <div class="h-14 px-5 rounded-[1.5rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm relative z-10 ui-element hover:scale-105 transition-transform cursor-pointer">
+            <div data-rbx="TopRight" id="topRightHud" class="absolute top-4 right-8 flex items-start gap-4 pointer-events-auto shrink-0 z-20 hud-spring">
+                <div data-rbx="TopRight/Economy" class="flex flex-col items-center">
+                    <div data-rbx="TopRight/Economy/Calories" class="h-14 px-5 rounded-[1.5rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm relative z-10 ui-element hover:scale-105 transition-transform cursor-pointer">
                         <span class="text-gray-500 font-black tracking-widest text-xs uppercase">Calories: 1,500</span>
                     </div>
-                    <div id="upgradesPill" class="h-8 px-4 -mt-2 rounded-b-xl border-[4px] border-gray-400 border-t-0 bg-gray-200 flex items-end pb-1 shadow-sm hover:bg-gray-300 cursor-pointer transition-colors">
+                    <div data-rbx="TopRight/Economy/Upgrades" id="upgradesPill" class="h-8 px-4 -mt-2 rounded-b-xl border-[4px] border-gray-400 border-t-0 bg-gray-200 flex items-end pb-1 shadow-sm hover:bg-gray-300 cursor-pointer transition-colors">
                         <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase">Upgrades ⬆</span>
                     </div>
                 </div>
 
                 <!-- Standard Mode: Persistent Cowbell Settings -->
                 <div id="topRightStandard" class="flex items-start gap-3 pt-1">
-                    <div class="w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer relative" title="Settings">
+                    <div data-rbx="TopRight/Settings" class="w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer relative" title="Settings">
                         <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">SET</span>
                         <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
                     </div>
                 </div>
 
                 <!-- Compact Mode: Persistent Cowbell Menu -->
-                <div id="topRightCompact" class="hidden w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1 relative" title="Menu (Settings, Herd, Trade)">
+                <div data-rbx="TopRight/More" id="topRightCompact" class="hidden w-14 h-14 shape-cowbell border-[6px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer pt-1 relative" title="Menu (Settings, Herd, Trade)">
                     <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">MENU</span>
                     <div class="absolute -top-2 w-4 h-3 border-[4px] border-gray-400 rounded-t-full bg-transparent"></div>
                 </div>
             </div>
 
             <!-- 2. TOP-CENTER: Town Bulletin (Elevated to top-4) -->
-            <div id="townBulletinWrapper" class="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto ui-element hud-spring z-20">
-                <div id="bulletinFull" class="flex flex-col items-center">
-                    <div id="bulletinCard" class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
+            <div data-rbx="Bulletin" id="townBulletinWrapper" class="absolute top-4 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto ui-element hud-spring z-20">
+                <div data-rbx="Bulletin/Full" id="bulletinFull" class="flex flex-col items-center">
+                    <div data-rbx="Bulletin/Full/Card" id="bulletinCard" class="flex items-center gap-3 px-4 py-2.5 rounded-[2rem] border-[6px] border-gray-400 bg-white shadow-lg">
                         <div id="bulletinDaytime" class="flex items-center gap-2 pr-3 border-r-4 border-gray-200">
                             <div class="w-8 h-8 rounded-full border-4 border-gray-400 bg-gray-100 flex items-center justify-center">
                                 <svg class="w-4 h-4 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -528,13 +528,13 @@
                         </div>
                     </div>
 
-                    <div id="bulletinBoostCard" class="-mt-1.5 px-4 py-1 rounded-b-2xl rounded-t-lg border-4 border-gray-500 bg-gray-100 shadow-md flex items-center justify-center gap-2 self-center">
+                    <div data-rbx="Bulletin/Full/Boost" id="bulletinBoostCard" class="-mt-1.5 px-4 py-1 rounded-b-2xl rounded-t-lg border-4 border-gray-500 bg-gray-100 shadow-md flex items-center justify-center gap-2 self-center">
                         <span class="w-2 h-2 rounded-full bg-gray-500"></span>
                         <span class="text-[10px] font-black text-gray-600 tracking-widest uppercase">2x Calories • 01:30</span>
                     </div>
                 </div>
 
-                <div id="bulletinCompact" class="hidden relative items-center gap-2.5 px-4 py-2.5 rounded-full border-[6px] border-gray-400 bg-white shadow-lg cursor-pointer hover:scale-105 transition-transform">
+                <div data-rbx="Bulletin/Compact" id="bulletinCompact" class="hidden relative items-center gap-2.5 px-4 py-2.5 rounded-full border-[6px] border-gray-400 bg-white shadow-lg cursor-pointer hover:scale-105 transition-transform">
                     <div class="w-7 h-7 rounded-full border-4 border-gray-400 bg-gray-100 flex items-center justify-center">
                         <svg class="w-3.5 h-3.5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="4"></circle>
@@ -547,40 +547,40 @@
             </div>
 
             <!-- ================= SIDEBARS ================= -->
-            <div id="leftSidebar" class="absolute left-8 top-[168px] flex flex-col gap-4 pointer-events-auto z-10">
-                <div id="leftSidebarStandard" class="flex flex-col gap-4">
-                    <div class="ps-backpack w-16 h-[4.5rem] rounded-xl border-[6px] border-gray-400 bg-white relative shadow-sm ui-element hover:scale-110 cursor-pointer flex flex-col items-center justify-end pb-1.5" title="Inventory">
+            <div data-rbx="LeftSidebar" id="leftSidebar" class="absolute left-8 top-[168px] flex flex-col gap-4 pointer-events-auto z-10">
+                <div data-rbx="LeftSidebar/Standard" id="leftSidebarStandard" class="flex flex-col gap-4">
+                    <div data-rbx="LeftSidebar/Standard/Inventory" class="ps-backpack w-16 h-[4.5rem] rounded-xl border-[6px] border-gray-400 bg-white relative shadow-sm ui-element hover:scale-110 cursor-pointer flex flex-col items-center justify-end pb-1.5" title="Inventory">
                         <div class="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-4 border-b-[4px] border-l-[4px] border-r-[4px] border-gray-400 rounded-b-md bg-gray-100"></div>
                         <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase">INV</span>
                     </div>
-                    <div class="ps-square w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Closet">
+                    <div data-rbx="LeftSidebar/Standard/Closet" class="ps-square w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Closet">
                         <span class="text-gray-500 font-black text-[9px] tracking-wider uppercase">Closet</span>
                     </div>
                 </div>
 
-                <div id="leftSidebarCompact" class="ps-backpack hidden w-16 h-[4.5rem] rounded-xl border-[6px] border-gray-400 bg-white shadow-sm ui-element hover:scale-110 cursor-pointer flex flex-col items-center justify-end pb-1.5 relative" title="Bag (Inv + Closet)">
+                <div data-rbx="LeftSidebar/Bag" id="leftSidebarCompact" class="ps-backpack hidden w-16 h-[4.5rem] rounded-xl border-[6px] border-gray-400 bg-white shadow-sm ui-element hover:scale-110 cursor-pointer flex flex-col items-center justify-end pb-1.5 relative" title="Bag (Inv + Closet)">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-4 border-b-[4px] border-l-[4px] border-r-[4px] border-gray-400 rounded-b-md bg-gray-100"></div>
                     <span class="text-gray-500 font-black text-[9px] tracking-wider uppercase">BAG</span>
                 </div>
             </div>
 
-            <div id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring">
+            <div data-rbx="RightSidebar" id="rightSidebar" class="absolute right-8 top-32 flex flex-col items-end gap-4 pointer-events-auto z-10 hud-spring">
                 <!-- Herd Button -->
-                <div class="ps-square relative w-16 h-16 ui-element hover:scale-110 cursor-pointer" title="Herd">
-                    <div class="ps-herd-sq absolute top-0 right-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-gray-200"></div>
-                    <div class="ps-herd-sq absolute bottom-0 left-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm">
+                <div data-rbx="RightSidebar/Herd" class="ps-square relative w-16 h-16 ui-element hover:scale-110 cursor-pointer" title="Herd">
+                    <div data-rbx="RightSidebar/Herd/Back" class="ps-herd-sq absolute top-0 right-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-gray-200"></div>
+                    <div data-rbx="RightSidebar/Herd/Front" class="ps-herd-sq absolute bottom-0 left-0 w-12 h-12 rounded-[0.8rem] border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm">
                         <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase">Herd</span>
                     </div>
                 </div>
 
                 <!-- Trade Button -->
-                <div class="ps-square w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Trade">
+                <div data-rbx="RightSidebar/Trade" class="ps-square w-16 h-16 rounded-2xl border-[6px] border-gray-400 bg-white flex items-center justify-center shadow-sm ui-element hover:scale-110 cursor-pointer" title="Trade">
                     <span class="text-gray-500 font-black text-[10px] tracking-wider uppercase">Trade</span>
                 </div>
             </div>
 
             <!-- ================= BOTTOM-CENTER AREA ACTIONS ================= -->
-            <div class="absolute bottom-14 left-1/2 -translate-x-1/2 pointer-events-auto w-1/3 max-w-sm z-10">
+            <div data-rbx="AreaActions" class="absolute bottom-14 left-1/2 -translate-x-1/2 pointer-events-auto w-1/3 max-w-sm z-10">
                 <div class="flex flex-col items-center justify-center py-3 px-5 rounded-3xl border-[6px] border-dashed border-gray-400 bg-white/80 backdrop-blur-sm shadow-sm ui-element hover:scale-105 cursor-pointer">
                     <span class="text-gray-500 font-black text-sm tracking-widest uppercase">Area Actions (WIP)</span>
                 </div>
@@ -589,13 +589,13 @@
             </div> <!-- /pagePasture -->
 
             <!-- ================= PAGE 2: BUILDING & CONSTRUCTION GUI ================= -->
-            <div id="pageBuilding" class="hidden w-full h-full relative pointer-events-none">
+            <div data-rbx="Building" id="pageBuilding" class="hidden w-full h-full relative pointer-events-none">
                 
                 <!-- 1. BUILDING TOP BAR -->
                 <div class="absolute top-4 left-8 right-8 flex items-center justify-between pointer-events-none z-20">
                     <!-- Left: Exit Button -->
                     <div class="flex items-center gap-3 pointer-events-auto">
-                        <button onclick="switchPage('pasture')" class="h-12 px-5 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer transition-transform" title="Exit Construction Mode">
+                        <button data-rbx="Building/ExitBuild" onclick="switchPage('pasture')" class="h-12 px-5 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer transition-transform" title="Exit Construction Mode">
                             <svg class="w-4 h-4 stroke-gray-600 stroke-[3] fill-none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -604,7 +604,7 @@
                     </div>
 
                     <!-- Center: Object / Part Limit Pill (Centered, Cog Icon) -->
-                    <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-5 h-12 rounded-2xl border-[5px] border-gray-400 bg-white shadow-sm pointer-events-auto ui-element">
+                    <div data-rbx="Building/PartsLimit" class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-5 h-12 rounded-2xl border-[5px] border-gray-400 bg-white shadow-sm pointer-events-auto ui-element">
                         <div class="w-7 h-7 rounded-lg bg-gray-100 border-2 border-gray-400 flex items-center justify-center">
                             <svg class="w-4 h-4 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -615,8 +615,8 @@
                     </div>
 
                     <!-- Right: Quick Toggles & Wood/Stone Side-by-Side (No Calories) -->
-                    <div class="flex items-center gap-3 pointer-events-auto">
-                        <button id="btnGridSnap" onclick="cycleGridSnap()" class="h-12 px-4 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-2 shadow-sm ui-element hover:bg-gray-50 active:scale-95 cursor-pointer transition-transform" title="Toggle Grid Snap">
+                    <div data-rbx="Building/BuildRight" class="flex items-center gap-3 pointer-events-auto">
+                        <button data-rbx="Building/BuildRight/GridSnap" id="btnGridSnap" onclick="cycleGridSnap()" class="h-12 px-4 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-2 shadow-sm ui-element hover:bg-gray-50 active:scale-95 cursor-pointer transition-transform" title="Toggle Grid Snap">
                             <svg class="w-4 h-4 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                                 <rect x="3" y="3" width="7" height="7"></rect>
                                 <rect x="14" y="3" width="7" height="7"></rect>
@@ -627,7 +627,7 @@
                         </button>
 
                         <!-- Wood & Stone Side-by-Side Counters -->
-                        <div class="h-12 px-4 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-3 shadow-sm ui-element">
+                        <div data-rbx="Building/BuildRight/Resources" class="h-12 px-4 rounded-2xl border-[5px] border-gray-400 bg-white flex items-center gap-3 shadow-sm ui-element">
                             <div class="flex items-center gap-1.5" title="Wood">
                                 <svg class="w-4 h-4 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
@@ -660,9 +660,9 @@
                 </div>
 
                 <!-- 3. RIGHT ACTION UTILITY TOOLS PALETTE -->
-                <div id="buildTools" class="absolute right-8 top-20 flex flex-col gap-2.5 pointer-events-auto z-20 hud-spring">
+                <div data-rbx="Building/BuildTools" id="buildTools" class="absolute right-8 top-20 flex flex-col gap-2.5 pointer-events-auto z-20 hud-spring">
                     <!-- Rotate Tool -->
-                    <button class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Rotate (R)">
+                    <button data-rbx="Building/BuildTools/Rotate" class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Rotate (R)">
                         <svg class="w-5 h-5 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
@@ -670,7 +670,7 @@
                     </button>
 
                     <!-- Color/Material Tool -->
-                    <button class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Color & Material">
+                    <button data-rbx="Building/BuildTools/Paint" class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Color & Material">
                         <svg class="w-5 h-5 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4 8.014 8.014 0 014-7.464V9a2 2 0 114 0v.536A8.014 8.014 0 0115 17a4 4 0 01-4 4H7z"/>
                         </svg>
@@ -678,7 +678,7 @@
                     </button>
 
                     <!-- Undo Tool -->
-                    <button class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Undo (Z)">
+                    <button data-rbx="Building/BuildTools/Undo" class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Undo (Z)">
                         <svg class="w-5 h-5 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a5 5 0 015 5v2m-15-7l4-4m-4 4l4 4"/>
                         </svg>
@@ -686,7 +686,7 @@
                     </button>
 
                     <!-- Redo Tool -->
-                    <button class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Redo (Y)">
+                    <button data-rbx="Building/BuildTools/Redo" class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Redo (Y)">
                         <svg class="w-5 h-5 stroke-gray-600 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 10H11a5 5 0 00-5 5v2m15-7l-4-4m4 4l-4 4"/>
                         </svg>
@@ -694,7 +694,7 @@
                     </button>
 
                     <!-- Demolish Tool -->
-                    <button class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Demolish (X)">
+                    <button data-rbx="Building/BuildTools/Trash" class="ps-tool w-14 h-14 rounded-2xl border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Demolish (X)">
                         <svg class="w-5 h-5 stroke-danger stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                         </svg>
@@ -703,30 +703,30 @@
                 </div>
 
                 <!-- 4. BOTTOM CATALOG & PALETTE DOCK (Constrained max-w-[680px] to clear mobile safe zones) -->
-                <div id="catalogDock" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto z-20 w-full max-w-[680px] px-2">
+                <div data-rbx="Building/CatalogDock" id="catalogDock" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto z-20 w-full max-w-[680px] px-2">
                     <!-- Category Tabs Header (Connected to Box) -->
-                    <div id="catalogTabsHeader" class="edge-fade flex items-end gap-1.5 -mb-[5px]">
-                        <button onclick="filterBuildCategory('fences')" id="catBtn-fences" class="catalog-tab active px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none">
+                    <div data-rbx="Building/CatalogDock/Tabs" id="catalogTabsHeader" class="edge-fade flex items-end gap-1.5 -mb-[5px]">
+                        <button data-rbx="Building/CatalogDock/Tabs/fences" onclick="filterBuildCategory('fences')" id="catBtn-fences" class="catalog-tab active px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none">
                             Fences & Gates
                         </button>
-                        <button onclick="filterBuildCategory('barns')" id="catBtn-barns" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                        <button data-rbx="Building/CatalogDock/Tabs/barns" onclick="filterBuildCategory('barns')" id="catBtn-barns" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Barns & Sheds
                         </button>
-                        <button onclick="filterBuildCategory('feeders')" id="catBtn-feeders" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                        <button data-rbx="Building/CatalogDock/Tabs/feeders" onclick="filterBuildCategory('feeders')" id="catBtn-feeders" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Feeders & Troughs
                         </button>
-                        <button onclick="filterBuildCategory('flooring')" id="catBtn-flooring" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                        <button data-rbx="Building/CatalogDock/Tabs/flooring" onclick="filterBuildCategory('flooring')" id="catBtn-flooring" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Paths & Floors
                         </button>
-                        <button onclick="filterBuildCategory('decor')" id="catBtn-decor" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                        <button data-rbx="Building/CatalogDock/Tabs/decor" onclick="filterBuildCategory('decor')" id="catBtn-decor" class="catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors">
                             Cozy Decor
                         </button>
                     </div>
 
                     <!-- Horizontal Item Slot Tray (Flat Top Under Tabs) -->
-                    <div id="catalogTray" class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl relative z-10">
+                    <div data-rbx="Building/CatalogDock/Tray" id="catalogTray" class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl relative z-10">
                         <!-- Scroller inside the tray's padding, so the edge fade masks the slots and not the tray (Roblox: fadingScroller). py-1/-my-1 leaves room for the hover scale. -->
-                        <div id="catalogSlots" class="edge-fade flex items-center justify-between gap-3 overflow-x-auto py-1 -my-1">
+                        <div data-rbx="Building/CatalogDock/Tray/Slots" id="catalogSlots" class="edge-fade flex items-center justify-between gap-3 overflow-x-auto py-1 -my-1">
                         <!-- Slot 1 -->
                         <div class="ps-slot w-24 h-28 rounded-2xl border-[4px] border-gray-500 bg-gray-100/60 flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-transform">
                             <span class="text-[9px] font-black text-gray-600 uppercase text-center leading-tight">Rustic Fence</span>
@@ -809,7 +809,7 @@
                 <span class="text-gray-500 font-black text-[9px] tracking-widest uppercase mt-2">Thumbstick</span>
             </div>
 
-            <div id="safeZoneRight" class="hidden absolute bottom-8 right-8 w-64 h-64 pointer-events-auto z-30">
+            <div data-rbx="ActionArc" id="safeZoneRight" class="hidden absolute bottom-8 right-8 w-64 h-64 pointer-events-auto z-30">
                 <!-- Safe zone background ring -->
                 <div class="absolute inset-0 rounded-[3.5rem] border-[4px] border-dashed border-gray-400/30 bg-gray-300/10 pointer-events-none -z-10"></div>
                 
@@ -823,7 +823,7 @@
 
                 <!-- Radial arc (Roblox ActionCluster parity): R = 92 from Jump, evenly spread 60°→200° counter-clockwise from east. 56px satellites, ≥ 16.9px apart. -->
                 <!-- 1. Sprint (θ = 153.3°) -->
-                <div id="btnMobileSprint" class="ps-sat absolute left-[18px] top-[59px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
+                <div data-rbx="ActionArc/Sprint" id="btnMobileSprint" class="ps-sat absolute left-[18px] top-[59px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Sprint">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
@@ -831,7 +831,7 @@
                 </div>
 
                 <!-- 2. Moo (θ = 106.7°) -->
-                <div id="btnMobileMoo" class="ps-sat absolute left-[74px] top-[12px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
+                <div data-rbx="ActionArc/Moo" id="btnMobileMoo" class="ps-sat absolute left-[74px] top-[12px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Moo">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M16 12h.01M9 16c1.5 1 4.5 1 6 0M4 9a8 8 0 1 1 16 0c0 5-4 8-8 8s-8-3-8-8z"/>
                     </svg>
@@ -840,7 +840,7 @@
 
                 <!-- 3. Emote (θ = 60°) -->
                 <div class="absolute left-[146px] top-[20px]">
-                    <div id="btnMobileEmote" onclick="toggleEmoteRadial()" class="ps-sat w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
+                    <div data-rbx="ActionArc/Emote" id="btnMobileEmote" onclick="toggleEmoteRadial()" class="ps-sat w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Emote">
                         <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -849,24 +849,24 @@
                 </div>
 
                 <!-- Quick emotes (Roblox parity): Emote swaps Moo / Sprint / Kick for these in the same arc slots -->
-                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[78px] top-[16px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
+                <button data-rbx="ActionArc/EmoteHeart" onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[78px] top-[16px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Heart">
                     <svg class="w-5 h-5 fill-red-400 stroke-red-500 stroke-1" viewBox="0 0 24 24">
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                             </svg>
                 </button>
-                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[22px] top-[63px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
+                <button data-rbx="ActionArc/EmoteCheer" onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[22px] top-[63px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Cheer / Sparkles">
                     <svg class="w-5 h-5 fill-amber-400 stroke-amber-500 stroke-1" viewBox="0 0 24 24">
                                 <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/>
                             </svg>
                 </button>
-                <button onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[18px] top-[135px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
+                <button data-rbx="ActionArc/EmoteSnooze" onclick="toggleEmoteRadial()" class="mobile-quick-emote hidden absolute left-[18px] top-[135px] w-12 h-12 rounded-full border-[4px] border-gray-400 bg-white flex items-center justify-center shadow-md hover:scale-110 active:scale-90 cursor-pointer transition-transform" title="Chew / Snooze">
                     <svg class="w-5 h-5 stroke-blue-500 stroke-2 fill-none" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                             </svg>
                 </button>
 
                 <!-- 4. Kick (θ = 200°) -->
-                <div id="btnMobileKick" class="ps-sat absolute left-[14px] top-[131px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Kick">
+                <div data-rbx="ActionArc/Kick" id="btnMobileKick" class="ps-sat absolute left-[14px] top-[131px] w-14 h-14 rounded-full border-[5px] border-gray-400 bg-white flex flex-col items-center justify-center shadow-sm ui-element hover:scale-110 active:scale-95 cursor-pointer transition-transform" title="Kick">
                     <svg class="w-6 h-6 stroke-gray-500 stroke-2 fill-none" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
                     </svg>

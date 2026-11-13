@@ -92,7 +92,7 @@ Palette presets, scale config, the catalog deck budget, vital-bar widths and pho
 
 ## Verifying
 - **Tokens:** `node tools/gen-tokens.mjs --check` fails when `Tokens.luau` or `index.html` is out of date with `tokens.json`.
-- **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.
+- **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It first checks that every `data-rbx` path in `index.html` names Luau instances, then checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.
 - **Catalog deck sizes:** `luau tools/test-catalog-metrics.luau` checks the Full/Compact choice and label boxes across nine devices (`CatalogMetrics.luau`).
 - **Roblox:** Studio device emulator at 1920×1080, iPhone 14 landscape and iPad, in normal mode and after `/build`. Use `/boost` to show the boost tab.
 

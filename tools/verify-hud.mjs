@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // Phase 5 T7: checks the index.html HUD preview across the device matrix with headless Chrome (no npm deps).
 //   node tools/verify-hud.mjs            # exit code 1 if any check fails
-// For every preset × page it asserts:
+// It first checks that every data-rbx path names Roblox instances (checkRbxMap). Then for every preset × page it asserts:
 //   - no two HUD groups overlap (the safe-zone outlines count: they stand in for the native touch controls)
 //   - every visible text renders ≥ 11pt on the simulated device (≥ 12pt for text-xs / text-sm labels)
 // Roblox runs the same rules live; see roblox/README.md "Verifying" for the Studio check.
 
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -16,6 +16,28 @@ const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/M
 const PAGE = pathToFileURL(resolve(import.meta.dirname, '..', 'index.html')).href;
 const PRESETS = ['aspect-video', 'aspect-21-9', 'aspect-4-3', 'aspect-19-5-9'];
 const PAGES = ['pasture', 'building'];
+
+// Phase 6 T2: every `data-rbx="A/B/C"` path segment in index.html must name a Roblox instance, i.e. appear as a
+// string literal in the CowHUD Luau sources (static `Name = "…"` or data-driven names such as `action = "Moo"`).
+// Static check, no Chrome needed. Luau `Name = "…"` literals no data-rbx path uses are listed for information only:
+// structural frames (Border, Fill, Track, …) have no HTML element of their own.
+function checkRbxMap() {
+    const root = resolve(import.meta.dirname, '..');
+    const luauDir = join(root, 'roblox/src/shared/CowHUD');
+    const sources = readdirSync(luauDir, { recursive: true }).filter(f => f.endsWith('.luau'))
+        .map(f => readFileSync(join(luauDir, f), 'utf8'));
+    const literals = new Set(sources.flatMap(s => [...s.matchAll(/"([A-Za-z][A-Za-z0-9]*)"/g)].map(m => m[1])));
+    const html = readFileSync(join(root, 'index.html'), 'utf8');
+    const paths = [...html.matchAll(/data-rbx="([^"]+)"/g)].map(m => m[1]);
+    const missing = paths.filter(p => p.split('/').some(seg => !literals.has(seg)));
+    const used = new Set(paths.flatMap(p => p.split('/')));
+    const names = new Set(sources.flatMap(s => [...s.matchAll(/Name = "([A-Za-z0-9]+)"/g)].map(m => m[1])));
+    const unmapped = [...names].filter(n => !used.has(n)).sort();
+    console.log(`${missing.length ? 'FAIL' : 'PASS'}  data-rbx map: ${paths.length} paths`
+        + (missing.length ? `\n      no Luau instance named: ${missing.join('; ')}` : '')
+        + `\n      info, Luau names without an HTML element: ${unmapped.join(' ')}`);
+    return missing.length === 0;
+}
 
 // Runs inside the page. Returns { overlaps: [...], smallText: [...] }.
 function audit() {
@@ -65,7 +87,7 @@ const port = 9300 + Math.floor(Math.random() * 500);
 const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`,
     '--window-size=1400,1000', 'about:blank'], { stdio: 'ignore' });
 
-let failed = false;
+let failed = !checkRbxMap();
 try {
     const ws = new WebSocket(await cdp(port));
     await new Promise(r => ws.addEventListener('open', r, { once: true }));
