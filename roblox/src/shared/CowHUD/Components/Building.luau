@@ -3,10 +3,11 @@
 	Sizes follow the wireframe's Tailwind classes 1:1 in virtual px.
 
 	Top bar (top-4, h-12, rounded-2xl, border-[5px]):
-	  left    Exit Build button (px-5, ✕ + "EXIT BUILD")
-	  centre  Parts limit pill (px-5, gap-2.5, cog chip w-7 rounded-lg border-2 bg-gray-100)
-	  right   Grid snap button (px-4) · Wood | Stone counter (px-4, gap-3), gap-3
-	Tools (right-8 top-20, gap-2.5): w-14 h-14 rounded-2xl border-[5px]; ROT [R] · PAINT · UNDO [Z] · REDO [Y] · TRASH [X]
+	  left    Exit Build button (px-5, "EXIT BUILD")
+	  centre  Parts limit pill (px-5)
+	  right   Grid snap button (px-4) · WOOD n | STONE n counter (px-4, gap-3), gap-3
+	Tools (right-8 top-20, gap-2.5): w-14 h-14 rounded-2xl border-[5px]; name over key hint:
+	  ROT [R] · PAINT · UNDO [Z] · REDO [Y] · TRASH [X] (hints hidden on touch)
 	Catalog (bottom-6, max-w-[680px]): tabs joined to the tray (-mb-[5px]); tray px-5 py-3.5 border-[5px]
 	  rounded-t-xl rounded-b-[2rem]; slots w-24 h-28 rounded-2xl border-4. When that deck would take more than
 	  CatalogMetrics.Budget of the screen height (phones), it is rebuilt Compact: one-line tabs that scroll and
@@ -14,8 +15,8 @@
 
 	Spring buttons get explicit widths from measured text (Util.fitWidth), never AutomaticSize.
 	The wireframe's placement boundary and cursor are world-space and belong to the game's placement system.
-	Icons are the wireframe's SVGs traced with Frames (Icons.luau): Nunito has no symbol glyphs and emoji
-	don't fit the wireframe look.
+	Text only, no icons: Roblox can't render SVG, Frame-traced icons read thin and jagged, and Nunito has no
+	symbol glyphs.
 
 	Fires: GridSnap (payload = label), BuildCategory (id), BuildItem (name), Rotate, Paint, Undo, Redo, Trash.
 	Exit Build sets state.mode = "normal" (init fires ExitBuild).
@@ -29,7 +30,6 @@ local UserInputService = game:GetService("UserInputService")
 local CowHUD = script.Parent.Parent
 local Theme = require(CowHUD.Theme)
 local Util = require(CowHUD.Util)
-local Icons = require(CowHUD.Icons)
 local CatalogMetrics = require(CowHUD.CatalogMetrics)
 local C = Theme.Color
 
@@ -38,7 +38,6 @@ local GRID_SNAPS = { "2 Studs", "4 Studs", "1 Stud", "Free / Off" }
 local BAR_HEIGHT = 48 -- h-12
 local BAR_BORDER = 5
 local BAR_RADIUS = 16 -- rounded-2xl
-local ICON = 16 -- w-4 h-4
 
 local TOOL_SIZE = 56 -- w-14; Theme.size("Tool") when built (64 on phones)
 local TOOL_GAP = 10 -- gap-2.5
@@ -67,14 +66,14 @@ local SLOT_GAP = 12 -- gap-3
 local SLOT_TEXT = 9
 
 local TOOLS = {
-	{ action = "Rotate", icon = "rotate", text = "ROT [R]", key = Enum.KeyCode.R },
-	{ action = "Paint", icon = "paint", text = "PAINT" },
-	{ action = "Undo", icon = "undo", text = "UNDO [Z]", key = Enum.KeyCode.Z },
-	{ action = "Redo", icon = "redo", text = "REDO [Y]", key = Enum.KeyCode.Y },
-	{ action = "Trash", icon = "trash", text = "TRASH [X]", key = Enum.KeyCode.X, danger = true },
+	{ action = "Rotate", text = "ROT", key = Enum.KeyCode.R },
+	{ action = "Paint", text = "PAINT" },
+	{ action = "Undo", text = "UNDO", key = Enum.KeyCode.Z },
+	{ action = "Redo", text = "REDO", key = Enum.KeyCode.Y },
+	{ action = "Trash", text = "TRASH", key = Enum.KeyCode.X, danger = true },
 }
 
-export type CatalogItem = { name: string, cost: string, icon: string } -- icon: a key in Icons.luau
+export type CatalogItem = { name: string, cost: string }
 export type Category = { id: string, label: string, items: { CatalogItem } }
 
 -- The wireframe's catalog; pass `options.catalog` to CowHUD.mount to replace it.
@@ -83,12 +82,12 @@ local DEFAULT_CATALOG: { Category } = {
 		id = "fences",
 		label = "Fences & Gates",
 		items = {
-			{ name = "Rustic Fence", cost = "20 Wood", icon = "fence" },
-			{ name = "Picket Gate", cost = "35 Wood", icon = "gate" },
-			{ name = "Hay Bale", cost = "15 Wood", icon = "hay" },
-			{ name = "Stone Wall", cost = "40 Stone", icon = "wall" },
-			{ name = "Cozy Lantern", cost = "25 Stone", icon = "lantern" },
-			{ name = "Clover Bed", cost = "10 Stone", icon = "clover" },
+			{ name = "Rustic Fence", cost = "20 Wood" },
+			{ name = "Picket Gate", cost = "35 Wood" },
+			{ name = "Hay Bale", cost = "15 Wood" },
+			{ name = "Stone Wall", cost = "40 Stone" },
+			{ name = "Cozy Lantern", cost = "25 Stone" },
+			{ name = "Clover Bed", cost = "10 Stone" },
 		},
 	},
 	{ id = "barns", label = "Barns & Sheds", items = {} },
@@ -148,15 +147,12 @@ local function topBar(layer: Instance, ctx)
 		state:set("mode", "normal")
 	end)
 	row(exitFace, 8)
-	Icons.slot("close", exitFace, ICON, C.Text, 1)
-	text(exitFace, "EXIT BUILD", 12, 2)
-	Util.fitWidth(exit, "EXIT BUILD", 12, 2 * (20 + BAR_BORDER) + ICON + 8)
+	text(exitFace, "EXIT BUILD", 12, 1)
+	Util.fitWidth(exit, "EXIT BUILD", 12, 2 * (20 + BAR_BORDER))
 
-	-- Centre: parts limit (px-5, gap-2.5)
+	-- Centre: parts limit (px-5)
 	local centre, centreFace = barBox(layer, "PartsLimit", 20, 10, { AnchorPoint = Vector2.new(0.5, 0) })
-	local _, cog = Util.box({ Size = UDim2.fromOffset(28, 28), Radius = 8, Border = 2, Fill = C.Screen, LayoutOrder = 1, Parent = centreFace })
-	Icons.draw("cog", cog, ICON, C.Text)
-	local partsLabel = text(centreFace, "", 12, 2)
+	local partsLabel = text(centreFace, "", 12, 1)
 	local function updateParts()
 		partsLabel.Text = string.format("PARTS: %d / %d", state:get("buildParts") or 0, state:get("buildPartsMax") or 0)
 	end
@@ -172,24 +168,23 @@ local function topBar(layer: Instance, ctx)
 		ctx.fire("GridSnap", GRID_SNAPS[state:get("gridSnap")])
 	end)
 	row(snapFace, 8)
-	Icons.slot("grid", snapFace, ICON, C.Accent, 1)
-	local snapLabel = text(snapFace, "", 10, 2)
+	local snapLabel = text(snapFace, "", 10, 1)
 	state:observe("gridSnap", function(index)
 		snapLabel.Text = "GRID: " .. string.upper(GRID_SNAPS[index or 1])
-		Util.fitWidth(snap, snapLabel.Text, 10, 2 * (16 + BAR_BORDER) + ICON + 8)
+		Util.fitWidth(snap, snapLabel.Text, 10, 2 * (16 + BAR_BORDER))
 	end)
 
 	local resources, resourceFace = barBox(right, "Resources", 16, 12)
 	resources.LayoutOrder = 2
-	local function counter(order: number, icon: string): TextLabel
+	local function counter(order: number, name: string): TextLabel
 		local group = Util.frame({ AutomaticSize = Enum.AutomaticSize.XY, LayoutOrder = order, Parent = resourceFace })
 		Util.list(group, Enum.FillDirection.Horizontal, 6, { VerticalAlignment = Enum.VerticalAlignment.Center })
-		Icons.slot(icon, group, ICON, C.Text, 1)
+		text(group, name, 11, 1, C.Accent)
 		return text(group, "", 11, 2)
 	end
-	local woodLabel = counter(1, "wood")
+	local woodLabel = counter(1, "WOOD")
 	Util.frame({ Name = "Divider", Size = UDim2.fromOffset(2, 20), BackgroundColor3 = C.Subtle, LayoutOrder = 2, Parent = resourceFace })
-	local stoneLabel = counter(3, "stone")
+	local stoneLabel = counter(3, "STONE")
 	state:observe("wood", function(value)
 		woodLabel.Text = Util.formatNumber(value or 0)
 	end)
@@ -219,22 +214,27 @@ local function toolStack(layer: Instance, ctx)
 			end,
 		})
 		local _, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 16, Border = BAR_BORDER, Parent = visual })
-		local iconBox = Util.frame({ Name = "IconBox", Position = UDim2.fromOffset(0, 4), Size = UDim2.new(1, 0, 0, 22), Parent = face })
-		Icons.draw(tool.icon, iconBox, 20, color)
-		local caption = Util.label({
-			Text = tool.text,
-			TextSize = 9,
-			TextColor3 = if tool.danger then C.Danger else C.Accent,
-			Position = UDim2.new(0, 0, 1, -15),
-			Size = UDim2.new(1, 0, 0, 12),
-			Parent = face,
+		Util.list(face, Enum.FillDirection.Vertical, 2, {
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			VerticalAlignment = Enum.VerticalAlignment.Center,
 		})
-		-- Keyboard hints ("[R]") only make sense with a keyboard; touch screens show the bare tool name.
-		local function updateCaption()
-			caption.Text = if UserInputService.TouchEnabled then (tool.text:gsub(" %[.%]$", "")) else tool.text
+		Util.label({ Text = tool.text, TextSize = 11, TextColor3 = color, Size = UDim2.new(1, 0, 0, 16), LayoutOrder = 1, Parent = face })
+		if tool.key then
+			local hint = Util.label({
+				Text = "[" .. tool.key.Name .. "]",
+				TextSize = 9,
+				TextColor3 = if tool.danger then C.Danger else C.Accent,
+				Size = UDim2.new(1, 0, 0, 11),
+				LayoutOrder = 2,
+				Parent = face,
+			})
+			-- Keyboard hints only make sense with a keyboard; touch screens show the bare tool name.
+			local function updateHint()
+				hint.Visible = not UserInputService.TouchEnabled
+			end
+			UserInputService.LastInputTypeChanged:Connect(updateHint)
+			updateHint()
 		end
-		UserInputService.LastInputTypeChanged:Connect(updateCaption)
-		updateCaption()
 	end
 	return stack
 end
@@ -341,7 +341,7 @@ local function tab(parent: Instance, ctx, category: Category, order: number, m: 
 	end)
 end
 
--- Slot: name, icon box, cost chip (rounded-2xl border-4). Full: portrait w-24 h-28, name on two lines.
+-- Slot: name, cost chip (rounded-2xl border-4). Full: portrait w-24 h-28, name on two lines.
 -- Compact: landscape, name on one line, as wide as the name needs.
 local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: number, m: CatalogMetrics.Metrics): () -> ()
 	local state = ctx.state
@@ -370,9 +370,7 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 		LayoutOrder = 1,
 		Parent = face,
 	})
-	local iconBorder, icon = Util.box({ Size = UDim2.fromOffset(m.icon.w, m.icon.h), Radius = 8, Border = 2, LayoutOrder = 2, Parent = face })
-	local glyph = Icons.draw(item.icon, icon, m.icon.glyph, C.Accent)
-	local chip = Util.frame({ Name = "Cost", Size = UDim2.fromOffset(m.slotWidth - 20, m.chip), LayoutOrder = 3, Parent = face })
+	local chip = Util.frame({ Name = "Cost", Size = UDim2.fromOffset(m.slotWidth - 20, m.chip), LayoutOrder = 2, Parent = face })
 	Util.corner(chip, 6)
 	local cost = Util.label({ Text = string.upper(item.cost), TextSize = SLOT_TEXT, Size = UDim2.fromScale(1, 1), Parent = chip })
 	Util.fitWidth(chip, cost.Text, SLOT_TEXT, 16) -- px-2
@@ -382,11 +380,8 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 		-- Selected: border-gray-500 bg-gray-100, chip bg-gray-300; others: border-gray-300 bg-white, chip bg-gray-200.
 		Theme.paint(outer, "BackgroundColor3", if on then C.Accent else C.Fill)
 		Theme.paint(face, "BackgroundColor3", if on then C.Screen else C.Card)
-		Theme.paint(iconBorder, "BackgroundColor3", if on then C.Border else C.Fill)
-		Theme.paint(icon, "BackgroundColor3", if on then C.Card else C.Screen)
 		Theme.paint(chip, "BackgroundColor3", if on then C.Fill else C.Subtle)
 		Theme.paint(name, "TextColor3", if on then C.Text else C.Accent)
-		Icons.paint(glyph, if on then C.Text else C.Accent)
 		Theme.paint(cost, "TextColor3", C.Text)
 	end)
 end

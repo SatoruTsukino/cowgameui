@@ -8,7 +8,7 @@
 	legibility floor raises on small HUD scales (Util.textSize), so labels always fit their boxes.
 
 	Full on desktop/iPad (text at wireframe size): tabs 47 tall, slots 96×112, deck 216 of 720 (30%).
-	Full on phones (text 15): tabs 57, slots 120×128, deck 242 of 520 (47%); Compact there: 168 (32%).
+	Full on phones (text 15): tabs 57, slots 120×112, deck 226 of 520 (43%); Compact there: 132 (25%).
 	index.html mirrors this with `.deck-compact` (fitCatalogDeck).
 ]]
 
@@ -37,7 +37,6 @@ export type Metrics = {
 	slotGap: number,
 	slotPad: { x: number, y: number }, -- inside the 4px slot border
 	chip: number, -- cost chip height
-	icon: { w: number, h: number, glyph: number },
 	trayPadY: number,
 	trayHeight: number,
 	bottom: number, -- margin under the deck
@@ -50,10 +49,9 @@ function CatalogMetrics.deck(compact: boolean, tabText: number, slotText: number
 	local tabLines = if compact then line(tabText) else math.max(26, 2 * line(tabText))
 	local slotName = if compact then slotLine else math.max(22, 2 * slotLine)
 	local chip = math.max(18, slotLine + (if compact then 4 else 2))
-	local icon = if compact then { w = 40, h = 32, glyph = 20 } else { w = 48, h = 40, glyph = 24 }
 	local slotGap = if compact then 4 else 6
 	local slotPad = if compact then { x = 10, y = 6 } else { x = 6, y = 6 }
-	local slotHeight = 2 * 4 + 2 * slotPad.y + slotName + slotGap + icon.h + slotGap + chip
+	local slotHeight = 2 * 4 + 2 * slotPad.y + slotName + slotGap + chip
 	local trayPadY = if compact then 8 else 14 -- py-3.5
 	local m = {
 		compact = compact,
@@ -67,7 +65,6 @@ function CatalogMetrics.deck(compact: boolean, tabText: number, slotText: number
 		slotGap = slotGap,
 		slotPad = slotPad,
 		chip = chip,
-		icon = icon,
 		trayPadY = trayPadY,
 		bottom = if compact then 12 else 24, -- bottom-6
 	}

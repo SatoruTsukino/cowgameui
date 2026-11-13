@@ -26,8 +26,6 @@ ReplicatedStorage
    ├─ Bindings           (ModuleScript)  ← Bindings.luau
    ├─ Layout             (ModuleScript)  ← Layout.luau
    ├─ Commands           (ModuleScript)  ← Commands.luau
-   ├─ Icons              (ModuleScript)  ← Icons.luau
-   ├─ IconData           (ModuleScript)  ← IconData.luau (generated from index.html)
    └─ Components         (Folder)
       ├─ TopLeft         (ModuleScript)
       ├─ TopRight        (ModuleScript)
@@ -93,7 +91,6 @@ Palette presets, scale config, the catalog deck budget, vital-bar widths and pho
 
 ## Verifying
 - **Palette:** `node tools/check-palette.mjs` checks every preset in `tokens.json` for WCAG contrast and, under simulated protanopia, deuteranopia and tritanopia, for contrast plus CIEDE2000 ΔE ≥ 10 between meaningful role pairs.
-- **Icons:** `node tools/gen-icons.mjs --check` fails when `IconData.luau` is out of date with the SVGs in `index.html`.
 - **Tokens:** `node tools/gen-tokens.mjs --check` fails when `Tokens.luau` or `index.html` is out of date with `tokens.json`.
 - **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It first checks that every `data-rbx` path in `index.html` names Luau instances, then checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.
 - **Catalog deck sizes:** `luau tools/test-catalog-metrics.luau` checks the Full/Compact choice and label boxes across nine devices (`CatalogMetrics.luau`).
@@ -102,6 +99,6 @@ Palette presets, scale config, the catalog deck budget, vital-bar widths and pho
 ## Known differences from the HTML
 - Dashed borders (area actions) are solid strokes, because Roblox has no dashed `UIStroke`.
 - Mobile safe zones are not drawn. They only preview Roblox's native thumbstick and Jump.
-- Icons are the wireframe's SVGs drawn with Frames (`Icons.luau`), because Roblox can't render SVG and Nunito has no symbol glyphs. `node tools/gen-icons.mjs` flattens each `<svg data-icon="…">` in `index.html` into `IconData.luau`; edit the SVG, not the Luau. Stroked icons only. They scale with the HUD and follow the theme.
+- The Build HUD is text only (no icons): Roblox can't render SVG, Frame-traced icons read thin and jagged, and Nunito has no symbol glyphs. The pasture HUD's sun is the one Frame-drawn glyph (`Util.sunIcon`).
 - No drop shadows.
 - The font is Nunito Heavy (`Theme.Font`). Roblox has no letter-spacing, so `tracking-widest` is dropped.

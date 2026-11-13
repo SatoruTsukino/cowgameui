@@ -28,7 +28,7 @@ local DEVICES: { Device } = {
 	{ name = "4:3 tablet 1024x768", w = 1024, h = 768, touch = true, expect = "full" },
 	{ name = "iPhone 14 844x390", w = 844, h = 390, touch = true, expect = "compact" },
 	{ name = "iPhone SE 667x375", w = 667, h = 375, touch = true, expect = "compact" },
-	{ name = "short window 1280x420", w = 1280, h = 420, touch = false, expect = "compact" },
+	{ name = "short window 1280x360", w = 1280, h = 360, touch = false, expect = "compact" },
 }
 
 local failures = 0

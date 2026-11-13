@@ -15,7 +15,7 @@ Goal: make the HTML wireframe cheaper to port to and keep in sync with the Roblo
 - `verify-hud.mjs` checks every `data-rbx` leaf exists as a `Name = "…"` in `Components/*.luau`.
 - `UI_ELEMENTS_MAP.md` (decision 2): line-number refs are replaced by `data-rbx` / `#id` keys.
 
-## T3: SVG → icon data generator
+## T3: SVG → icon data generator (superseded: Build HUD is text only; generator, Icons and IconData removed)
 - `data-icon="name"` on HTML SVGs; `tools/gen-icons.mjs` flattens paths and shapes into polylines and dots, and writes `IconData.luau`.
 - `Icons.luau` draws from `IconData`; its public API is unchanged. Filled arbitrary polygons are out of scope and reported.
 - One-off preview of generated vs hand-traced icons (scratchpad, not committed); Studio icon pass (human).
