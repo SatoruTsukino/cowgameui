@@ -32,3 +32,7 @@ See `phases/05-legibility-ergonomics/05-PLAN.md`.
 - [x] T1 contrast audit · T2 legibility floor (Roblox + HTML) · T3 44pt touch hit areas · T4 device profiles (touch scale floor, phone profile, HTML presets)
 - [x] T5 phone layout (bigger boxes) · T5b building phone layout · T5c arc angles · T5d reduced motion · T7 verify-hud.mjs · T8 WCAG palette · T9 docs · T10 boost tab
 - [~] T6 tablet thumb band: dropped (current iPad layout approved in Studio)
+
+## Phase 6 — Port tooling ⏳
+See `phases/06-port-tooling/06-PLAN.md`.
+- [ ] T1 shared `tokens.json` + `gen-tokens.mjs` · T2 `data-rbx` mapping · T3 SVG → `IconData.luau` · T4 palette + colour-blind check
