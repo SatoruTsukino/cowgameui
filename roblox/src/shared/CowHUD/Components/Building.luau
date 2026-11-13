@@ -57,7 +57,9 @@ local TAB_PAD_X = 8 -- px-3.5 minus the border, so two-line labels fit when five
 local TAB_HUG_INSET = 2 * (14 + 5) -- tabs fit their one-line label: px-3.5 + border-[5px]
 local TAB_TEXT = 10
 local TAB_PEEK = 5 -- .catalog-tab translateY(5px)
-local TAB_LIFT = 2 -- .catalog-tab:hover translateY(-2px)
+local TAB_LIFT = 2 -- .catalog-tab:hover translateY(-2px); inactive tabs only
+local BRIDGE_OVERLAP = 2
+local STRIP_TAIL = 4 -- compact tab strip reaches this far into the tray fill (less than its 8px top padding)
 local TAB_CLIP_HEADROOM = 8
 local TRAY_BORDER = CatalogMetrics.TrayBorder
 local TRAY_PAD_X = 20 -- px-5
@@ -239,7 +241,8 @@ end
 
 -- Category tab: rounded-t-xl, square bottom, border on three sides (border-b-0).
 -- Peek-and-pop (index.html `.catalog-tab`): inactive tabs sit TAB_PEEK px lower, tucked behind the tray, and the
--- active tab sits on top of it. With a mouse, hovering lifts a tab TAB_LIFT px above its resting line (Full motion only).
+-- active tab sits on top of it. With a mouse, hovering lifts an inactive tab to TAB_LIFT px above the active tab's
+-- resting line (Full motion only); the active tab never lifts, so its join with the tray stays closed.
 -- Returns the disconnect for its state observer.
 local function tab(parent: Instance, ctx, category: Category, order: number, m: CatalogMetrics.Metrics): () -> ()
 	local state = ctx.state
@@ -300,7 +303,8 @@ local function tab(parent: Instance, ctx, category: Category, order: number, m: 
 	local function lift()
 		local up = 0
 		if hovered and Theme.hoverAllowed() and not UserInputService.TouchEnabled then
-			up = if on then TAB_LIFT else TAB_PEEK + TAB_LIFT
+			-- Only inactive tabs lift: lifting the active tab uncovered the tray border under it and broke the join.
+			up = if on then 0 else TAB_PEEK + TAB_LIFT
 		end
 		TweenService:Create(visual, Theme.Tween.Spring, { Position = UDim2.new(0.5, 0, 0.5, -up) }):Play()
 	end
@@ -397,6 +401,11 @@ end
 ]]
 local function fadingScroller(ctx, props: { [string]: any })
 	local group = Util.gui("CanvasGroup", props)
+	-- A CanvasGroup bleeds its BackgroundColor3 along its edges even when fully transparent; the default gray
+	-- (163,162,165) drew a light line where the tab strip meets the tray. Use the tray's colour so any bleed
+	-- vanishes against it, and keep the group invisible itself.
+	Theme.paint(group, "BackgroundColor3", C.Card)
+	group.BackgroundTransparency = 1
 	local scroller = Util.gui("ScrollingFrame", {
 		Name = "Scroll",
 		Size = UDim2.fromScale(1, 1),
@@ -530,25 +539,70 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category }, m: Catal
 		-- Like the HTML header (max-width: 100%; overflow-x: auto inside a centring flex column): the strip hugs
 		-- its tabs and is centred while they fit; once they don't, it fills the row and scrolls from the first tab.
 		-- (Centre alignment inside a ScrollingFrame would push the first tabs off the left edge, out of reach.)
+		-- The strip (a CanvasGroup, for the fade) ends STRIP_TAIL px inside the tray's white fill, so its bottom
+		-- edge (where a CanvasGroup bleeds) never lies on the tray's border or a tab's edge. Holders are top-aligned
+		-- under TAB_CLIP_HEADROOM padding, so their bottoms sit TRAY_BORDER px into the tray as in the full row:
+		-- inactive tabs are clipped at the tray's top by their own clip frames, the active tab covers the border,
+		-- and `bridge` (white, under the tab) closes any sub-pixel hairline where the tab meets the tray fill.
 		local strip, reveal, stopTabFade
 		strip, tabs, reveal, stopTabFade = fadingScroller(ctx, {
 			Name = "Tabs",
 			AnchorPoint = Vector2.new(0.5, 0),
 			Position = UDim2.new(0.5, 0, 0, -TAB_CLIP_HEADROOM),
-			Size = UDim2.new(1, -2 * TAB_ROW_INSET, 0, m.tabActive + TAB_CLIP_HEADROOM),
+			Size = UDim2.new(1, -2 * TAB_ROW_INSET, 0, m.tabActive + TAB_CLIP_HEADROOM + STRIP_TAIL),
 			ZIndex = 3,
 			Parent = dock,
 		})
 		table.insert(cleanup, stopTabFade)
+		Util.paddingEach(tabs, 0, TAB_CLIP_HEADROOM, 0, 0)
+		local list = Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
+			VerticalAlignment = Enum.VerticalAlignment.Top,
+		})
+
+		-- The active tab's fill continued through the tray's top border (index.html: the active tab sits 5px into
+		-- the tray, over its border): a Card-coloured patch over the border between the tab's side borders.
+		local bridge = Util.frame({ Name = "ActiveBridge", ZIndex = 2, Size = UDim2.fromOffset(0, TRAY_BORDER), Parent = tray })
+		Theme.paint(bridge, "BackgroundColor3", C.Card)
+		bridge.BackgroundTransparency = 0
+		local function placeBridge()
+			local holder = tabs:FindFirstChild(state:get("buildCategory") or "") :: GuiObject?
+			local scale = math.max(ctx.getScale(), 0.01)
+			if not holder or tray.AbsoluteSize.X <= 0 then
+				bridge.Visible = false
+				return
+			end
+			local origin = tray.AbsolutePosition.X
+			local left = (holder.AbsolutePosition.X - origin) / scale + TRAY_BORDER
+			local right = (holder.AbsolutePosition.X + holder.AbsoluteSize.X - origin) / scale - TRAY_BORDER
+			-- Only where the strip shows the tab (a tab scrolled out of the window has nothing to join).
+			left = math.max(left, (strip.AbsolutePosition.X - origin) / scale)
+			right = math.min(right, (strip.AbsolutePosition.X + strip.AbsoluteSize.X - origin) / scale)
+			bridge.Visible = right > left
+			-- Overlaps the tab above and the tray fill below by BRIDGE_OVERLAP: two white edges meeting exactly at a
+			-- fractional pixel (HUD scale 0.75) left a hairline between the tab and the tray.
+			bridge.Position = UDim2.fromOffset(left, -BRIDGE_OVERLAP)
+			bridge.Size = UDim2.fromOffset(math.max(0, right - left), TRAY_BORDER + 2 * BRIDGE_OVERLAP)
+		end
+		for _, signal in {
+			tabs:GetPropertyChangedSignal("CanvasPosition"),
+			list:GetPropertyChangedSignal("AbsoluteContentSize"),
+			strip:GetPropertyChangedSignal("AbsolutePosition"),
+			strip:GetPropertyChangedSignal("AbsoluteSize"),
+			tray:GetPropertyChangedSignal("AbsolutePosition"),
+		} do
+			local connection = signal:Connect(placeBridge)
+			table.insert(cleanup, function()
+				connection:Disconnect()
+			end)
+		end
+
 		revealTab = function(id: string)
 			local holder = tabs:FindFirstChild(id)
 			if holder then
 				reveal(holder :: GuiObject)
 			end
+			placeBridge()
 		end
-		local list = Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
-			VerticalAlignment = Enum.VerticalAlignment.Bottom,
-		})
 		local hug = Util.new("UISizeConstraint", { Parent = strip })
 		local function fitStrip()
 			local scale = math.max(ctx.getScale(), 0.01)

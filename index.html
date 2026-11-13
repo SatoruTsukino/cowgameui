@@ -141,8 +141,9 @@
             transform: translateY(0);
         }
 
+        /* The active tab stays put on hover: lifting it uncovered the tray's border and broke the tab/tray join. */
         .catalog-tab.active:hover {
-            transform: translateY(-2px);
+            transform: translateY(0);
         }
 
         /* T11b: an inactive tab's bottom 10px sits behind the tray (-mb-[5px] + the 5px peek), so its label is
