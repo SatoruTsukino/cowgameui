@@ -48,8 +48,13 @@ local DOCK_MAX_WIDTH = 680
 local DOCK_PADDING = 8 -- px-2
 local DOCK_TOUCH_CLEARANCE = 256 -- touch: keep clear of Roblox's native thumbstick and Jump (the arc is hidden here)
 local TAB_GAP = 6 -- gap-1.5
+local TAB_ROW_INSET = 20 -- #catalogTabsHeader padding-left/right
+local EDGE_FADE = 24 -- px each scroller end fades over while more is hidden that way (index.html .fade-left/right)
+-- Compact slots fit their name, but a fixed-size label shrinks its text once it passes 94% of the box (Util),
+-- which dropped long names like "COZY LANTERN" below the floor. This covers names up to ~250px.
+local NAME_SLACK = 16
 local TAB_PAD_X = 8 -- px-3.5 minus the border, so two-line labels fit when five tabs share 680px
-local TAB_COMPACT_INSET = 2 * (14 + 5) -- compact tabs fit their one-line label: px-3.5 + border-[5px]
+local TAB_HUG_INSET = 2 * (14 + 5) -- tabs fit their one-line label: px-3.5 + border-[5px]
 local TAB_TEXT = 10
 local TAB_PEEK = 5 -- .catalog-tab translateY(5px)
 local TAB_LIFT = 2 -- .catalog-tab:hover translateY(-2px)
@@ -240,11 +245,13 @@ local function tab(parent: Instance, ctx, category: Category, order: number, m: 
 	local state = ctx.state
 	local label = string.upper(category.label)
 
-	-- Full: tabs share the tray width (Flex Fill on the row), so the holder's width comes from the list layout.
-	-- Compact: each tab fits its one-line label. The holder's bottom sits TRAY_BORDER px inside the tray (-mb-[5px]).
+	-- Each tab hugs its one-line label (px-3.5 + border), like the HTML's auto-width tabs. Full: when the row runs
+	-- out of room the tabs shrink (flex-shrink) and the labels wrap onto their second line. Compact: the strip
+	-- scrolls instead. The holder's bottom sits TRAY_BORDER px inside the tray (-mb-[5px]).
 	local holder = Util.frame({ Name = category.id, Size = UDim2.fromOffset(0, m.tabActive), LayoutOrder = order, Parent = parent })
-	if m.compact then
-		Util.fitWidth(holder, label, TAB_TEXT, TAB_COMPACT_INSET)
+	Util.fitWidth(holder, label, TAB_TEXT, TAB_HUG_INSET)
+	if not m.compact then
+		Util.new("UIFlexItem", { FlexMode = Enum.UIFlexMode.Shrink, Parent = holder })
 	end
 	-- Sibling ZIndex can't draw one tab under the tray and another over it, so inactive tabs are clipped at the
 	-- tray's top edge instead: it looks the same as tucking them behind. The headroom leaves space for the
@@ -343,7 +350,7 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 		end,
 	})
 	if m.compact then
-		Util.fitWidth(button, itemName, SLOT_TEXT, 2 * (4 + m.slotPad.x), m.slotWidth)
+		Util.fitWidth(button, itemName, SLOT_TEXT, 2 * (4 + m.slotPad.x) + NAME_SLACK, m.slotWidth)
 	end
 	local outer, face = Util.box({ Size = UDim2.fromScale(1, 1), Radius = 16, Border = 4, Parent = visual })
 	Util.padding(face, m.slotPad.x, m.slotPad.y) -- p-2 inside border-4 (compact: 6px 10px)
@@ -378,6 +385,82 @@ local function catalogSlot(parent: Instance, ctx, item: CatalogItem, order: numb
 		Icons.paint(glyph, if on then C.Text else C.Accent)
 		Theme.paint(cost, "TextColor3", C.Text)
 	end)
+end
+
+--[[
+	Sideways scroller whose ends fade out where more content is hidden (index.html `.fade-left` / `.fade-right`,
+	a mask-image). The ScrollingFrame sits in a CanvasGroup carrying a UIGradient transparency, so a cut-off tab
+	or slot reads as "more this way" instead of looking broken. Each edge fades only while there is something
+	to scroll to on that side. Returns the group (place and size it), the scroller (put content in it), a
+	`reveal(item)` that scrolls `item` fully into view clear of the fades, and a cleanup function.
+	Canvas positions are in local (pre-UIScale) px; Absolute* sizes are screen px, so divide by the HUD scale.
+]]
+local function fadingScroller(ctx, props: { [string]: any })
+	local group = Util.gui("CanvasGroup", props)
+	local scroller = Util.gui("ScrollingFrame", {
+		Name = "Scroll",
+		Size = UDim2.fromScale(1, 1),
+		CanvasSize = UDim2.new(),
+		AutomaticCanvasSize = Enum.AutomaticSize.X,
+		ScrollingDirection = Enum.ScrollingDirection.X,
+		ScrollBarThickness = 0,
+		Parent = group,
+	})
+	local gradient = Util.new("UIGradient", { Parent = group })
+
+	local function metrics(): (number, number, number)
+		local scale = math.max(ctx.getScale(), 0.01)
+		local window = scroller.AbsoluteWindowSize.X / scale
+		local maxScroll = math.max(0, scroller.AbsoluteCanvasSize.X / scale - window)
+		return scale, window, maxScroll
+	end
+
+	local function update()
+		local _, window, maxScroll = metrics()
+		if window <= 0 then
+			return
+		end
+		local x = scroller.CanvasPosition.X
+		local f = math.clamp(EDGE_FADE / window, 0, 0.45)
+		gradient.Transparency = NumberSequence.new({
+			NumberSequenceKeypoint.new(0, if x > 1 then 1 else 0),
+			NumberSequenceKeypoint.new(f, 0),
+			NumberSequenceKeypoint.new(1 - f, 0),
+			NumberSequenceKeypoint.new(1, if x < maxScroll - 1 then 1 else 0),
+		})
+	end
+
+	local function reveal(item: GuiObject)
+		local scale, window, maxScroll = metrics()
+		if window <= 0 or maxScroll <= 0 then
+			return
+		end
+		local x = scroller.CanvasPosition.X
+		local left = (item.AbsolutePosition.X - scroller.AbsolutePosition.X) / scale
+		local right = left + item.AbsoluteSize.X / scale
+		local target = x
+		if left < EDGE_FADE then
+			target = x + left - EDGE_FADE
+		elseif right > window - EDGE_FADE then
+			target = x + right - window + EDGE_FADE
+		end
+		target = math.clamp(target, 0, maxScroll)
+		if target ~= x then
+			TweenService:Create(scroller, Theme.Tween.Fade, { CanvasPosition = Vector2.new(target, 0) }):Play()
+		end
+	end
+
+	local connections = {
+		scroller:GetPropertyChangedSignal("CanvasPosition"):Connect(update),
+		scroller:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(update),
+		scroller:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(update),
+	}
+	update()
+	return group, scroller, reveal, function()
+		for _, connection in connections do
+			connection:Disconnect()
+		end
+	end
 end
 
 -- Builds the deck for metrics `m`. Returns a destroy function (the deck is rebuilt when its density changes).
@@ -416,17 +499,14 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category }, m: Catal
 		Parent = tray,
 	})
 
-	local slots = Util.gui("ScrollingFrame", {
+	local _, slots, _, stopSlotFade = fadingScroller(ctx, {
 		Name = "Slots",
 		Position = UDim2.fromOffset(TRAY_PAD_X, 0),
 		Size = UDim2.new(1, -2 * TRAY_PAD_X, 1, 0),
-		CanvasSize = UDim2.new(),
-		AutomaticCanvasSize = Enum.AutomaticSize.X,
-		ScrollingDirection = Enum.ScrollingDirection.X,
-		ScrollBarThickness = 0,
 		ZIndex = 2,
 		Parent = trayFill,
 	})
+	table.insert(cleanup, stopSlotFade)
 	Util.list(slots, Enum.FillDirection.Horizontal, SLOT_GAP, { VerticalAlignment = Enum.VerticalAlignment.Center })
 	local empty = Util.label({
 		Text = "NOTHING HERE YET",
@@ -439,29 +519,59 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category }, m: Catal
 	})
 
 	-- Tabs row (items-end) above the tray; the active tab overlaps the tray's top border.
-	-- Full: the tabs share the tray width. Compact: one-line tabs, centred, scrolling sideways when they don't fit;
+	-- Full: hugging tabs, centred, shrinking to two-line labels when short of room. Compact: one-line tabs, centred,
+	-- scrolling sideways when they don't fit;
 	-- the strip reaches TAB_CLIP_HEADROOM above the tabs so its clipping leaves room for the hover lift.
+	-- Both rows keep TAB_ROW_INSET from the tray's sides (index.html #catalogTabsHeader px 20px), so no tab sits
+	-- over the tray's rounded top corners or past its edge.
 	local tabs
+	local revealTab: ((string) -> ())? = nil -- compact: scrolls the selected tab fully into view
 	if m.compact then
-		tabs = Util.gui("ScrollingFrame", {
+		-- Like the HTML header (max-width: 100%; overflow-x: auto inside a centring flex column): the strip hugs
+		-- its tabs and is centred while they fit; once they don't, it fills the row and scrolls from the first tab.
+		-- (Centre alignment inside a ScrollingFrame would push the first tabs off the left edge, out of reach.)
+		local strip, reveal, stopTabFade
+		strip, tabs, reveal, stopTabFade = fadingScroller(ctx, {
 			Name = "Tabs",
-			Position = UDim2.fromOffset(0, -TAB_CLIP_HEADROOM),
-			Size = UDim2.new(1, 0, 0, m.tabActive + TAB_CLIP_HEADROOM),
-			CanvasSize = UDim2.new(),
-			AutomaticCanvasSize = Enum.AutomaticSize.X,
-			ScrollingDirection = Enum.ScrollingDirection.X,
-			ScrollBarThickness = 0,
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.new(0.5, 0, 0, -TAB_CLIP_HEADROOM),
+			Size = UDim2.new(1, -2 * TAB_ROW_INSET, 0, m.tabActive + TAB_CLIP_HEADROOM),
 			ZIndex = 3,
 			Parent = dock,
 		})
-		Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
-			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+		table.insert(cleanup, stopTabFade)
+		revealTab = function(id: string)
+			local holder = tabs:FindFirstChild(id)
+			if holder then
+				reveal(holder :: GuiObject)
+			end
+		end
+		local list = Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
 			VerticalAlignment = Enum.VerticalAlignment.Bottom,
 		})
+		local hug = Util.new("UISizeConstraint", { Parent = strip })
+		local function fitStrip()
+			local scale = math.max(ctx.getScale(), 0.01)
+			hug.MaxSize = Vector2.new(math.ceil(list.AbsoluteContentSize.X / scale), math.huge)
+		end
+		local contentChanged = list:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(fitStrip)
+		table.insert(cleanup, function()
+			contentChanged:Disconnect()
+		end)
+		fitStrip()
 	else
-		tabs = Util.frame({ Name = "Tabs", Size = UDim2.new(1, 0, 0, m.tabActive), ZIndex = 3, Parent = dock })
+		tabs = Util.frame({
+			Name = "Tabs",
+			AnchorPoint = Vector2.new(0.5, 0),
+			Position = UDim2.fromScale(0.5, 0),
+			Size = UDim2.new(1, -2 * TAB_ROW_INSET, 0, m.tabActive),
+			ZIndex = 3,
+			Parent = dock,
+		})
+		-- Centred hugging tabs (the HTML header is a centred flex row); UIFlexItem Shrink on each tab keeps the row
+		-- inside the inset when the labels don't fit on one line.
 		Util.list(tabs, Enum.FillDirection.Horizontal, TAB_GAP, {
-			HorizontalFlex = Enum.UIFlexAlignment.Fill,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
 			VerticalAlignment = Enum.VerticalAlignment.Bottom,
 		})
 	end
@@ -478,6 +588,9 @@ local function catalogDock(layer: Instance, ctx, catalog: { Category }, m: Catal
 	end
 	table.insert(cleanup, clearSlots)
 	table.insert(cleanup, state:observe("buildCategory", function(id)
+		if revealTab then
+			task.defer(revealTab, id) -- after the tab's new size is laid out
+		end
 		clearSlots()
 		for _, child in slots:GetChildren() do
 			if child:IsA("GuiObject") then

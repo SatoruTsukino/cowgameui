@@ -159,7 +159,20 @@
         .game-screen.deck-compact #catalogTabsHeader { max-width: 100%; overflow-x: auto; scrollbar-width: none; padding-top: 2px; }
         .game-screen.deck-compact .catalog-tab { white-space: nowrap; flex-shrink: 0; line-height: 1.2; }
         .game-screen.deck-compact .catalog-tab.active { padding-top: 6px; padding-bottom: 6px; }
-        .game-screen.deck-compact #catalogTray { padding-top: 8px; padding-bottom: 8px; justify-content: flex-start; scrollbar-width: none; }
+        .game-screen.deck-compact #catalogTray { padding-top: 8px; padding-bottom: 8px; }
+        .game-screen.deck-compact #catalogSlots { justify-content: flex-start; scrollbar-width: none; }
+        .game-screen.deck-compact .catalog-tab { scroll-margin-inline: 24px; }
+
+        /* Scrolling rows fade out at an end while more is hidden that way (Roblox fadingScroller: CanvasGroup +
+           UIGradient). updateEdgeFade toggles the classes from the scroll position; no class, no mask. */
+        .edge-fade.fade-left, .edge-fade.fade-right {
+            --fade-l: 0px;
+            --fade-r: 0px;
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+            mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+        }
+        .edge-fade.fade-left { --fade-l: 24px; }
+        .edge-fade.fade-right { --fade-r: 24px; }
         .game-screen.deck-compact .ps-slot { width: auto !important; min-width: 112px; height: auto !important; padding: 6px 10px; gap: 4px; }
         .game-screen.deck-compact .ps-slot > span { white-space: nowrap; line-height: 1.2; }
         .game-screen.deck-compact .ps-slot > div { width: 40px; height: 32px; }
@@ -681,7 +694,7 @@
                 <!-- 4. BOTTOM CATALOG & PALETTE DOCK (Constrained max-w-[680px] to clear mobile safe zones) -->
                 <div id="catalogDock" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-auto z-20 w-full max-w-[680px] px-2">
                     <!-- Category Tabs Header (Connected to Box) -->
-                    <div id="catalogTabsHeader" class="flex items-end gap-1.5 -mb-[5px]">
+                    <div id="catalogTabsHeader" class="edge-fade flex items-end gap-1.5 -mb-[5px]">
                         <button onclick="filterBuildCategory('fences')" id="catBtn-fences" class="catalog-tab active px-3.5 py-2 rounded-t-xl rounded-b-none border-[5px] border-b-0 border-gray-400 bg-white text-gray-700 font-black text-[10px] tracking-wider uppercase shadow-none">
                             Fences & Gates
                         </button>
@@ -700,7 +713,9 @@
                     </div>
 
                     <!-- Horizontal Item Slot Tray (Flat Top Under Tabs) -->
-                    <div id="catalogTray" class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl flex items-center justify-between gap-3 overflow-x-auto relative z-10">
+                    <div id="catalogTray" class="w-full px-5 py-3.5 rounded-b-[2rem] rounded-t-xl border-[5px] border-gray-400 bg-white shadow-xl relative z-10">
+                        <!-- Scroller inside the tray's padding, so the edge fade masks the slots and not the tray (Roblox: fadingScroller). py-1/-my-1 leaves room for the hover scale. -->
+                        <div id="catalogSlots" class="edge-fade flex items-center justify-between gap-3 overflow-x-auto py-1 -my-1">
                         <!-- Slot 1 -->
                         <div class="ps-slot w-24 h-28 rounded-2xl border-[4px] border-gray-500 bg-gray-100/60 flex flex-col items-center justify-between p-2 shadow-sm ui-element hover:scale-105 active:scale-95 cursor-pointer shrink-0 transition-transform">
                             <span class="text-[9px] font-black text-gray-600 uppercase text-center leading-tight">Rustic Fence</span>
@@ -768,6 +783,7 @@
                                 </svg>
                             </div>
                             <span class="px-2 py-0.5 rounded-md bg-gray-200 text-gray-600 font-black text-[9px] tracking-wider uppercase">10 Stone</span>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -913,6 +929,29 @@
             document.getElementById('labelGridSnap').textContent = `Grid: ${GRID_SNAPS[gridSnapIndex]}`;
         }
 
+        // Edge fade for the catalog's scrolling rows (see .edge-fade).
+        function updateEdgeFade(el) {
+            const max = el.scrollWidth - el.clientWidth;
+            el.classList.toggle('fade-left', el.scrollLeft > 1);
+            el.classList.toggle('fade-right', el.scrollLeft < max - 1);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.edge-fade').forEach(el => el.addEventListener('scroll', () => updateEdgeFade(el), { passive: true }));
+        });
+
+        // Scrolls the selected tab fully into view, clear of the 24px fades (Roblox fadingScroller reveal).
+        function revealCatalogTab(btn) {
+            const header = document.getElementById('catalogTabsHeader');
+            if (!header || header.scrollWidth <= header.clientWidth) return;
+            const k = header.getBoundingClientRect().width / header.offsetWidth; // the HUD's scale transform
+            const x = (btn.getBoundingClientRect().left - header.getBoundingClientRect().left) / k + header.scrollLeft;
+            const left = x - 24;
+            const right = x + btn.offsetWidth + 24 - header.clientWidth;
+            const target = left < header.scrollLeft ? left : right > header.scrollLeft ? right : header.scrollLeft;
+            const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+            header.scrollTo({ left: Math.max(0, target), behavior: smooth ? 'smooth' : 'auto' });
+        }
+
         function filterBuildCategory(category) {
             const categories = ['fences', 'barns', 'feeders', 'flooring', 'decor'];
             categories.forEach(cat => {
@@ -924,6 +963,8 @@
                     btn.className = "catalog-tab px-3.5 py-1.5 rounded-t-xl rounded-b-none border-[4px] border-b-0 border-gray-300 bg-gray-200/80 text-gray-500 font-black text-[10px] tracking-wider uppercase hover:bg-gray-100 hover:text-gray-700 transition-colors";
                 }
             });
+            const selected = document.getElementById(`catBtn-${category}`);
+            if (selected) requestAnimationFrame(() => revealCatalogTab(selected));
         }
 
         const THEME_PRESETS = {
@@ -1162,6 +1203,7 @@
                 fitText();
             }
             const used = dock.offsetHeight + parseFloat(getComputedStyle(dock).bottom);
+            document.querySelectorAll('.edge-fade').forEach(updateEdgeFade);
             dock.dataset.deck = `${compact ? 'compact' : 'full'} ${Math.round(used)}/${virtualHeight} (${Math.round(100 * used / virtualHeight)}%; full ${Math.round(100 * fullHeight / virtualHeight)}%)`;
         }
 
