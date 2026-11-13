@@ -1,12 +1,15 @@
--- Design tokens mirrored from index.html: colour presets (DESIGN_SYSTEM_AND_SPEC §4), font, scale, motion.
+-- Design tokens: colour presets, scale and phone sizes come from Tokens (generated from tokens.json, shared with
+-- index.html); font and motion are Roblox-only and live here.
 --
 -- Colours are role tokens, not values. Pass `Theme.Color.<Role>` to any Util.new-built property and the
 -- instance is tracked, so `Theme.applyPreset` recolours the live HUD. For direct assignment use `Theme.paint`.
 --
 -- Roles (wireframe gray it replaces):
 --   Card (white)  Screen (100)  Subtle (200)  Fill (300)  Border (400)  Accent (500)  Text (600)  Danger
--- Preset values are the WCAG-checked palette from .planning/phases/05-legibility-ergonomics (T1):
+-- Preset values are WCAG-checked by tools/check-palette.mjs:
 -- Text ≥ 4.5:1 on Card/Screen/Fill, Accent ≥ 4.5:1 on Card, Border ≥ 3:1 on Card/Screen.
+
+local Tokens = require(script.Parent.Tokens)
 
 local Theme = {}
 
@@ -14,28 +17,16 @@ export type Token = { __token: string }
 
 local ROLES = { "Card", "Screen", "Subtle", "Fill", "Border", "Accent", "Text", "Danger" }
 
-Theme.PresetOrder = { "Mono", "Meadow", "Sunrise", "Lavender", "Sky" }
+Theme.PresetOrder = Tokens.palette.order
 
-local function preset(card, screen, subtle, fill, border, accent, text)
-	return {
-		Card = Color3.fromHex(card),
-		Screen = Color3.fromHex(screen),
-		Subtle = Color3.fromHex(subtle),
-		Fill = Color3.fromHex(fill),
-		Border = Color3.fromHex(border),
-		Accent = Color3.fromHex(accent),
-		Text = Color3.fromHex(text),
-		Danger = Color3.fromHex("#dc2626"),
-	}
+Theme.Presets = {}
+for name, hexes in Tokens.palette.presets do
+	local palette = {}
+	for _, role in ROLES do
+		palette[role] = Color3.fromHex(hexes[role])
+	end
+	Theme.Presets[name] = palette
 end
-
-Theme.Presets = {
-	Mono = preset("#ffffff", "#f3f4f6", "#e5e7eb", "#d1d5db", "#6b7280", "#4b5563", "#4b5563"),
-	Meadow = preset("#f7fdf9", "#ecfdf5", "#dcfce7", "#86efac", "#16a34a", "#15803d", "#166534"),
-	Sunrise = preset("#fffdf5", "#fef3c7", "#fef3c7", "#fde68a", "#c76b06", "#b45309", "#78350f"),
-	Lavender = preset("#faf5ff", "#f3e8ff", "#f3e8ff", "#e9d5ff", "#a855f7", "#9333ea", "#581c87"),
-	Sky = preset("#f0f9ff", "#e0f2fe", "#e0f2fe", "#bae6fd", "#0284c7", "#0369a1", "#075985"),
-}
 
 Theme.Color = {} :: { [string]: Token }
 for _, role in ROLES do
@@ -90,12 +81,7 @@ Theme.Font = Font.new("rbxasset://fonts/families/Nunito.json", Enum.FontWeight.H
 -- Virtual canvas: everything is authored in 720p pixels, then scaled by viewport height.
 -- Touch screens get a higher floor so 56px controls render at ~42pt+ and hit areas reach 44pt with little growth
 -- (a 390pt landscape phone would otherwise drop to 0.54); the virtual canvas shrinks to ~480–520px tall instead.
-Theme.Scale = {
-	ReferenceHeight = 720,
-	MinScale = 0.6,
-	TouchMinScale = 0.75,
-	MaxScale = 4,
-}
+Theme.Scale = Tokens.scale -- ReferenceHeight 720, MinScale 0.6, TouchMinScale 0.75, MaxScale 4
 
 Theme.Margin = 32 -- Tailwind `top-8` / `left-8`
 Theme.ClusterGap = 16 -- minimum breathing room between top clusters and the bulletin
@@ -108,16 +94,16 @@ Theme.TopRowMinY = 12 -- closest the topbar row may sit to the screen top
 	the wireframe sizes. Changing devices in the Studio emulator needs a fresh Play to switch.
 ]]
 Theme.phone = false
-local SIZES = {
-	SidebarWidth = { 64, 72 }, -- INV / BAG / CLOSET / TRADE / HERD (w-16)
-	BackpackHeight = { 72, 80 }, -- INV / BAG (h-[4.5rem])
-	HerdSquare = { 48, 54 }, -- the two stacked herd squares (w-12)
-	Satellite = { 56, 68 }, -- action arc buttons (w-14)
-	Tool = { 56, 64 }, -- build tool buttons (w-14)
-	-- The catalog deck sizes itself from its text and the canvas height: see CatalogMetrics.
-	SidebarOffset = { 136, 112 }, -- left sidebar below the top-left cluster; tighter on phones to clear the thumbstick
-	SidebarGap = { 16, 8 }, -- gap-4 between sidebar buttons
-}
+-- { desktop/tablet, phone } pairs from tokens.json:
+--   SidebarWidth   INV / BAG / CLOSET / TRADE / HERD (w-16)
+--   BackpackHeight INV / BAG (h-[4.5rem])
+--   HerdSquare     the two stacked herd squares (w-12)
+--   Satellite      action arc buttons (w-14)
+--   Tool           build tool buttons (w-14)
+--   SidebarOffset  left sidebar below the top-left cluster; tighter on phones to clear the thumbstick
+--   SidebarGap     gap-4 between sidebar buttons
+-- The catalog deck sizes itself from its text and the canvas height: see CatalogMetrics.
+local SIZES = Tokens.sizes
 function Theme.size(key: string): number
 	local pair = SIZES[key]
 	assert(pair, "unknown size " .. key)

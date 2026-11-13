@@ -18,6 +18,7 @@ Create these scripts and paste in each file's contents. **The names must match e
 ```
 ReplicatedStorage
 └─ CowHUD                (ModuleScript)  ← src/shared/CowHUD/init.luau
+   ├─ Tokens             (ModuleScript)  ← Tokens.luau (generated from tokens.json)
    ├─ Theme              (ModuleScript)  ← Theme.luau
    ├─ Util               (ModuleScript)  ← Util.luau
    ├─ State              (ModuleScript)  ← State.luau
@@ -48,7 +49,7 @@ StarterPlayer/StarterPlayerScripts
 - `ScreenInsets = DeviceSafeInsets` keeps the HUD clear of device notches. The HUD shares the top bar row with Roblox's own buttons: `Layout.luau` reads `GuiService.TopbarInset` so the top-right cluster and bulletin sit in that row next to the core buttons, and the top-left cluster (with the sidebars) moves down below the left core buttons.
 - **Bulletin:** a single 56px row (☀ cycle · event bar · countdown) with the same text sizes as the wireframe. It never switches to compact on its own, because Compact Mode is only ever the player's choice. It always stays in the top row: centred when possible, otherwise slid sideways to clear the core buttons and the top-right cluster. If it ends up above the vitals, the vitals and the left sidebar move down below it.
 - **Legibility floor:** labels render at no less than 12pt (11pt for captions under 12px) at any scale. On phones, text grows past its wireframe size: auto-sized boxes grow with it, and fixed boxes grow only as far as the text still fits.
-- Change `Theme.Scale.TouchMinScale` (touch) or `MinScale` (desktop) if text feels too small or too large.
+- Change `scale.TouchMinScale` (touch) or `scale.MinScale` (desktop) in `tokens.json`, then run `node tools/gen-tokens.mjs`, if text feels too small or too large.
 
 ## Using it from game code
 ```lua
@@ -86,7 +87,11 @@ The cowbell panel has toggles for Compact Mode and World Bulletin. It also has:
 - **Touch targets:** every `Util.button` takes input through a transparent hit area that grows to 44pt on touch screens; the visible button keeps its size.
 - **Phone profile:** `CowHUD.mount` sets `Theme.phone` once, before building: a touch screen whose HUD scale sits at the 0.75 floor. Phones get bigger boxes so labels reach the text floor (`Theme.size`; see the table in `DESIGN_SYSTEM_AND_SPEC.md`). In the Studio emulator, switching between phone and tablet/desktop needs a fresh Play.
 
+## Shared tokens
+Palette presets, scale config, the catalog deck budget, vital-bar widths and phone sizes live in `tokens.json` at the repo root, shared with `index.html`. Edit that file, then run `node tools/gen-tokens.mjs`. It writes `Tokens.luau` and the marked `tokens:*` regions in `index.html`. Don't edit either output by hand.
+
 ## Verifying
+- **Tokens:** `node tools/gen-tokens.mjs --check` fails when `Tokens.luau` or `index.html` is out of date with `tokens.json`.
 - **HTML:** `node tools/verify-hud.mjs` (needs Google Chrome; no npm install). It checks every preview preset × page for overlapping HUD groups and for text below 11pt/12pt on the simulated device.
 - **Catalog deck sizes:** `luau tools/test-catalog-metrics.luau` checks the Full/Compact choice and label boxes across nine devices (`CatalogMetrics.luau`).
 - **Roblox:** Studio device emulator at 1920×1080, iPhone 14 landscape and iPad, in normal mode and after `/build`. Use `/boost` to show the boost tab.

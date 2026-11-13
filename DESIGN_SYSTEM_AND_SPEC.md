@@ -110,7 +110,7 @@ All dimensions are in virtual 720p coordinate units ($1\text{px} \to 1$ Roblox o
 
 ## 4. Theme System & Color Palettes
 
-The UI uses dynamic CSS custom properties mapped across all structural elements. Every preset is WCAG-checked: text is at least 4.5:1 and borders at least 3:1 (phase 5, T1/T8). Roblox `Theme.Presets` uses the same values.
+The UI uses dynamic CSS custom properties mapped across all structural elements. Every preset is WCAG-checked: text is at least 4.5:1 and borders at least 3:1 (phase 5, T1/T8). The values live in `tokens.json` (shared with Roblox `Theme.Presets` through the generated `Tokens.luau`); edit them there and run `node tools/gen-tokens.mjs`.
 
 | Token | Default Mono | Cozy Meadow | Golden Sunrise | Lavender Dusk | Sky Pasture |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -120,6 +120,8 @@ The UI uses dynamic CSS custom properties mapped across all structural elements.
 | `--theme-accent` | `#4b5563` | `#15803d` | `#b45309` | `#9333ea` | `#0369a1` |
 | `--theme-text-main` | `#4b5563` | `#166534` | `#78350f` | `#581c87` | `#075985` |
 | `--theme-screen-bg` | `#f3f4f6` | `#ecfdf5` | `#fef3c7` | `#f3e8ff` | `#e0f2fe` |
+| `--theme-fill-subtle` | `#e5e7eb` | `#dcfce7` | `#fef3c7` | `#f3e8ff` | `#e0f2fe` |
+| `--theme-danger` | `#dc2626` | `#dc2626` | `#dc2626` | `#dc2626` | `#dc2626` |
 
 ---
 

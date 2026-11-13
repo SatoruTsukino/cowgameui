@@ -12,10 +12,13 @@
 	index.html mirrors this with `.deck-compact` (fitCatalogDeck).
 ]]
 
+-- Roblox requires by instance; plain `luau` (no `script` global) requires by path.
+local Tokens = if script then require(script.Parent.Tokens) else require("./Tokens")
+
 local CatalogMetrics = {}
 
-CatalogMetrics.Budget = 0.35 -- share of the virtual canvas height
-CatalogMetrics.TrayBorder = 5 -- border-[5px]; the active tab reaches this far into the tray (-mb-[5px])
+CatalogMetrics.Budget = Tokens.deck.Budget -- share of the virtual canvas height
+CatalogMetrics.TrayBorder = Tokens.deck.TrayBorder -- border-[5px]; the active tab reaches this far into the tray (-mb-[5px])
 
 local LINE_HEIGHT = 1.2 -- Nunito line box, matches the .deck-compact `line-height: 1.2`
 

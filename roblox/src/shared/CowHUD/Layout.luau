@@ -15,6 +15,7 @@ local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
 
 local Theme = require(script.Parent.Theme)
+local Tokens = require(script.Parent.Tokens)
 
 local Layout = {}
 
@@ -33,11 +34,11 @@ local BUILD_BAR_HEIGHT = 48 -- h-12
 
 -- Vital bars: full 208px on 16:9-and-wider canvases at full height, down to 160px on narrow (4:3, 960 wide)
 -- or short (phones, ~520 tall) canvases; linear in between, whichever constraint is tighter.
-local VITALS_MAX, VITALS_MIN = 208, 160
+local V = Tokens.vitals
 local function vitalsWidth(virtualSize: Vector2): number
-	local byWidth = math.clamp((virtualSize.X - 960) / (1280 - 960), 0, 1)
-	local byHeight = math.clamp((virtualSize.Y - 520) / (720 - 520), 0, 1)
-	return math.round(VITALS_MIN + (VITALS_MAX - VITALS_MIN) * math.min(byWidth, byHeight))
+	local byWidth = math.clamp((virtualSize.X - V.NarrowWidth) / (V.WideWidth - V.NarrowWidth), 0, 1)
+	local byHeight = math.clamp((virtualSize.Y - V.ShortHeight) / (Tokens.scale.ReferenceHeight - V.ShortHeight), 0, 1)
+	return math.round(V.Min + (V.Max - V.Min) * math.min(byWidth, byHeight))
 end
 local BUILD_TOOLS_GAP_TOP = 16 -- HTML: tools at top-20, bar ends at top-4 + h-12
 local RIGHT_SIDEBAR_DROP = 112 -- HTML: #rightSidebar top-32 minus #topRightHud top-4

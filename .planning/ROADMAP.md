@@ -35,4 +35,7 @@ See `phases/05-legibility-ergonomics/05-PLAN.md`.
 
 ## Phase 6 — Port tooling ⏳
 See `phases/06-port-tooling/06-PLAN.md`.
-- [ ] T1 shared `tokens.json` + `gen-tokens.mjs` · T2 `data-rbx` mapping · T3 SVG → `IconData.luau` · T4 palette + colour-blind check
+- [x] T1 shared `tokens.json` + `gen-tokens.mjs`
+- [ ] T2 `data-rbx` mapping
+- [ ] T3 SVG → `IconData.luau`
+- [ ] T4 palette + colour-blind check

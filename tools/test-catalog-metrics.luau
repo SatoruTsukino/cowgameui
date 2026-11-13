@@ -9,8 +9,9 @@
 --   - every label box is at least as tall as its rendered text (one line per line of label)
 
 local CatalogMetrics = require("../roblox/src/shared/CowHUD/CatalogMetrics")
+local Tokens = require("../roblox/src/shared/CowHUD/Tokens")
 
-local REFERENCE, MIN_SCALE, TOUCH_MIN_SCALE = 720, 0.6, 0.75
+local REFERENCE, MIN_SCALE, TOUCH_MIN_SCALE = Tokens.scale.ReferenceHeight, Tokens.scale.MinScale, Tokens.scale.TouchMinScale
 
 local function textSize(base: number, scale: number): number
 	local floor = if base >= 12 then 12 else 11
